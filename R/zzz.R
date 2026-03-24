@@ -1,11 +1,10 @@
-#' Biodome
-#'
+#' Orange
 #'
 #' This is still the pre-alpha version. Notes about found bugs and suggestions are more than welcome!
 #'
 #' @author Adam T. Kocsis (adam.t.kocsis@gmail.com)
 #' @docType package
-#' @name biodome
+#' @name orange
 "_PACKAGE"
 
 #' @importFrom igraph V

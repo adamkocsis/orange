@@ -1,17 +1,16 @@
-Package: biodome
+Package: orange
 Type: Package
-Title: Tools for macroecological analysis and simulations with icosahedral grids
-Version: 0.2.0-6
+Title: Estimation of Geographic Ranges Using Spherical Geometry 
+Version: 0.1.0-1
 Authors@R: c(
 	person(given="Adam T.", family="Kocsis", role=c("cre", "aut"),
 		   email="adam.t.kocsis@gmail.com", comment=c(ORCID="0000-0002-9028-665X")),
-	person(given="Deutsche Forschungsgemeinschaft", role="fnd"),
 	person(given="FAU GeoZentrum Nordbayern", role="fnd"))
 Maintainer: Adam T. Kocsis <adam.t.kocsis@gmail.com>
-Description: Lots of cool tools.
-License: CC BY 4.0
-Date: 2025-12-05
-BugReports: https://github.com/adamkocsis/biodome
+Description: Calculation Geographic Ranges using both point coordinates and cells on a discretized sphere. Besides ensuring the use a geometrically correct implementations, the package offers the exploration of partial results for visual diagnostics.
+License: MIT
+Date: 2026-03-24
+BugReports: https://github.com/adamkocsis/orange
 Encoding: UTF-8
 LazyData: false
 Depends:

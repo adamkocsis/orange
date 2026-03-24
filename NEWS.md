@@ -1,21 +1,14 @@
-# Change log of the R package 'biodome'
+# Change log of the R package 'orange'
 
-# biodome 0.2.0-4 - 2025-11-07
+# biodome 0.1.0-1 - 2026-03-24
 
-## Added 
+## Initialization
 
-- The `presences` main function.
-- The `kent_presences_icosa` function.
+- The project was forked from 'biodome' project (v0.2.0-6) to efficiently focus on geographic range estimation. The corresponding functions were removed from that package.
 
 ## Changed
 
-- Renamed the `kentPresence` function to `presences_kent` and changed the `drop` argument to `listout`
-- Renamed the `ranges_centroid_distance` function to `ranges_centroid_radius` 
-
-# biodome 0.1.0 - 2025-06-25
-
-### Added
-- Initial build. Some fake data generators and range estimators.
-
+- Omitted most likely irrelevant functions (based on an initial screening.
+- Omitted `ranges_` prefix from range calculation functions. `
 * * *
 

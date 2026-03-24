@@ -14,9 +14,9 @@
 ## 	# the results
 ## 	results <- list()
 
-## 	if(any("centroid"%in%method)) results <- c(results,list(centroid=ranges_centroid_points(coordMat)))
+## 	if(any("centroid"%in%method)) results <- c(results,list(centroid=centroid_points(coordMat)))
 
-## 	if(any("mgcd"%in%method)) results <- c(results, list(mgcd=ranges_mgcd(coordMat, dm=dm)))
+## 	if(any("mgcd"%in%method)) results <- c(results, list(mgcd=mgcd(coordMat, dm=dm)))
 
 ## 	if(any("occupancy"%in%method)){
 
@@ -27,12 +27,12 @@
 ## 		allArgs <- c(list(coordMat=coordMat), newArgs)
 
 ## 		# call with these arguments
-## 		results <- c(results, list(occupancy=do.call("ranges_occupancy", allArgs))
+## 		results <- c(results, list(occupancy=do.call("occupancy", allArgs))
 ## 	}
 
-## 	if(any("mst"%in%method)) results <- c(results, list(mst=ranges_mstlength(coordMat))
+## 	if(any("mst"%in%method)) results <- c(results, list(mst=mstlength(coordMat))
 
-## 	if(any("cha"%in%method)) results <- c(results, list(cha=ranges_chullsphere(coordMat))
+## 	if(any("cha"%in%method)) results <- c(results, list(cha=chullsphere(coordMat))
 
 
 
@@ -83,11 +83,11 @@ SimpleCoordinates <- function(x, long="long", lat="lat"){
 #' points(coordMat)
 #'
 #' # 3. calculate and visualize
-#' cent <- ranges_centroid_points(coordMat, plot=TRUE)
+#' cent <- centroid_points(coordMat, plot=TRUE)
 #'
 #' # secondary visualization
 #' # points(cent[1], cent[2])
-ranges_centroid_points <- function(coordMat, plot=FALSE, plot.args=NULL){
+centroid_points <- function(coordMat, plot=FALSE, plot.args=NULL){
 	result <- icosa::surfacecentroid(coordMat)
 	if(plot){
 		if(is.null(plot.args)) plot.args <- list(pch=4, cex=1.5, col="red")
@@ -124,12 +124,12 @@ ranges_centroid_points <- function(coordMat, plot=FALSE, plot.args=NULL){
 #' points(coordMat)
 #'
 #' # 3. calculate and visualize
-#' planarChull <- ranges_chullplane(coordMat, gcbound=FALSE, plot=TRUE)
+#' planarChull <- chullplane(coordMat, gcbound=FALSE, plot=TRUE)
 #' # plot(planarChull$sf, col="#55000033", add=TRUE)
 #'
-#' planarChullGC <- ranges_chullplane(coordMat, gcbound=TRUE, plot=TRUE)
+#' planarChullGC <- chullplane(coordMat, gcbound=TRUE, plot=TRUE)
 #' # plot(planarChullGC$sf, col="#00550033", add=TRUE)
-ranges_chullplane <- function(coordMat, gcbound=FALSE, plot=FALSE, plot.args=NULL){
+chullplane <- function(coordMat, gcbound=FALSE, plot=FALSE, plot.args=NULL){
 
 	if(!requireNamespace("sf", quietly=TRUE)) stop("This function requires the 'sf' extension package. ")
 
@@ -207,10 +207,10 @@ ranges_chullplane <- function(coordMat, gcbound=FALSE, plot=FALSE, plot.args=NUL
 #' points(coordMat)
 #'
 #' # 3. calculate and visualize
-#' sphericalChull <- ranges_chullsphere(coordMat, plot=TRUE)
+#' sphericalChull <- chullsphere(coordMat, plot=TRUE)
 #'
 #' # plot(sphericalChull$sf, col="#55000033", add=TRUE)
-ranges_chullsphere<- function(coordMat, plot=FALSE, plot.args=NULL){
+chullsphere<- function(coordMat, plot=FALSE, plot.args=NULL){
 
 	if(!requireNamespace("sf", quietly=TRUE)) stop("This function requires the 'sf' extension package. ")
 
@@ -283,11 +283,11 @@ ranges_chullsphere<- function(coordMat, plot=FALSE, plot.args=NULL){
 #' points(coordMat)
 #'
 #' # 3. calculate and visualize
-#' mgcd <- ranges_mgcd(coordMat, plot=TRUE)
+#' mgcd <- mgcd(coordMat, plot=TRUE)
 #'
 #' # single line visualization
 #' # lines(coordMat[mgcd$index, ])
-ranges_mgcd <- function(coordMat, dm=NULL, plot=FALSE, plot.args=NULL){
+mgcd <- function(coordMat, dm=NULL, plot=FALSE, plot.args=NULL){
 
 	# calculate the distance matrix
 	if(is.null(dm)) dm <- icosa::arcdistmat(coordMat)
@@ -338,13 +338,13 @@ ranges_mgcd <- function(coordMat, dm=NULL, plot=FALSE, plot.args=NULL){
 #' points(coordMat)
 #'
 #' # 3. calculate and visualize
-#' centDist <- ranges_centroid_radius(coordMat, plot=TRUE)
+#' centDist <- cenrad(coordMat, plot=TRUE)
 #'
 #' lines(rbind(centDist$centroid,
 #' 		coordMat[which(centDist$estimate==centDist$distances)[1],]),
 #' 		col="blue", lwd=3)
 #
-ranges_centroid_radius <- function(coordMat, centroid=ranges_centroid_points(coordMat), plot=FALSE, plot.args=NULL, q=0.95){
+cenrad <- function(coordMat, centroid=centroid_points(coordMat), plot=FALSE, plot.args=NULL, q=0.95){
 
 	# the centroid
 	centroidMat <- matrix(centroid, ncol=2, byrow=TRUE)
@@ -413,10 +413,10 @@ ranges_centroid_radius <- function(coordMat, centroid=ranges_centroid_points(coo
 #' points(coordMat)
 #'
 #' # 3. calculate and visualize
-#' latrange <- ranges_latrange(coordMat, plot=TRUE)
+#' latrange <- latrange(coordMat, plot=TRUE)
 #'
 #' # abline(h=latrange$range, lty=2)
-ranges_latrange <- function(coordMat, plot=FALSE, plot.args=NULL){
+latrange <- function(coordMat, plot=FALSE, plot.args=NULL){
 	# the range
 	ran <- range(coordMat[, "lat"], na.rm=TRUE)
 
@@ -462,9 +462,9 @@ ranges_latrange <- function(coordMat, plot=FALSE, plot.args=NULL){
 #' points(coordMat)
 #'
 #' # 3. calculate and visualize
-#' mst <- ranges_mstlength(coordMat, plot=TRUE)
+#' mst <- mstlength(coordMat, plot=TRUE)
 #' # lines(mst$show)
-ranges_mstlength <- function(coordMat, dm=NULL, plot=FALSE, plot.args=NULL, icosa=NULL){
+mstlength <- function(coordMat, dm=NULL, plot=FALSE, plot.args=NULL, icosa=NULL){
 	if(!requireNamespace("vegan", quietly=TRUE)) stop("This function requires the 'vegan' extension package. ")
 
 	if(is.null(colnames(coordMat))) colnames(coordMat) <- c("long","lat")
@@ -563,10 +563,10 @@ ranges_mstlength <- function(coordMat, dm=NULL, plot=FALSE, plot.args=NULL, icos
 #' points(coordMat)
 #'
 #' # 3. calculate and visualize
-#' occ <- ranges_occupancy(coordMat, icosa=hex, plot=TRUE)
+#' occ <- occupancy(coordMat, icosa=hex, plot=TRUE)
 #'
 #' # plot(hex, occ$cells, add=TRUE, col="green")
-ranges_occupancy <- function(coordMat, sf=NULL, icosa=NULL, plot=FALSE, plot.args=NULL, alpha=1){
+occupancy <- function(coordMat, sf=NULL, icosa=NULL, plot=FALSE, plot.args=NULL, alpha=1){
 
 
 	if(!is.null(icosa)){
@@ -658,7 +658,7 @@ occupancy_icosa <- function(x, icosa, plot=FALSE, plot.args=NULL, alpha=1){
 
 
 
-#' The gappiness of shape on an icosahedral grid
+#' The gappiness a of shape on an icosahedral grid
 #'
 #' @param x The list of faces that are part of the shape.
 #' @param icosa The icosahedral grid.
@@ -672,19 +672,19 @@ occupancy_icosa <- function(x, icosa, plot=FALSE, plot.args=NULL, alpha=1){
 #' shape <- paste0("F", c(4, 5, 11, 13, 15, 21, 24, 26, 32, 33, 34, 35, 36))
 #'
 #' # the gappiness
-#' ranges_gappiness(shape, hex)
-#' @rdname ranges_gappiness
-#' @exportMethod ranges_gappiness
+#' gappiness(shape, hex)
+#' @rdname gappiness
+#' @exportMethod gappiness
 setGeneric(
-	name="ranges_gappiness",
+	name="gappiness",
 	def=function(x,icosa,...){
-		standardGeneric("ranges_gappiness")
+		standardGeneric("gappiness")
 	}
 )
 
-#' @rdname ranges_gappiness
+#' @rdname gappiness
 setMethod(
-	"ranges_gappiness",
+	"gappiness",
 	signature=c(x="character", icosa="trigrid"),
 		definition=function(x, icosa, exclude=NULL){
 
@@ -703,9 +703,9 @@ setMethod(
 )
 
 
-#' @rdname ranges_gappiness
+#' @rdname gappiness
 setMethod(
-	"ranges_gappiness",
+	"gappiness",
 	signature=c(x="matrix", icosa="trigrid"),
 		definition=function(x, icosa, exclude=NULL){
 
@@ -713,7 +713,7 @@ setMethod(
 			faceList <- locate(icosa, x)
 
 			# calculate the gappiness based on the faces
-			gap <- ranges_gappiness(faceList, icosa, exclude=exclude)
+			gap <- gappiness(faceList, icosa, exclude=exclude)
 
 			# return the gappiness
 			return(gap)
