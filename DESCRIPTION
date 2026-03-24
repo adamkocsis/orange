@@ -24,5 +24,4 @@ Suggests:
     tinytest,
     sf,
     knitr,
-    rmarkdown,
-	Directional
+    rmarkdown

@@ -1,18 +1,15 @@
 
-# biodome
+# orange <img src="man/figures/logo.png" align="right" width="120"/>
 
-Tools for macroecological analysis and simulations with icosahedral
-grids
+Estimation of Geographic Ranges Using Spherical Geometry
 
 (Ádám T. Kocsis )
 
-Want to give it a try?
-
 ``` r
-devtools::install_github("adamkocsis/biodome")
+devtools::install_github("adamkocsis/orange")
 ```
 
 ## Demo script
 
 A demonstration of range estimators is in [this
-script](_demo/range_test.R).
+script](_demo/orange_test.R).
