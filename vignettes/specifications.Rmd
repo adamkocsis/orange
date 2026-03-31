@@ -1,0 +1,289 @@
+---
+title: "Specifications"
+description: >
+  Design and overview of orange. 
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Specifications}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+# I. Overview
+
+## Purpose of the `orange` package
+
+## The purpose of this document 
+
+- Define boundaries for the software package. 
+- Define rules for consistent interface development
+- Provide rationale for implementation decisions
+
+## Input specifications 
+
+Repetition from the index page.
+
+### Primary input: distribution sample
+
+The functions of metrics are S4 methods that are implemented for multiple primary data input classes. The primary input is (following R tradition) usually parametrized as `x`. The `x` parameter can be any of the following can be following input data formats:
+
+- *coords*: A two-column tabular structure that inherits either from `matrix` or `data.frame`
+- *sfpoints*: A multipoint object, either of classes `sf` or `sfc`. 
+- *icell*: Vector of cell identifiers of an icosahedral grid (`icosa::hexagrid` or `icosa::trigrid`), a `character` vector. Note that these can only be used together with an `igrid` type icosahedral grid. 
+- *rast*: 
+
+### Additional data parameters 
+
+This is a list of additional parameters that are necessary for many of the metrics.  
+
+- *sf*: A 'simple feature' type object, usually a polygon or multipolygon style object with class `sf` or `sfc`
+- *p*: Geographic coordinates (long, lat) of a single point given as a two-column matrix. 
+- *igrid*: An icosahedral grid object defined with either `icosa::hexagrid` or `icosa::trigrid`  
+- *q*: A single real number in the range of `[0,1]`, expressing confidence or critical interval, `numeric`.
+- *mask*: Another spatial structure that allows the exclusion of a certain area from the calculation of a metric.
+- *dm*: A distance matrix that replaces the default distance matrix, which is usually the great circle distance matrix. Frequently used to refine the spatial environment, e.g. consider distances only on water, only on land, etc.
+
+### Behavioral modifiers
+
+This list of parameters that change the behavior of functions.
+- `plot`: Boolean switch indicating whether the standard visualization of the method should be executed or not. Defaults to `FALSE`
+- `iter`: Natural number indicating the number of iterations to be executed. Usually used for Monte-Carlo estimation-based metrics.
+
+## Output specification 
+
+Range and shape metrics outputs objects that inherit from the `orange` class. Every `orange` class object must have at least two elements:
+- `$estimate`: The numeric estimate calculated with the function.
+- `$plot`: An expression that can be used to plot the object
+- *partials*: Additional list elements that can be used to inspect the accuracy of the method, as well as plotting additional  ftod
+
+# II. Metrics and methods
+
+This section systematically treats specific methods and defines them in terms of domain (input parameters) and range (output). 
+
+## Technicals
+
+The methods themselves are defined using the rules of S4 method dispatch. 
+
+## 1. Range/extent esimators 
+
+### Occupancy
+
+The metric is implemented with the `occupancy` function.
+
+#### Overview 
+
+|    | Internal Name            | Main Input                                   | What it does                            |
+|----|--------------------------|----------------------------------------------|-----------------------------------------|
+| ✅ | `occupancy_coords_icosa` | `x`=coords, `s`=igrid, `q`=NULL              | Number of occupied grid cells.          |
+| ✅ | `occupancy_coords_icosa` | `x`=coords, `s`=igrid, `q`=q, `method`="min" | Expected number of occupied grid cells. |
+| ❌ | `occupancy_coords_sfc`   | `x`=coords, `s`=sf, `q`=NULL                 | Number of occupied grid cells.          |
+| ❌ | `occupancy_coords_sfc`   | `x`=coords, `s`=sf, `q`=q                    | Expected number of occupied grid cells. |
+
+
+For the sake of avoiding possible misuse, the method is not defined for the `SpatRaster` class. 
+
+#### Occupied grid cells in an icosahedral grid
+
+Returns the number of occupied grid cells in an icosahedral grid.
+
+| Field     | Value                                                                               |
+|-----------|-------------------------------------------------------------------------------------|
+| Usage     | `occupancy(x=coords, s=igrid)`                                                      |
+| Internal  | `occupancy_coords_icosa`                                                            |
+| Return    | `$estimate`: the number of grid cells occupied, `$cells`: The IDs of occupied cells |
+| Test case | `pinna` and `hexagrid(deg=5)`                                                       |
+
+#### Occupied grid cells in an icosahedral grid, with a confidence cut-off
+
+Returns the expected number of occupied grid cells that represent `q`* 100% of the overal number of records. 
+
+Multiple implementations possible. These can be:
+- minimizing the range `method="min"`: tabulating the record distribution on cells, sorting them in decreasing order of record counts, and omitting the rarest cells until only the `q` proportion of records are considered
+- the expectation for the range, `method="mean", iter=100`. Records are randomly drawn until `q` proportion of the overall cover is reached. 
+
+
+| Field     | Value                                                                               |
+|-----------|-------------------------------------------------------------------------------------|
+| Usage     | `occupancy(x=coords, s=igrid, q=0.95)`                                              |
+| Internal  | `occupancy_coords_icosa`                                                            |
+| Return    | `$estimate`: the number of grid cells occupied, `$cells`: The IDs of occupied cells |
+| Test case | `pinna` and `hexagrid(deg=5)`                                                       |
+
+
+#### Occupied polygons in an sf or sfc polygon/multipolygon object
+
+The original definition for occupancy. Executes an intersection join, and calculates 
+
+| Field     | Value                                                                                |
+|-----------|--------------------------------------------------------------------------------------|
+| Usage     | `occupancy(x=coords, s=sf)`                                                          |
+| Internal  | `occupancy_coords_sfc`                                                                |
+| Return    | `$estimate`: the number of grid cells occupied, `$ids`: The IDs of occupied polygons |
+| Test case | `countries` and some terrestrial data                                                |
+
+
+The `sf`-method invokes the `sfc` method.
+
+
+### Maximum Distance
+
+The method is implemented with the `maxdist` function. For convenience, the alias `mgcd` is also provided.
+
+#### Overview
+
+|    | Internal Name    | Main Input                     | What it does                                           |
+|----|------------------|--------------------------------|--------------------------------------------------------|
+| ✅ | `maxdist_coords` | `x`=coords, `dm`=NULL          | The maximum great circle distance                      |
+| ✅ | `maxdist_coords` | `x`=coords, `dm`=dm            | Maximum distance in a pre-defined distance matrix      |
+| ✅ | `maxdist_coords` | `x`=coords, `dm`=NULL, `q`=*q* | Quantile great circle distance                         |
+| ✅ | `maxdist_coords` | `x`=coords, `dm`=dm, `q`=*q*   | Quantile great circle in a pre-defined distance matrix |
+
+#### Maximum Great Circle Distance with a given points
+
+The basis for the method.
+
+| Field     | Value                                                                                |
+|-----------|--------------------------------------------------------------------------------------|
+| Usage     | `maxdist(coords)`, `mgcd(x=coords)`                                                                     |
+| Internal  | `maxdist_coords`                                                                     |
+| Return    | `$estimate`: the number of grid cells occupied, `$ids`: The IDs of occupied polygons |
+| Test case | `pinna`                                                                              |
+
+When the distance matrix parameter `dm` is not provided, the method will omit duplicates and calculate the Great Circle Distance Matrix with `icosa::arcdistmat`.
+
+#### Maximum Distance with a given points specifying a distance matrix
+
+This can be used in case topography/habitat-defined routes are more important than great circle distances, or when the distance matrix would have to recalculated.
+
+| Field     | Value                                                                                                         |
+|-----------|---------------------------------------------------------------------------------------------------------------|
+| Usage     | `maxdist(coords, dm=dm)`                                                                                      |
+| Internal  | `maxdist_coords`                                                                                              |
+| Return    | `$estimate`: the maximum distance calculated, `$index`:  The row and column index of the relevant point pair. |
+| Test case | `pinna`                                                                                                       |
+
+#### Quantile distance between points (Maximum distance with a confidence cutoff)
+
+The same behavior as with the methods above, except that a frequency-distribution of the distances is calculated first, and the `q` quantile of the frequency distribution becomes the estimate. Works both with and without a pre-specify distance matrix. 
+
+| Field     | Value                                 |
+|-----------|---------------------------------------|
+| Usage     | `maxdist(coords, dm=dm, q=0.95)`      |
+| Internal  | `maxdist_coords`                      |
+| Return    | `$estimate`: the distance calculated, |
+| Test case | `pinna`                               |
+
+The visualization of the method is based on a histogram.
+
+* * *
+
+### Fixed radius
+
+The generic of this metric is the `fixrad` function. For convenience, the alias `` is also provided. This metric is similar to the Maximum Distance, but instead of calculating a full distance matrix, distances compared to a single point are assessed. This point defaults to the centroid.
+
+#### Overview
+
+| In | Internal Name   | Main Input                                | What it does                            |
+|----|-----------------|-------------------------------------------|-----------------------------------------|
+| ✅ | `fixrad_coords` | `x`=coords, `p`=centroid(coords)          | The centroid radius of the point cloud. |
+| ✅ | `fixrad_coords` | `x`=coords, `p`=centroid(coords), `q`=*q* | The centroid radius of the point cloud. |
+
+
+#### Centroid radius
+
+The method calculates every point's distance to the centroid and searches for the maximum.
+
+| Field     | Value                                                                                               |
+|-----------|-----------------------------------------------------------------------------------------------------|
+| Usage     | `fixrad(coords)`                                                                                    |
+| Internal  | `fixrad_coords`                                                                                     |
+| Return    | `$estimate`: the distance calculated, `$index`: which coordinate is the farthest from the centroid. |
+| Test case | `pinna`                                                                                             |
+
+#### Centroid quantile radius
+
+The method calculates every point's distance to the centroid, tabulates the frequency distribution of the distances, and then returns distance for a `q` quantile. 
+
+| Field     | Value                                                                                               |
+|-----------|-----------------------------------------------------------------------------------------------------|
+| Usage     | `fixrad(coords, q=0.95)`                                                                            |
+| Internal  | `fixrad_coords`                                                                                     |
+| Return    | `$estimate`: the distance calculated, `$index`: which coordinate is the farthest from the centroid. |
+| Test case | `pinna`                                                                                             |
+
+### Latitudinal range
+
+#### Overview
+
+| In | Internal Name     | Main Input         | What it does                                       |
+|----|-------------------|--------------------|----------------------------------------------------|
+| ✅ | `latrange_coords` | `x`=coords         | The latitutdinal range of the point cloud.         |
+| ❌ | `latrange_coords` | `x`=coords `q`=*q* | The quantile latitudinal range of the point cloud. |
+
+#### Latitudinal range of a point cloud
+
+
+### Zonal area
+
+### Minimum Spanning Tree Length
+
+### Hull Area
+
+### Circle Area
+
+
+
+
+
+
+
+| [x] | `mgcd`       | cells, grid, q     | MGCD of cell centroids, or the great circle distance of a quantile.                       |
+| [x] | `mgcd`       | coords, q          | The maximum great circle distance of the points                                           |
+| [x] | `cenrad`     | coords, q          | Centroid radius of points, maximum or quantile distance.                                  |
+| [x] | `cenrad`     | cells, q           | Centroid radius of points, maximum or quantile distance.                                  |
+| [x] | `latrange`   | coords             | The latitudinal range of a point cloud.                                                   |
+| [ ] | `zoneaarea`  | coords             | The spherical surface area of a zone defined by the latitudinal range of a point cloud.   |
+| [ ] | `zoneaarea`  | coords/cells, grid | The latitudinal range of a point cloud.                                                   |
+| [x] | `mstlength`  | coords             | The length of a minimum spanning tree based on a set of points                            |
+| [ ] | `mstlength`  | cells, grid        | The length of a minimum spanning tree based on the centers of cells.                      |
+| [ ] | `chull_cell` | coords, grid       | The number of cells that a convex hull occupies.                                          |
+| [ ] | `chull_cell` | cells, grid        | The number of cells that a convex hull occupies.                                          |
+| [ ] | `ahull_cell` | cells, grid        | The number of cells covered by an alpha hull on the surface of a sphere.                  |
+| [ ] | `ahull_cell` | coords, grid       | The number of cells covered by an alpha hull on the surface of a sphere.                  |
+| [ ] | `mincircle`  | coords, q          | The minimum small circle area, radius and position that covers q proportion of the points |
+| [ ] | `minellipse` | coords, q          | The covering spherical ellipse of a set of points, shorter and longer axis .              |
+| [ ] | `density`    | coords, q          | The densitiy of occurrence records                                                        |
+
+
+
+# Other esimators 
+
+
+| In  | Function | Input  | What it does                                                                |
+|-----|----------|--------|-----------------------------------------------------------------------------|
+| [ ] | `ahull`  | coords | The area of an alpha hull on the surface of a sphere defined by the points. |
+| [ ] | `chull`  | coords | The spherical convex hull area of a set of points.                          |
+
+# Shape esimators 
+
+
+| In  | Function             | Input        | What it does                                                     |
+|-----|----------------------|--------------|------------------------------------------------------------------|
+| [x] | `patches`            | cells, grid  | The number of patches from a given set of cells.                 |
+| [ ] | `patches`            | coords, grid | The number of patches from a given set of cells.                 |
+| [ ] | `holes`              | coords, grid | The number of holes in the patches defined a given set of cells. |
+| [ ] | `holes`              | cells, grid  | The number of holes from a given set of cells.                   |
+| [ ] | `chull_cell_filling` | cells, grid  | The proportion of `ranges_occupancy`/`ranges_chull_cell` , [0,1] |
+| [ ] | `chull_cell_filling` | coords, grid | The proportion of `ranges_occupancy`/`ranges_chull_cell` , [0,1] |
+| [ ] | `eccentricity`       | coords, q    | The eccentricity of a minimum ellipse                            |
+
+| In  | Function   | Input  | What it does                       |
+|-----|------------|--------|------------------------------------|
+| [x] | `centroid` | coords | Latitude, longitude of point cloud |

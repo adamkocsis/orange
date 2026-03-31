@@ -3,9 +3,8 @@ template:
   bootstrap: 5
   bootswatch: cosmo 
   bslib:
-#    primary: "#578734"
-    primary: "#d3a341"
-    heading_font: {google: "Buenard"}
+    primary: "#fd7e01"
+    secondary: "#9cb35a"
 navbar:
   structure:
     left: [tutorials, reference, internals, howtos]
@@ -27,8 +26,10 @@ navbar:
     internals:
       text: Internals
       menu: 
-      # - href: news/index.html
-      #   text: Changelog
+       - href: news/index.html
+         text: Changelog
+       - href: articles/specifications.html
+         text: Specifications
       # - href: articles/internals.html
       #   text: Internal structure
     howtos:
