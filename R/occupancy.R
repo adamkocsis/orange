@@ -1,5 +1,5 @@
 ################################################################################
-# Occupancy-related
+# Occupancy-related code
 ################################################################################
 
 #' Calculate ranges with the occupancy method
@@ -11,6 +11,7 @@
 #' @param plot.args List arguments passed to the plotting function: \code{lines}.
 #' @param alpha Minimum occupancy with \code{alpha} proportion of occurrences.
 #' @return A list with an estimate and the input for lines to show the MST.
+#' @rdname occupancy
 #' @export
 #' @examples
 #' # 1. Canvas
@@ -28,19 +29,55 @@
 #' occ <- occupancy(coordMat, icosa=hex, plot=TRUE)
 #'
 #' # plot(hex, occ$cells, add=TRUE, col="green")
-occupancy <- function(coordMat, sf=NULL, icosa=NULL, plot=FALSE, plot.args=NULL, alpha=1){
-
-
-	if(!is.null(icosa)){
-		result <- occupancy_icosa(coordMat, icosa, plot=plot, plot.args=plot.args, alpha=alpha)
-	}
-	if(!is.null(sf)){
-		stop("Not yet!")
+setGeneric(
+	name="occupancy",
+	package="orange",
+	def=function(x, icosa, sf, ...){
+		standardGeneric("occupancy")
 	}
 
-	return(result)
+)
 
-}
+#' @rdname occupancy
+setMethod(
+	"occupancy",
+	signature=c(x="data.frame", icosa="missing", sf="missing"),
+	definition=function(x,tax, loc=NULL, long="long", lat="lat", duplicates=FALSE, ...){
+		# if locality is given
+		if(!is.null(loc)){
+			y <- x[,c(tax, loc)]
+			if(!duplicates) y <- unique(y)
+
+		# locality not given
+		}else{
+			y <- x[,c(tax, long, lat)]
+			if(!duplicates) y <- unique(y)
+		}
+		
+		# the result
+		res <- table(y[, tax])
+		resNum <- as.numeric(res)
+		names(resNum) <- names(res)
+				
+		return(resNum)
+	
+	}
+)
+
+
+## occupancy <- function(coordMat, sf=NULL, icosa=NULL, plot=FALSE, plot.args=NULL, alpha=1){
+
+
+## 	if(!is.null(icosa)){
+## 		result <- occupancy_icosa(coordMat, icosa, plot=plot, plot.args=plot.args, alpha=alpha)
+## 	}
+## 	if(!is.null(sf)){
+## 		stop("Not yet!")
+## 	}
+
+## 	return(result)
+
+## }
 
 
 occupancy_icosa <- function(x, icosa, plot=FALSE, plot.args=NULL, alpha=1){
