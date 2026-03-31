@@ -164,13 +164,14 @@ he metrics in this section define ways to derive the extent or **range** of an i
 
 These methods define and structures constructed from the input data, which are used in subsequent calculations.
 
-| In  | Method  | Abstract Description                                                                             |
-|-----|---------|--------------------------------------------------------------------------------------------------|
-| ❌ | Hull    | Defines a hull, i.e. and enclosing spherical polygon.                                            |
-| ✅ | Patches | Identifies occupied, unconnected patches or islands in the distribution                          |
-| ✅ | Holes   | Identified unoccupied, unconnected patches or islands (i.e. holes) the distribution distribution |
-| ❌ | Circle  | Defines a spherical circle (small or great) around a distribution structure.                     |
-| ❌ | Ellipse | Defines a spherical ellipse around a distribution structure.                                     |
+| In | Method        | Abstract Description                                                                             |
+|----|---------------|--------------------------------------------------------------------------------------------------|
+| ❌ | Triangulation | Spherical triangulation of a given pointset.                                                     |
+| ❌ | Hull          | Defines a hull, i.e. and enclosing spherical polygon.                                            |
+| ✅ | Patches       | Identifies occupied, unconnected patches or islands in the distribution                          |
+| ✅ | Holes         | Identified unoccupied, unconnected patches or islands (i.e. holes) the distribution distribution |
+| ❌ | Circle        | Defines a spherical circle (small or great) around a distribution structure.                     |
+| ❌ | Ellipse       | Defines a spherical ellipse around a distribution structure.                                     |
 
 ### Location and shape esimators 
 

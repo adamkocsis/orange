@@ -18,58 +18,111 @@ knitr::opts_chunk$set(
 
 # I. Overview
 
-## Purpose of the `orange` package
+## About this document 
 
-## The purpose of this document 
+This is the software requirement specification and design log of the `orange` package. As there is a large combination of input variables for every implemented approach, this document is intended to be coordinating the development and and ensure a homogeneous interface and structure through the package.
 
+This document provides:
 - Define boundaries for the software package. 
 - Define rules for consistent interface development
 - Provide rationale for implementation decisions
+- Forms the basis for the scientific article describing the effort.
 
-## Input specifications 
+* * *
 
-Repetition from the index page.
+## Purpose of the `orange` package
 
-### Primary input: distribution sample
+The boundaries of this package can be drawn at the simple task: using **spherical shape information** (e.g. taxon distribution data), it allows the calculation of **numeric descriptors** (shape) that characterize the sphes using their **intrinsic, geometric characteristics**, and how they are modified by providing some information that modify simple spherical geometry (e.g. a mask that limits habitable space). 
 
-The functions of metrics are S4 methods that are implemented for multiple primary data input classes. The primary input is (following R tradition) usually parametrized as `x`. The `x` parameter can be any of the following can be following input data formats:
+* * *
 
-- *coords*: A two-column tabular structure that inherits either from `matrix` or `data.frame`
+### Correctness
+
+Although these calculations can be represented with 'simple' abstractions, the input data can vary extremely and the implementation of these methods can be executed with varying awareness of the difficulties imposed by spherical geometry, that may be erroneous in some cases (such as convex hull calculations). Therefore it is a core philosophy of the `orange` package, that implementations need to be correct, regardless whether the input data are globally distributed or confined to a simple region. 
+
+* * *
+
+### Transparency
+
+Since the metrics implemented here often reduce complex information to a single number, users must get access to intermediate data objects to accurately assess the correctness of what they are calculating - as well as being able to use the intermediate objects in other, unexpected calculations.
+
+* * *
+
+# II. Input specifications  
+
+*Repetition goes to the index page.*
+
+Although many metrics defined here have been available in simple application scenarios, they can be extended almost trivially to other combinations of input data, which may have better uses in some cases. This section reviews the types of input data used as the basis of geographic shape analysis (especially for taxon distribution data), which are later used to systematically review and develop specific methods. 
+
+* * *
+
+## Primary input: distribution sample
+
+The functions of metrics are S4 methods that are implemented for multiple primary data input classes. The primary input is (following R tradition) parametrized as `x`. The `x` parameter can be any of the following can be following input data structures:
+
+- *coordmat*: A two-column tabular structure that inherits from `matrix`. The simplest input format, implies long-lat for the two columns.
+- *coorddat*: A `data.frame` with geographic coordinates. The column of coordinates need to be specified, they default to `long="long"` and `lat="lat"`.  
 - *sfpoints*: A multipoint object, either of classes `sf` or `sfc`. 
+- *sfpolygons*: A multipolygon class object `sf` or `sfc`. 
 - *icell*: Vector of cell identifiers of an icosahedral grid (`icosa::hexagrid` or `icosa::trigrid`), a `character` vector. Note that these can only be used together with an `igrid` type icosahedral grid. 
-- *rast*: 
+- *rast*: A `SpatRaster` class object defined in the `terra` package.
 
-### Additional data parameters 
+In case of some input types, specific components can be specified with the following parameters.
+- `long`: Column name indicating longitudes (`character`) 
+- `lat`: Column name indicating latitudes (`character`) 
+- `tax`: Column name indicating taxa, or other functional units that can be used to split a dataset.
 
-This is a list of additional parameters that are necessary for many of the metrics.  
 
-- *sf*: A 'simple feature' type object, usually a polygon or multipolygon style object with class `sf` or `sfc`
-- *p*: Geographic coordinates (long, lat) of a single point given as a two-column matrix. 
-- *igrid*: An icosahedral grid object defined with either `icosa::hexagrid` or `icosa::trigrid`  
-- *q*: A single real number in the range of `[0,1]`, expressing confidence or critical interval, `numeric`.
-- *mask*: Another spatial structure that allows the exclusion of a certain area from the calculation of a metric.
-- *dm*: A distance matrix that replaces the default distance matrix, which is usually the great circle distance matrix. Frequently used to refine the spatial environment, e.g. consider distances only on water, only on land, etc.
 
-### Behavioral modifiers
+* * *
+
+## Additional data parameters 
+
+This is a list of additional parameters that may be necessary for some metrics.  
+
+- `sf`: A 'simple feature' type object, usually a polygon or multipolygon style object with class `sf` or `sfc`
+- `p`: Geographic coordinates (long, lat) of a single point given as a two-column matrix. 
+- `icosa`: An icosahedral grid object defined with either `icosa::hexagrid` or `icosa::trigrid`  
+- `mask`: Another spatial structure that allows the exclusion of a certain area from the calculation of a metric.
+- `q`: A single real number in the range of `[0,1]`, expressing confidence or critical interval, `numeric`.
+- `dm`: A distance matrix that may replace a default distance matrix (e.g. a great circle distance matrix). Frequently used to refine the spatial environment, e.g. consider distances only on water, only on land, etc.
+- `unique`: A logical switch indicating whether duplicate coordinates be omitted before the calculations, which can have effects on the results in some cases (e.g. centroid calculation). For the sake of efficiency and transparency, **this is set to to `TRUE` by default, which means that every coordinate pair is considered only once in the calculations**. The effects can be explored after a deliberate inclusion of duplicates. 
+
+* * *
+
+## Behavioral modifiers
 
 This list of parameters that change the behavior of functions.
-- `plot`: Boolean switch indicating whether the standard visualization of the method should be executed or not. Defaults to `FALSE`
+- `plot`: Boolean switch indicating whether the standard visualization of the method should be executed or not. Defaults to `FALSE`.
 - `iter`: Natural number indicating the number of iterations to be executed. Usually used for Monte-Carlo estimation-based metrics.
 
-## Output specification 
+* * *
+
+# III. Output specification 
 
 Range and shape metrics outputs objects that inherit from the `orange` class. Every `orange` class object must have at least two elements:
 - `$estimate`: The numeric estimate calculated with the function.
 - `$plot`: An expression that can be used to plot the object
 - *partials*: Additional list elements that can be used to inspect the accuracy of the method, as well as plotting additional  ftod
 
-# II. Metrics and methods
+* * *
+
+# IV. Metrics and methods
 
 This section systematically treats specific methods and defines them in terms of domain (input parameters) and range (output). 
 
-## Technicals
+* * *
 
-The methods themselves are defined using the rules of S4 method dispatch. 
+## Implementation notes 
+
+There are three tiers of functions:
+- 1. **Generics** that defining the names of the methods.
+- 2. **Methods** that inovke an internal logic applicable for as set of input classes. 
+- 3. **Internals** that implement a logic.
+
+**Methods** are defined using the rules of S4 method dispatch, based on the arguments `x`, `sf`, 
+
+* * *
 
 ## 1. Range/extent esimators 
 
@@ -79,17 +132,18 @@ The metric is implemented with the `occupancy` function.
 
 #### Overview 
 
-|    | Internal Name            | Main Input                                   | What it does                            |
-|----|--------------------------|----------------------------------------------|-----------------------------------------|
-| ✅ | `occupancy_coords_icosa` | `x`=coords, `s`=igrid, `q`=NULL              | Number of occupied grid cells.          |
-| ✅ | `occupancy_coords_icosa` | `x`=coords, `s`=igrid, `q`=q, `method`="min" | Expected number of occupied grid cells. |
-| ❌ | `occupancy_coords_sfc`   | `x`=coords, `s`=sf, `q`=NULL                 | Number of occupied grid cells.          |
-| ❌ | `occupancy_coords_sfc`   | `x`=coords, `s`=sf, `q`=q                    | Expected number of occupied grid cells. |
+|    | Internal Name            | Method                 | Args                  | What it does                                         |
+|----|--------------------------|------------------------|-----------------------|------------------------------------------------------|
+| ❌ | `occupancy_coords`       | `x`: *coords*          | `tax`                 | Number of occupied coordinate pairs for every entry. |
+| ✅ | `occupancy_coords_icosa` | `x`: *coords*, `icosa` | `q`=NULL              | Number of occupied grid cells.                       |
+| ✅ | `occupancy_coords_icosa` | `x`: *coords*, `icosa` | `q`=q, `method`="min" | Expected number of occupied grid cells.              |
+| ❌ | `occupancy_coords_sfc`   | `x`: *coords*, `sf`    | `q`=NULL              | Number of occupied features.                         |
+| ❌ | `occupancy_coords_sfc`   | `x`: *coords*, `sf`    | `q`=q                 | Expected number of features.                         |
+| ❌ | `occupancy_rast_icosa`   | `x`: *rast*, `icosa`   | `threshold`=0         | Number of occupied grid cells.                       |
+| ❌ | `occupancy_rast_sfc`     | `x`: *rast*, `sf`      | `threshold`=0         | Number of occupied features.                         |
 
 
-For the sake of avoiding possible misuse, the method is not defined for the `SpatRaster` class. 
-
-#### Occupied grid cells in an icosahedral grid
+#### Occupied grid cells in an icosahedral grid based on point data
 
 Returns the number of occupied grid cells in an icosahedral grid.
 
@@ -229,7 +283,6 @@ The method calculates every point's distance to the centroid, tabulates the freq
 
 #### Latitudinal range of a point cloud
 
-
 ### Zonal area
 
 ### Minimum Spanning Tree Length
@@ -239,6 +292,7 @@ The method calculates every point's distance to the centroid, tabulates the freq
 ### Circle Area
 
 
+## Additional 
 
 
 
