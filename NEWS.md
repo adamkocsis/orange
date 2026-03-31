@@ -1,10 +1,12 @@
 # Change log of the R package 'orange'
 
-# orange 0.1.0-2 - 2026-03-31
+# orange 0.1.0-3 - 2026-03-31
 
 ## Added
 
 - The `kentsamples` data for testing and demonstration.
+- The `circumcenter` function to calculate the small circle 
+- The `smallcircles` function to calculate points on small circles
 
 ## Changed
 
