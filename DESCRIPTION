@@ -1,14 +1,14 @@
 Package: orange
 Type: Package
-Title: Estimation of Geographic Ranges Using Spherical Geometry 
+Title: Spherical Ranges and Parametrization of Geographic Shapes
 Version: 0.1.0-1
 Authors@R: c(
 	person(given="Adam T.", family="Kocsis", role=c("cre", "aut"),
 		   email="adam.t.kocsis@gmail.com", comment=c(ORCID="0000-0002-9028-665X")),
 	person(given="FAU GeoZentrum Nordbayern", role="fnd"))
 Maintainer: Adam T. Kocsis <adam.t.kocsis@gmail.com>
-Description: Calculation Geographic Ranges using both point coordinates and cells on a discretized sphere. Besides ensuring the use a geometrically correct implementations, the package offers the exploration of partial results for visual diagnostics.
-License: MIT
+Description: This package is a collation of tools and metrics to characterize distribution data on the surfrace of a sphere or an ellipsoid. The primary group of these metrics is those that describe the extent of a distribution, i.e. geographic ranges. The calculation of geographic ranges can be executed using point coordinates data, vector polygons, as well as and cells on a discretized sphere. Besides ensuring the use a geometrically correct implementations, the package offers the exploration of partial results for visual diagnostics.
+License: CC BY 4.0
 Date: 2026-03-24
 BugReports: https://github.com/adamkocsis/orange
 Encoding: UTF-8

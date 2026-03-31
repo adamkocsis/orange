@@ -1,6 +1,6 @@
 # Change log of the R package 'orange'
 
-# biodome 0.1.0-1 - 2026-03-24
+# orange 0.1.0-1 - 2026-03-24
 
 ## Initialization
 

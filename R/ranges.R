@@ -467,10 +467,13 @@ latrange <- function(coordMat, plot=FALSE, plot.args=NULL){
 mstlength <- function(coordMat, dm=NULL, plot=FALSE, plot.args=NULL, icosa=NULL){
 	if(!requireNamespace("vegan", quietly=TRUE)) stop("This function requires the 'vegan' extension package. ")
 
+	if(inherits(coordMat, "data.frame")) coordMat <- as.matrix(coordMat)
+
 	if(is.null(colnames(coordMat))) colnames(coordMat) <- c("long","lat")
 
 	# get rid of redundant entries
 	coordMat <- unique(coordMat)
+
 
 	# reduce to icosahedral gridpoints
 	if(!is.null(icosa)){
