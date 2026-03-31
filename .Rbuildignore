@@ -6,8 +6,10 @@ README.html
 index.md
 index.Rmd
 index.html
-vignettes/
+vignettes/specifications.Rmd
+vignettes/1_installation.Rmd
 ^_pkgdown\.yml$
 ^docs$
 ^pkgdown$
 _demo/
+man/figures/range_example.png
