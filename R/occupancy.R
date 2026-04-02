@@ -2,6 +2,8 @@
 # Occupancy-related code
 ################################################################################
 
+qTest <- FALSE
+
 #' Calculate ranges with the occupancy method
 #'
 #' @param coordMat 2D numeric matrix with two columns: longitudes and latitudes.
@@ -42,7 +44,7 @@ setGeneric(
 setMethod(
 	"occupancy",
 	signature=c(x="data.frame", icosa="missing", sf="missing"),
-	definition=function(x,tax, loc=NULL, long="long", lat="lat", duplicates=FALSE, ...){
+	definition=function(x,tax, loc=NULL, long="long", lat="lat", duplicates=FALSE){
 		# if locality is given
 		if(!is.null(loc)){
 			y <- x[,c(tax, loc)]
@@ -64,28 +66,73 @@ setMethod(
 	}
 )
 
+#' @rdname occupancy
+setMethod(
+	"occupancy",
+	signature=c(x="matrix", icosa="trigrid", sf="missing"),
+	definition=function(x, icosa, long=NULL, lat=NULL, duplicates=FALSE, q=1, plot=FALSE, plot.args=NULL, full=FALSE){
+		# if locality is given
+		if(!duplicates) x <- unique(x)
 
-## occupancy <- function(coordMat, sf=NULL, icosa=NULL, plot=FALSE, plot.args=NULL, alpha=1){
+		# if the columns are given, make sure they are interpreted right!
+		if(!is.null(long) | !is.null(lat)) x <- x[, c(long, lat), drop=FALSE]
+
+		if(q!=1 & !qTest) stop("Feature not yet finalized!")
+
+		# invoke the internal
+		result <- occupancy_coords_icosa(x,icosa, q=q,  plot=plot, plot.args=plot.args, full=full)
+
+		# return a result
+		return(result)
+
+	}
+)
+
+# uses the matrix method
+#' @rdname occupancy
+setMethod(
+	"occupancy",
+	signature=c(x="data.frame", icosa="trigrid", sf="missing"),
+	definition=function(x, icosa, long="long", lat="lat", tax=NULL, duplicates=FALSE, q=1, plot=FALSE, plot.args=NULL, full=FALSE){
+		# the same as the matrix method
+		if(is.null(tax)){
+			x <- as.matrix(x[, c(long, lat)])
+			result <- occupancy(x, icosa=icosa, long=long, lat=lat, duplicates=duplicates,
+				q=q, plot=plot, plot.args=plot.args, full=full)
+		}else{
+			result <- tapply(
+				INDEX=x[,tax],
+				X=x[, c(long, lat)],
+				FUN=function(a){
+
+					# get rid of unnecessary recursion
+					a <- as.matrix(a)
+					result <- occupancy(a, icosa=icosa, long=long, lat=lat, duplicates=duplicates,
+						q=q, plot=plot, plot.args=plot.args, full=full)
+					}
+				)
+		}
+		return(result)
+	}
+)
 
 
-## 	if(!is.null(icosa)){
-## 		result <- occupancy_icosa(coordMat, icosa, plot=plot, plot.args=plot.args, alpha=alpha)
-## 	}
-## 	if(!is.null(sf)){
-## 		stop("Not yet!")
-## 	}
-
-## 	return(result)
-
-## }
 
 
-occupancy_icosa <- function(x, icosa, plot=FALSE, plot.args=NULL, alpha=1){
+# internal method: look up coordinates with icosa grids
+# x: 2 column matrix
+occupancy_coords_icosa <- function(x, icosa, plot=FALSE, plot.args=NULL, q=1, full=FALSE){
+	# onit missing values
+	x <- x[!(is.na(x[,1]) |  is.na(x[,2])),, drop=FALSE]
 
-	# the occupied cells by the points
-	cells <- icosa::locate(icosa, x)
+	if(nrow(x)==0){
+		cells<- NULL
+	}else{
+		# the occupied cells by the points
+		cells <- icosa::locate(icosa, x)
+	}
 
-	if(alpha!=1){
+	if(q!=1){
 		# tabulate the cells
 		tabulatedCells <- table(cells)
 
@@ -128,6 +175,8 @@ occupancy_icosa <- function(x, icosa, plot=FALSE, plot.args=NULL, alpha=1){
 
 		if(plot){
 			if(is.null(plot.args)) plot.args <- list(col="#55000033")
+			# if no plots are open yet, make one!
+			if(dev.cur()==1) arguments$add <- NULL
 			arguments <- c(list(x=icosa, y=res$cells, add=TRUE), plot.args)
 			do.call(icosa::plot, arguments)
 		}
@@ -145,11 +194,16 @@ occupancy_icosa <- function(x, icosa, plot=FALSE, plot.args=NULL, alpha=1){
 		if(plot){
 			if(is.null(plot.args)) plot.args <- list(col="#55000033")
 			arguments <- c(list(x=icosa, y=res$cells, add=TRUE), plot.args)
+			# if no plots are open yet, make one!
+			if(dev.cur()==1) arguments$add <- NULL
 			do.call(icosa::plot, arguments)
 		}
 
 	}
+	class(res) <- "orange"
 
+	# provide only estimate by default
+	if(!full) res <- res$estimate
 	return(res)
 
 }

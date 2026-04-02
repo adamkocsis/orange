@@ -68,11 +68,10 @@ The functions of metrics are S4 methods that are implemented for multiple primar
 - *rast*: A `SpatRaster` class object defined in the `terra` package.
 
 In case of some input types, specific components can be specified with the following parameters.
+- `loc`: A location label in *coorddat*
 - `long`: Column name indicating longitudes (`character`) 
 - `lat`: Column name indicating latitudes (`character`) 
 - `tax`: Column name indicating taxa, or other functional units that can be used to split a dataset.
-
-
 
 * * *
 
@@ -82,7 +81,7 @@ This is a list of additional parameters that may be necessary for some metrics.
 
 - `sf`: A 'simple feature' type object, usually a polygon or multipolygon style object with class `sf` or `sfc`
 - `p`: Geographic coordinates (long, lat) of a single point given as a two-column matrix. 
-- `icosa`: An icosahedral grid object defined with either `icosa::hexagrid` or `icosa::trigrid`  
+- `icosa`: An icosahedral grid object defined with either `icosa::trigrid` or the derived class `icosa::hexagrid`.  
 - `mask`: Another spatial structure that allows the exclusion of a certain area from the calculation of a metric.
 - `q`: A single real number in the range of `[0,1]`, expressing confidence or critical interval, `numeric`.
 - `dm`: A distance matrix that may replace a default distance matrix (e.g. a great circle distance matrix). Frequently used to refine the spatial environment, e.g. consider distances only on water, only on land, etc.
@@ -93,6 +92,7 @@ This is a list of additional parameters that may be necessary for some metrics.
 ## Behavioral modifiers
 
 This list of parameters that change the behavior of functions.
+- `full`: Boolean switch indicating whether a single estimate or diagnostic/partial data should be returned from an object.
 - `plot`: Boolean switch indicating whether the standard visualization of the method should be executed or not. Defaults to `FALSE`.
 - `iter`: Natural number indicating the number of iterations to be executed. Usually used for Monte-Carlo estimation-based metrics.
 
@@ -100,7 +100,7 @@ This list of parameters that change the behavior of functions.
 
 # III. Output specification 
 
-Range and shape metrics outputs objects that inherit from the `orange` class. Every `orange` class object must have at least two elements:
+The default behavior of estimators is to return a single `numeric` value for every distribution, which is the result of the argumentation `full=FALSE`. This can be switched to `TRUE`, which will make range and shape metrics output objects that inherit from the `orange` class. Every `orange` class object must have at least two elements:
 - `$estimate`: The numeric estimate calculated with the function.
 - `$plot`: An expression that can be used to plot the object
 - *partials*: Additional list elements that can be used to inspect the accuracy of the method, as well as plotting additional  ftod
@@ -132,15 +132,18 @@ The metric is implemented with the `occupancy` function.
 
 #### Overview 
 
-|    | Internal Name            | Method                 | Args                  | What it does                                         |
-|----|--------------------------|------------------------|-----------------------|------------------------------------------------------|
-| ❌ | `occupancy_coords`       | `x`: *coords*          | `tax`                 | Number of occupied coordinate pairs for every entry. |
-| ✅ | `occupancy_coords_icosa` | `x`: *coords*, `icosa` | `q`=NULL              | Number of occupied grid cells.                       |
-| ✅ | `occupancy_coords_icosa` | `x`: *coords*, `icosa` | `q`=q, `method`="min" | Expected number of occupied grid cells.              |
-| ❌ | `occupancy_coords_sfc`   | `x`: *coords*, `sf`    | `q`=NULL              | Number of occupied features.                         |
-| ❌ | `occupancy_coords_sfc`   | `x`: *coords*, `sf`    | `q`=q                 | Expected number of features.                         |
-| ❌ | `occupancy_rast_icosa`   | `x`: *rast*, `icosa`   | `threshold`=0         | Number of occupied grid cells.                       |
-| ❌ | `occupancy_rast_sfc`     | `x`: *rast*, `sf`      | `threshold`=0         | Number of occupied features.                         |
+|    | Internal Name            | Method                   | Args                  | What it does                                         |
+|----|--------------------------|--------------------------|-----------------------|------------------------------------------------------|
+| ✅ | `occupancy_coords`       | `x`: *coorddat*          | `tax`                 | Number of occupied coordinate pairs for every entry. |
+| ✅ | `occupancy_coords`       | `x`: *coorddat*, `loc`   | `tax`, `long`, `lat`  | Number of occupied localities.                       |
+| ✅ | `occupancy_coords_icosa` | `x`: *coordmat*, `icosa` | `q=1`                 | Number of occupied grid cells.                       |
+| ✅ | `occupancy_coords_icosa` | `x`: *coorddat*, `icosa` | `q=1`, `long`, `lat`  | Number of occupied grid cells.                       |
+| ❓ | `occupancy_coords_icosa` | `x`: *coordmat*, `icosa` | `q<1`, `method`="min" | Expected number of occupied grid cells.              |
+| ❓ | `occupancy_coords_icosa` | `x`: *coorddat*, `icosa` | `q<1`, `method`="min" | Expected number of occupied grid cells.              |
+| ❌ | `occupancy_coords_sfc`   | `x`: *coordmat*, `sf`    | `q=1`                 | Number of occupied features.                         |
+| ❌ | `occupancy_coords_sfc`   | `x`: *coordmat*, `sf`    | `q=q`                 | Expected number of features.                         |
+| ❌ | `occupancy_rast_icosa`   | `x`: *rast*, `icosa`     | `threshold`=0         | Number of occupied grid cells.                       |
+| ❌ | `occupancy_rast_sfc`     | `x`: *rast*, `sf`        | `threshold`=0         | Number of occupied features.                         |
 
 
 #### Occupied grid cells in an icosahedral grid based on point data
@@ -149,7 +152,7 @@ Returns the number of occupied grid cells in an icosahedral grid.
 
 | Field     | Value                                                                               |
 |-----------|-------------------------------------------------------------------------------------|
-| Usage     | `occupancy(x=coords, s=igrid)`                                                      |
+| Usage     | `occupancy(x=coordmat, s=icosa)`                                                      |
 | Internal  | `occupancy_coords_icosa`                                                            |
 | Return    | `$estimate`: the number of grid cells occupied, `$cells`: The IDs of occupied cells |
 | Test case | `pinna` and `hexagrid(deg=5)`                                                       |

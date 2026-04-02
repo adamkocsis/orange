@@ -27,4 +27,3 @@ expect_equal(class(occup_coll), "numeric")
 
 # expect errors
 expect_error(occup_coll <- occupancy(corals))
-
