@@ -30,7 +30,7 @@ The functions of the package are dependent on geographic discretization structur
 ## Example
 
 
-```{r pinna, include=FALSE}
+```{r pinnaFa, include=FALSE}
 library(orange)
 
 # background map
@@ -108,14 +108,9 @@ mst <- mstlength(coords, plot=TRUE, plot.args=list(lwd=3))
 mgcd
 ```
 
-```{r mgcd}
+```{r occ}
 # Occupancy count 
 occ
-```
-
-```{r mgcd}
-# Minimum spanning tree length 
-mst
 ```
 
 

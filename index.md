@@ -1,7 +1,7 @@
 
 # orange <img src="man/figures/logo.png" align="right" />
 
-[![](https://img.shields.io/badge/devel%20version-0.1.0--1-green.svg)](https://github.com/adamkocsis/orange)
+[![](https://img.shields.io/badge/devel%20version-0.1.0--3-green.svg)](https://github.com/adamkocsis/orange)
 [![](https://www.r-pkg.org/badges/version/orange?color=blue)](https://cran.r-project.org/package=orange)
 [![](http://cranlogs.r-pkg.org/badges/grand-total/orange?color=yellow)](https://cran.r-project.org/package=orange)
 [![CRAN
@@ -40,12 +40,16 @@ ne <- fetch("NaturalEarth", verbose=FALSE)
 
 # some example raw data (Pinna nobilis from OBIS)
 data(pinna)
-coords <- unique(pinna[, c("decimallongitude", "decimallatitude")]) # only coords
-colnames(coords) <- c("long", "lat") # rename to standard
-coords <- coords[-855, ] # omit anomaly 
+# only coords
+coords <- unique(pinna[, c("decimallongitude", "decimallatitude")]) 
+# rename to standard
+colnames(coords) <- c("long", "lat") 
+# omit anomaly 
+coords <- coords[-855, ] 
 
 # basic plot
-plot(ne$geometry, reset=FALSE, xlim=c(-15, 40), ylim=c(30, 50), col="#ffe7ba", border=NA)
+plot(ne$geometry, reset=FALSE, xlim=c(-15, 40), ylim=c(30, 50),
+    col="#ffe7ba", border=NA)
 points(coords, pch=3, col="#5d7327", cex=2)
 
 # Maximum great circle distance
@@ -60,6 +64,25 @@ mst <- mstlength(coords, plot=TRUE, plot.args=list(lwd=3))
 ```
 
 <img src="man/figures/range_example.png" alt="Equirectangular projection of the globe, showing some range calculation methods using the Pinna example dataset.">
+
+``` r
+# Maximum great circle distance
+mgcd
+```
+
+    ## $estimate
+    ## [1] 3452.84
+    ## 
+    ## $index
+    ##      row col
+    ## [1,] 786 851
+
+``` r
+# Occupancy count 
+occ
+```
+
+    ## [1] 23
 
 ------------------------------------------------------------------------
 
@@ -111,40 +134,41 @@ as generic functions, which have dedicated sections in the
 he metrics in this section define ways to derive the extent or **range**
 of an input strucutre.
 
-| In | Method | Abstract Description |
-|----|----|----|
-| ✅ | [Occupancy]() | The number of occupied elements in a pre-defined spatially discretized structure. |
-| ✅ | [Maximum Distance]() | The longest distance that can be observed in a data-structure. The default method for this metric is the **Maximum Great Circle Distance**. |
-| ✅ | [Fixed radius]() | The longest distance that can be constructed between any member of a point-cloud and a fixed point. The default method for this metric is the **Centroid radius**. |
-| ✅ | [Latitudinal range]() | The zonal distance between the northernmost and southernmost point of a spatial strucutre. |
-| ❌ | [Zonal area]() | The area of the zone (latitudinal belt) covered by a spatial structure - calculated from the Latitudinal Range. |
-| ✅ | [Minimum Spanning Tree Length]() | The total length of the spanning tree constructed within a spatial object (default to using the great circle distance matrix). |
-| ❌ | [Hull Area]() | The area of a hull (enclosing polygon) constructed around a distribution, the most commonly used is the **Convex hull**. |
-| ❌ | [Circle Area]() | The area of a shape that divides the sphere in two based on a single small circle. |
+| In  | Method                           | Abstract Description                                                                                                                                               |
+|-----|----------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| ✅  | [Occupancy]()                    | The number of occupied elements in a pre-defined spatially discretized structure.                                                                                  |
+| ✅  | [Maximum Distance]()             | The longest distance that can be observed in a data-structure. The default method for this metric is the **Maximum Great Circle Distance**.                        |
+| ✅  | [Fixed radius]()                 | The longest distance that can be constructed between any member of a point-cloud and a fixed point. The default method for this metric is the **Centroid radius**. |
+| ✅  | [Latitudinal range]()            | The zonal distance between the northernmost and southernmost point of a spatial strucutre.                                                                         |
+| ❌  | [Zonal area]()                   | The area of the zone (latitudinal belt) covered by a spatial structure - calculated from the Latitudinal Range.                                                    |
+| ✅  | [Minimum Spanning Tree Length]() | The total length of the spanning tree constructed within a spatial object (default to using the great circle distance matrix).                                     |
+| ❌  | [Hull Area]()                    | The area of a hull (enclosing polygon) constructed around a distribution, the most commonly used is the **Convex hull**.                                           |
+| ❌  | [Circle Area]()                  | The area of a shape that divides the sphere in two based on a single small circle.                                                                                 |
 
 ### Structure definers
 
 These methods define and structures constructed from the input data,
 which are used in subsequent calculations.
 
-| In | Method | Abstract Description |
-|----|----|----|
-| ❌ | Hull | Defines a hull, i.e. and enclosing spherical polygon. |
-| ✅ | Patches | Identifies occupied, unconnected patches or islands in the distribution |
-| ✅ | Holes | Identified unoccupied, unconnected patches or islands (i.e. holes) the distribution distribution |
-| ❌ | Circle | Defines a spherical circle (small or great) around a distribution structure. |
-| ❌ | Ellipse | Defines a spherical ellipse around a distribution structure. |
+| In  | Method        | Abstract Description                                                                             |
+|-----|---------------|--------------------------------------------------------------------------------------------------|
+| ❌  | Triangulation | Spherical triangulation of a given pointset.                                                     |
+| ❌  | Hull          | Defines a hull, i.e. and enclosing spherical polygon.                                            |
+| ✅  | Patches       | Identifies occupied, unconnected patches or islands in the distribution                          |
+| ✅  | Holes         | Identified unoccupied, unconnected patches or islands (i.e. holes) the distribution distribution |
+| ❌  | Circle        | Defines a spherical circle (small or great) around a distribution structure.                     |
+| ❌  | Ellipse       | Defines a spherical ellipse around a distribution structure.                                     |
 
 ### Location and shape esimators
 
-| In | Method | Abstract Description |
-|----|----|----|
-| ✅ | Centroid | The center point of distribution on the surface of Earth. |
-| ❌ | Gappiness | The proportion of unoccupied vs. total spatial units in a distribution within a constructed spatial structure, e.g. a hull. |
-| ❌ | Filling | The proportion of unoccupied vs. total spatial units in a distribution within a constructed spatial structure, e.g. a hull. |
-| ✅ | Number of patches | The number of occupied patches of area for the distribution sample. |
-| ✅ | Number of holes | The number of enclosed holes for the distribution sample. |
-| ❌ | Eccentricity | The eccentricity of an ellipse calculated from the distribution sample. |
+| In  | Method            | Abstract Description                                                                                                        |
+|-----|-------------------|-----------------------------------------------------------------------------------------------------------------------------|
+| ✅  | Centroid          | The center point of distribution on the surface of Earth.                                                                   |
+| ❌  | Gappiness         | The proportion of unoccupied vs. total spatial units in a distribution within a constructed spatial structure, e.g. a hull. |
+| ❌  | Filling           | The proportion of unoccupied vs. total spatial units in a distribution within a constructed spatial structure, e.g. a hull. |
+| ✅  | Number of patches | The number of occupied patches of area for the distribution sample.                                                         |
+| ✅  | Number of holes   | The number of enclosed holes for the distribution sample.                                                                   |
+| ❌  | Eccentricity      | The eccentricity of an ellipse calculated from the distribution sample.                                                     |
 
 ### High-level interface functions
 
@@ -152,8 +176,8 @@ which are used in subsequent calculations.
 
 ### Auxilliary/Utility functions
 
-| Method | Abstract Description | TODO |
-|----|----|----|
+| Method                       | Abstract Description                                     | TODO           |
+|------------------------------|----------------------------------------------------------|----------------|
 | Graph distance (`graphdist`) | Calculate the distance matrix for a grid, and a bunch of | Move to icosa? |
 
 ------------------------------------------------------------------------
