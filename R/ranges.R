@@ -216,63 +216,6 @@ chullsphere<- function(coordMat, plot=FALSE, plot.args=NULL){
 }
 
 
-################################################################################
-# Great Circle distances
-################################################################################
-
-#' Calculate range with the maximum great-circle method
-#'
-#' @param coordMat 2D numeric matrix with two columns: longitudes and latitudes.
-#' @param dm If there is a pre-made distance matrix, it can be plugged in here.
-#' @param plot Logical, should the result be plotted? Will plot over active plot (as in \code{add=TRUE}).
-#' @param plot.args List arguments passed to the plotting function: \code{sf::plot}.
-#' @return A list with an estimate an two indices the rows of the input matrix that represent the longest great circle (or one of them).
-#' @export
-#' @examples
-#' # 1. Canvas
-#' hex <- hexagrid(deg=5, sf=TRUE)
-#' plot(hex, reset=FALSE, xlim=c(-15, 40), ylim=c(25, 63))
-#'
-#' # 2. Records
-#' data(pinna)
-#'
-#' # just the coordinates
-#' coordMat <- SimpleCoordinates(pinna, long="decimallongitude", lat="decimallatitude")
-#' points(coordMat)
-#'
-#' # 3. calculate and visualize
-#' mgcd <- mgcd(coordMat, plot=TRUE)
-#'
-#' # single line visualization
-#' # lines(coordMat[mgcd$index, ])
-mgcd <- function(coordMat, dm=NULL, plot=FALSE, plot.args=NULL){
-
-	# calculate the distance matrix
-	if(is.null(dm)) dm <- icosa::arcdistmat(coordMat)
-
-	# between which points is this observed - technically this can be between more than one pair!
-	logMat <- dm==max(dm, na.rm=TRUE)
-	where <- which(logMat, arr.ind=TRUE)
-	for(i in 1:nrow(where)){
-		where[i, ] <- sort(where[i, ])
-	}
-	where <- unique(where)
-
-	# subset
-	result <- list(
-		estimate=max(dm),
-		index = where
-	)
-
-	if(plot){
-		if(is.null(plot.args)) plot.args <- list(col="#550000", lwd=3)
-		arguments <- c(list(x=coordMat[where, ]), plot.args)
-		do.call(icosa::arcs, arguments)
-	}
-
-	return(result)
-
-}
 
 #' Calculate range with the centroid-radius method
 #'
