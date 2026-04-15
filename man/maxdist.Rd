@@ -39,13 +39,15 @@ mgcd(x, ...)
 \arguments{
 \item{x}{Either a 2D numeric \code{matrix} with two columns: longitudes and latitudes, a \code{data.frame} with the same information.}
 
-\item{icosa}{An icosahedral grid object the inherits from the \code{trigrid} class. Providing this argumnet reduces the point cloud to the centers of the grid cells.}
+\item{icosa}{An icosahedral grid object the inherits from the \code{trigrid} class. Providing this argumnet reduces the point cloud to the centers of the grid cells. (not yet)}
 
 \item{dm}{If there is a pre-made distance matrix, it can be plugged in here. If this is provided, the default coordinates will not be used.}
 
 \item{long}{\code{character}, column name of the longitudes.}
 
 \item{lat}{\code{character}, column name of the latitudes.}
+
+\item{duplicates}{\code{logical}, should identical coordinates be included in the calculation (default is \code{FALSE})}
 
 \item{plot}{Logical, should the result be plotted? Will plot over active plot (as in \code{add=TRUE}).}
 
@@ -68,18 +70,14 @@ This metrics includes maximum great circle distance and similar methods.
 }
 \examples{
 # 1. Canvas to plot on
+hex <- hexagrid(4, sf=TRUE)
 plot(hex, reset=FALSE, xlim=c(-15, 40), ylim=c(25, 63))
 
 # 2. Records
 data(pinna)
-
-# just the coordinates
-coordMat <- SimpleCoordinates(pinna, long="decimallongitude", lat="decimallatitude")
-points(coordMat)
+points(pinna[, c("decimallongitude","decimallatitude")])
 
 # 3. calculate and visualize
-mgcd <- mgcd(coordMat, plot=TRUE)
+mgcd <- maxdist(pinna, long="decimallongitude", lat="decimallatitude", plot=TRUE, full=TRUE)
 
-# single line visualization
-# lines(coordMat[mgcd$index, ])
 }

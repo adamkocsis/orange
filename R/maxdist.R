@@ -12,31 +12,28 @@
 #' @param long \code{character}, column name of the longitudes.
 #' @param lat \code{character}, column name of the latitudes.
 #' @param tax \code{character}, used only in the \code{data.frame} method. Column name of groups (e.g. taxa) that allows the iteration of the method for multiple groups.
+#' @param duplicates \code{logical}, should identical coordinates be included in the calculation (default is \code{FALSE})
 #' @param q \code{numeric}, a value between 0 and 1, the quantile. 
 #' @param dm If there is a pre-made distance matrix, it can be plugged in here. If this is provided, the default coordinates will not be used.
 #' @param full \code{logical}, should only the estimate (\code{FALSE}) be returned, or additional data as well?(\code{TRUE}).
 #' @param plot Logical, should the result be plotted? Will plot over active plot (as in \code{add=TRUE}).
-#' @param icosa An icosahedral grid object the inherits from the \code{trigrid} class. Providing this argumnet reduces the point cloud to the centers of the grid cells.
+#' @param icosa An icosahedral grid object the inherits from the \code{trigrid} class. Providing this argumnet reduces the point cloud to the centers of the grid cells. (not yet)
 #' @param plot.args List arguments passed to the plotting function: \code{sf::plot}.
 #' @return A list with an estimate an two indices the rows of the input matrix that represent the longest great circle (or one of them).
 #' @export
 #' @rdname maxdist 
 #' @examples
 #' # 1. Canvas to plot on
+#' hex <- hexagrid(4, sf=TRUE)
 #' plot(hex, reset=FALSE, xlim=c(-15, 40), ylim=c(25, 63))
 #'
 #' # 2. Records
 #' data(pinna)
-#'
-#' # just the coordinates
-#' coordMat <- SimpleCoordinates(pinna, long="decimallongitude", lat="decimallatitude")
-#' points(coordMat)
+#' points(pinna[, c("decimallongitude","decimallatitude")])
 #'
 #' # 3. calculate and visualize
-#' mgcd <- mgcd(coordMat, plot=TRUE)
+#' mgcd <- maxdist(pinna, long="decimallongitude", lat="decimallatitude", plot=TRUE, full=TRUE)
 #'
-#' # single line visualization
-#' # lines(coordMat[mgcd$index, ])
 setGeneric(
 	name="maxdist",
 	package="orange",
