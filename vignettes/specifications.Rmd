@@ -195,12 +195,20 @@ The method is implemented with the `maxdist` function. For convenience, the alia
 
 #### Overview
 
-|    | Internal Name    | Method                         | Args                  | What it does                                                   |
-|----|------------------|--------------------------------|-----------------------|----------------------------------------------------------------|
-| ✅ | `maxdist_coords` | `x`: *coordmat*                | `q=1`                 | The maximum great circle distance in a point set.              |
-| ✅ | `maxdist_coords` | `x`: *coorddat*                | `q=1`,  `long`, `lat` | The maximum great circle distance in a point set `data.frame`. |
-| ❌ | `maxdist_coords` | `x`=coords, `dm`=NULL, `q`=*q* |                       | Quantile great circle distance                                 |
-| ❌ | `maxdist_coords` | `x`=coords, `dm`=dm, `q`=*q*   |                       | Quantile great circle in a pre-defined distance matrix         |
+|    | Internal Name    | Method                      | Args                    | What it does                                                                                      |
+|----|------------------|-----------------------------|-------------------------|---------------------------------------------------------------------------------------------------|
+| ✅ | `maxdist_coords` | `x`: *coordmat*, `dm`:NULL, | `q=1`                   | The maximum great circle distance in a point set.                                                 |
+| ✅ | `maxdist_coords` | `x`: *coorddat*, `dm`:NULL, | `q=1`,  `long`, `lat`   | The maximum great circle distance in a point set `data.frame`.                                    |
+| ✅ | `maxdist_coords` | `x`: *coordmat*, `dm`:*dm*, | `q=1`                   | The maximum great circle distance in a point set with a pre-defined distance matrix.              |
+| ✅ | `maxdist_coords` | `x`: *coorddat*, `dm`:*dm*, | `q=1`,  `long`, `lat`   | The maximum great circle distance in a point set `data.frame` with a pre-defined distance matrix. |
+| ❌ | `maxdist_coords` | `x`: *coordmat*, `dm`:NULL  | `q`=*q*,                | Quantile great circle distance                                                                    |
+| ❌ | `maxdist_coords` | `x`: *coorddat*, `dm`:NULL  | `q`=*q*,  `long`, `lat` | Quantile great circle distance                                                                    |
+| ❌ | `maxdist_coords` | `x`: *coordmat*, `dm`:*dm*, | `q`=*q*,                | Quantile great circle distance in a point set with a pre-defined distance matrix.                 |
+| ❌ | `maxdist_coords` | `x`: *coorddat*, `dm`:*dm*, | `q`=*q*,  `long`, `lat` | Quantile great circle distance in a point set `data.frame` with a pre-defined distance matrix.    |
+| ❌ | `maxdist_coords` | `x`: *coordmat*, `icosa`    | `q=1`                   | The maximum great circle distance in a point set.                                                 |
+| ❌ | `maxdist_coords` | `x`: *coorddat*, `icosa`    | `q=1`,  `long`, `lat`   | The maximum great circle distance in a point set `data.frame`.                                    |
+| ❌ | `maxdist_coords` | `x`: *coordmat*, `icosa`    | `q`=*q*,                | Quantile great circle distance                                                                    |
+| ❌ | `maxdist_coords` | `x`: *coorddat*, `icosa`    | `q`=*q*,  `long`, `lat` | Quantile great circle distance                                                                    |
 
 #### Maximum Great Circle Distance with a given points
 
