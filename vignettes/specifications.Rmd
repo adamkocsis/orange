@@ -195,23 +195,23 @@ The method is implemented with the `maxdist` function. For convenience, the alia
 
 #### Overview
 
-|    | Internal Name    | Main Input                     | What it does                                           |
-|----|------------------|--------------------------------|--------------------------------------------------------|
-| ✅ | `maxdist_coords` | `x`=coords, `dm`=NULL          | The maximum great circle distance                      |
-| ✅ | `maxdist_coords` | `x`=coords, `dm`=dm            | Maximum distance in a pre-defined distance matrix      |
-| ✅ | `maxdist_coords` | `x`=coords, `dm`=NULL, `q`=*q* | Quantile great circle distance                         |
-| ✅ | `maxdist_coords` | `x`=coords, `dm`=dm, `q`=*q*   | Quantile great circle in a pre-defined distance matrix |
+|    | Internal Name    | Method                         | Args                  | What it does                                                   |
+|----|------------------|--------------------------------|-----------------------|----------------------------------------------------------------|
+| ✅ | `maxdist_coords` | `x`: *coordmat*                | `q=1`                 | The maximum great circle distance in a point set.              |
+| ✅ | `maxdist_coords` | `x`: *coorddat*                | `q=1`,  `long`, `lat` | The maximum great circle distance in a point set `data.frame`. |
+| ❌ | `maxdist_coords` | `x`=coords, `dm`=NULL, `q`=*q* |                       | Quantile great circle distance                                 |
+| ❌ | `maxdist_coords` | `x`=coords, `dm`=dm, `q`=*q*   |                       | Quantile great circle in a pre-defined distance matrix         |
 
 #### Maximum Great Circle Distance with a given points
 
 The basis for the method.
 
-| Field     | Value                                                                                |
-|-----------|--------------------------------------------------------------------------------------|
-| Usage     | `maxdist(coords)`, `mgcd(x=coords)`                                                                     |
-| Internal  | `maxdist_coords`                                                                     |
-| Return    | `$estimate`: the number of grid cells occupied, `$ids`: The IDs of occupied polygons |
-| Test case | `pinna`                                                                              |
+| Field     | Value                                                                             |
+|-----------|-----------------------------------------------------------------------------------|
+| Usage     | `maxdist(coordmat)`, `mgcd(x=coordmat)`                                           |
+| Internal  | `maxdist_coords`                                                                  |
+| Return    | `$estimate`: the number of grid cells occupied, `$where`: Indices of point pairs. |
+| Test case | `pinna`                                                                           |
 
 When the distance matrix parameter `dm` is not provided, the method will omit duplicates and calculate the Great Circle Distance Matrix with `icosa::arcdistmat`.
 
