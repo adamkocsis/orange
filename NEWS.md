@@ -20,7 +20,7 @@
 
 ## Initialization
 
-- The project was forked from 'biodome' project (v0.2.0-6) to efficiently focus on geographic range estimation. The corresponding functions were removed from that package.
+- The repo was forked from the 'biodome' project (v0.2.0-6) to efficiently focus on geographic range estimation. The corresponding functions were removed from that package.
 
 
 * * *
