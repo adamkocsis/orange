@@ -4,10 +4,30 @@ library(tinytest)
 library(divDyn)
 
 
-data(corals)
+################################################################################
+# 1. Single-taxon dataset
+################################################################################
+data(pinna)
+
+# coordinate pairs
+expect_silent(occ <- occupancy(pinna, long="decimallongitude", lat="decimallatitude"))
+
+# manually
+occRows <- nrow(unique(pinna[, c(long="decimallongitude", lat="decimallatitude")]))
+expect_equal(occ, occRows)
+
+# simple matrix solution
+expect_silent(occMat <- occupancy(as.matrix(pinna[,c("decimallongitude", "decimallatitude")])))
+expect_equal(occMat, occRows)
+
 
 ################################################################################
-# Occupancy based on coordinates
+# 2. Multi-taxon dataset
+################################################################################
+
+################################################################################
+# Occupancy based on coordinates, multiple taxa
+data(corals)
  
 # occupancy in the corals dataset
 expect_silent(occup <- occupancy(corals, tax="genus", long="lng", lat="lat"))
@@ -22,8 +42,17 @@ expect_equal(manu, occup)
 
 ################################################################################
 # Occupancy based on collections
-expect_silent(occup_coll <- occupancy(corals, tax="genus", loc="collection_no"))
+expect_error(occup_coll <- occupancy(corals, tax="genus", s="WRONG"))
+expect_silent(occup_coll <- occupancy(corals, tax="genus", s="collection_no"))
 expect_equal(class(occup_coll), "numeric")
 
-# expect errors
+# manually recreat
+core<- corals[, c("genus", "collection_no")]
+core <- unique(core[!is.na(core$genus) & !is.na(core$collection_no), ])
+tab <- table(core$genus)
+tabNum <- as.numeric(tab)
+names(tabNum) <- names(tab)
+expect_equal(occup_coll, tabNum)
+
+# expect errors, when wrong long-lat is specified
 expect_error(occup_coll <- occupancy(corals))

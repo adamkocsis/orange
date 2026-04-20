@@ -6,13 +6,15 @@ qTest <- FALSE
 
 #' Calculate ranges with the occupancy method
 #'
-#' @param coordMat 2D numeric matrix with two columns: longitudes and latitudes.
-#' @param icosa An icosahedral grid from the package icosa.
-#' @param sf An sf object (not yet!).
+#' @param x Eiher a 2-column numeric matrix with two columns: longitudes and latitudes, or a \code{data.frame} with these columns.
+#' @param s Structure to be occupied, either \code{NULL} (coordinate pairs), \code{character} (column name indicating locality) or a \code{trigrid} (icosahedral grid from the package icosa).
 #' @param plot Logical, should the result be plotted? Will plot over active plot (as in \code{add=TRUE}).
 #' @param plot.args List arguments passed to the plotting function: \code{lines}.
-#' @param alpha Minimum occupancy with \code{alpha} proportion of occurrences.
-#' @return A list with an estimate and the input for lines to show the MST.
+#' @param long \code{character}, column name of the longitudes.
+#' @param lat \code{character}, column name of the latitudes.
+#' @param q Minimum occupancy with \code{q} proportion of occurrences.
+#' @param full Logical switch indicating whether only estimate should be shown (\code{FALSE}), or other info as well.
+#' @return Either a single numeric or a list with an estimate and other information.
 #' @rdname occupancy
 #' @export
 #' @examples
@@ -23,56 +25,95 @@ qTest <- FALSE
 #' # 2. Records
 #' data(pinna)
 #'
+#' # Number of unique coordinate pairs
+#' cpairs <- occupancy(pinna, long="decimallongitude", lat="decimallatitude")
+#'
 #' # just the coordinates
-#' coordMat <- SimpleCoordinates(pinna, long="decimallongitude", lat="decimallatitude")
-#' points(coordMat)
 #'
 #' # 3. calculate and visualize
-#' occ <- occupancy(coordMat, icosa=hex, plot=TRUE)
+#' occ <- occupancy(pinna, s=hex, plot=TRUE, long="decimallongitude", lat="decimallatitude")
 #'
 #' # plot(hex, occ$cells, add=TRUE, col="green")
 setGeneric(
 	name="occupancy",
 	package="orange",
-	def=function(x, icosa, sf, ...){
+	def=function(x, s, ...){
 		standardGeneric("occupancy")
 	}
 
 )
 
+# coordinate pairs
 #' @rdname occupancy
 setMethod(
 	"occupancy",
-	signature=c(x="data.frame", icosa="missing", sf="missing"),
-	definition=function(x,tax, loc=NULL, long="long", lat="lat", duplicates=FALSE){
+	signature=c(x="matrix", s="missing"),
+	definition=function(x,tax=NULL, long=NULL, lat=NULL){
 		# if locality is given
-		if(!is.null(loc)){
-			y <- x[,c(tax, loc)]
-			if(!duplicates) y <- unique(y)
-
-		# locality not given
-		}else{
-			y <- x[,c(tax, long, lat)]
-			if(!duplicates) y <- unique(y)
-		}
-		
+		y <- x
+		if(!is.null(long) & !is.null(lat)) y <- x[,c(long, lat)]
+		 y <- unique(y)
 		# the result
-		res <- table(y[, tax])
+		resNum <- nrow(y)
+		return(resNum)
+
+	}
+)
+
+# coordinate pairs
+#' @rdname occupancy
+setMethod(
+	"occupancy",
+	signature=c(x="data.frame", s="missing"),
+	definition=function(x,tax=NULL, long="long", lat="lat"){
+
+		if(!all(c(long, lat) %in% colnames(x))) stop("The 'long' and 'lat' parameters must be valid column names.")
+		y <- x[,c(tax, long, lat)]
+		y <- unique(y)
+
+		# the result
+		if(!is.null(tax)){
+			res <- table(y[, tax])
+		}else{
+			res <- nrow(y)
+		}
 		resNum <- as.numeric(res)
 		names(resNum) <- names(res)
 				
 		return(resNum)
-	
+	}
+)
+
+# loc enries
+#' @rdname occupancy
+setMethod(
+	"occupancy",
+	signature=c(x="data.frame", s="character"),
+	definition=function(x,s, tax=NULL){
+
+		if(!any(s==colnames(x))) stop("The 'loc' argument must be a column in 'x'.")
+		y <- x[,c(tax, s)]
+		y <- unique(y)
+		# make sure that there are no NAs!
+		y <- y[!is.na(y[,tax]) & !is.na(y[,s]) , ]
+
+		# the result
+		res <- table(y[, tax])
+		resNum <- as.numeric(res)
+		names(resNum) <- names(res)
+
+		return(resNum)
+
 	}
 )
 
 #' @rdname occupancy
 setMethod(
 	"occupancy",
-	signature=c(x="matrix", icosa="trigrid", sf="missing"),
-	definition=function(x, icosa, long=NULL, lat=NULL, duplicates=FALSE, q=1, plot=FALSE, plot.args=NULL, full=FALSE){
+	signature=c(x="matrix", s="trigrid"),
+	definition=function(x, s, long=NULL, lat=NULL, q=1, plot=FALSE, plot.args=NULL, full=FALSE){
 		# if locality is given
-		if(!duplicates) x <- unique(x)
+		x <- unique(x)
 
 		# if the columns are given, make sure they are interpreted right!
 		if(!is.null(long) | !is.null(lat)) x <- x[, c(long, lat), drop=FALSE]
@@ -80,7 +121,7 @@ setMethod(
 		if(q!=1 & !qTest) stop("Feature not yet finalized!")
 
 		# invoke the internal
-		result <- occupancy_coords_icosa(x,icosa, q=q,  plot=plot, plot.args=plot.args, full=full)
+		result <- occupancy_coords_icosa(x,s, q=q,  plot=plot, plot.args=plot.args, full=full)
 
 		# return a result
 		return(result)
@@ -92,12 +133,12 @@ setMethod(
 #' @rdname occupancy
 setMethod(
 	"occupancy",
-	signature=c(x="data.frame", icosa="trigrid", sf="missing"),
-	definition=function(x, icosa, long="long", lat="lat", tax=NULL, duplicates=FALSE, q=1, plot=FALSE, plot.args=NULL, full=FALSE){
+	signature=c(x="data.frame", s="trigrid"),
+	definition=function(x, s, long="long", lat="lat", tax=NULL, q=1, plot=FALSE, plot.args=NULL, full=FALSE){
 		# the same as the matrix method
 		if(is.null(tax)){
 			x <- as.matrix(x[, c(long, lat)])
-			result <- occupancy(x, icosa=icosa, long=long, lat=lat, duplicates=duplicates,
+			result <- occupancy(x, s=s, long=long, lat=lat,
 				q=q, plot=plot, plot.args=plot.args, full=full)
 		}else{
 			result <- tapply(
@@ -107,7 +148,7 @@ setMethod(
 
 					# get rid of unnecessary recursion
 					a <- as.matrix(a)
-					result <- occupancy(a, icosa=icosa, long=long, lat=lat, duplicates=duplicates,
+					result <- occupancy(a, s=s, long=long, lat=lat,
 						q=q, plot=plot, plot.args=plot.args, full=full)
 					}
 				)
@@ -143,7 +184,7 @@ occupancy_coords_icosa <- function(x, icosa, plot=FALSE, plot.args=NULL, q=1, fu
 		cumulated <- cumsum(decreasingCells)
 
 		# the number of occurrences to consider
-		nOccs <- nrow(x)*alpha
+		nOccs <- nrow(x)*q
 
 		# which are below the cutoff
 		below <- which(cumulated < nOccs)

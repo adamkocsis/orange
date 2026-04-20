@@ -15,8 +15,8 @@ cl <- parallel::makeCluster(4, outfile="")
 parallel::clusterCall(cl, source, "orange/tests/source.R")
 
 # the online
-occupancy <- run_test_dir("orange/tests/occupancy")
-maxdist <- run_test_dir("orange/tests/maxdist")
+occupancy_results <- run_test_dir("orange/tests/occupancy")
+maxdist_results <- run_test_dir("orange/tests/maxdist")
 
 # Finish
 stopCluster(cl)

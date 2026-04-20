@@ -2,34 +2,38 @@
 % Please edit documentation in R/occupancy.R
 \name{occupancy}
 \alias{occupancy}
-\alias{occupancy,data.frame,missing,missing-method}
-\alias{occupancy,matrix,trigrid,missing-method}
-\alias{occupancy,data.frame,trigrid,missing-method}
+\alias{occupancy,matrix,missing-method}
+\alias{occupancy,data.frame,missing-method}
+\alias{occupancy,data.frame,character-method}
+\alias{occupancy,matrix,trigrid-method}
+\alias{occupancy,data.frame,trigrid-method}
 \title{Calculate ranges with the occupancy method}
 \usage{
-occupancy(x, icosa, sf, ...)
+occupancy(x, s, ...)
 
-\S4method{occupancy}{data.frame,missing,missing}(x, tax, loc = NULL, long = "long", lat = "lat", duplicates = FALSE)
+\S4method{occupancy}{matrix,missing}(x, tax = NULL, long = NULL, lat = NULL)
 
-\S4method{occupancy}{matrix,trigrid,missing}(
+\S4method{occupancy}{data.frame,missing}(x, tax = NULL, long = "long", lat = "lat")
+
+\S4method{occupancy}{data.frame,character}(x, s, tax = NULL)
+
+\S4method{occupancy}{matrix,trigrid}(
   x,
-  icosa,
+  s,
   long = NULL,
   lat = NULL,
-  duplicates = FALSE,
   q = 1,
   plot = FALSE,
   plot.args = NULL,
   full = FALSE
 )
 
-\S4method{occupancy}{data.frame,trigrid,missing}(
+\S4method{occupancy}{data.frame,trigrid}(
   x,
-  icosa,
+  s,
   long = "long",
   lat = "lat",
   tax = NULL,
-  duplicates = FALSE,
   q = 1,
   plot = FALSE,
   plot.args = NULL,
@@ -37,20 +41,24 @@ occupancy(x, icosa, sf, ...)
 )
 }
 \arguments{
-\item{icosa}{An icosahedral grid from the package icosa.}
+\item{x}{Eiher a 2-column numeric matrix with two columns: longitudes and latitudes, or a \code{data.frame} with these columns.}
 
-\item{sf}{An sf object (not yet!).}
+\item{s}{Structure to be occupied, either \code{NULL} (coordinate pairs), \code{character} (column name indicating locality) or a \code{trigrid} (icosahedral grid from the package icosa).}
+
+\item{long}{\code{character}, column name of the longitudes.}
+
+\item{lat}{\code{character}, column name of the latitudes.}
+
+\item{q}{Minimum occupancy with \code{q} proportion of occurrences.}
 
 \item{plot}{Logical, should the result be plotted? Will plot over active plot (as in \code{add=TRUE}).}
 
 \item{plot.args}{List arguments passed to the plotting function: \code{lines}.}
 
-\item{coordMat}{2D numeric matrix with two columns: longitudes and latitudes.}
-
-\item{alpha}{Minimum occupancy with \code{alpha} proportion of occurrences.}
+\item{full}{Logical switch indicating whether only estimate should be shown (\code{FALSE}), or other info as well.}
 }
 \value{
-A list with an estimate and the input for lines to show the MST.
+Either a single numeric or a list with an estimate and other information.
 }
 \description{
 Calculate ranges with the occupancy method
@@ -63,12 +71,13 @@ plot(hex, reset=FALSE, xlim=c(-15, 40), ylim=c(25, 63))
 # 2. Records
 data(pinna)
 
+# Number of unique coordinate pairs
+cpairs <- occupancy(pinna, long="decimallongitude", lat="decimallatitude")
+
 # just the coordinates
-coordMat <- SimpleCoordinates(pinna, long="decimallongitude", lat="decimallatitude")
-points(coordMat)
 
 # 3. calculate and visualize
-occ <- occupancy(coordMat, icosa=hex, plot=TRUE)
+occ <- occupancy(pinna, s=hex, plot=TRUE, long="decimallongitude", lat="decimallatitude")
 
 # plot(hex, occ$cells, add=TRUE, col="green")
 }
