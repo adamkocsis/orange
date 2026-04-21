@@ -61,7 +61,7 @@ setMethod(
 			if(is.null(plot.args)) plot.args <- list(col="#BB0000", pch=16, cex=2)
 			arguments <- c(list(x=matrix(cent, ncol=2)), plot.args)
 			# if no plots are open yet, make one!
-			if(dev.cur()==1) plot(x)
+			if(dev.cur()<=1) plot(x)
 			do.call(points, arguments)
 		}
 		return(cent)

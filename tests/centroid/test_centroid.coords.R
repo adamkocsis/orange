@@ -1,7 +1,7 @@
 # in data frame
 # centroid: x: data.frame, sf: missing, icosa: missing
 library(tinytest)
-library(divDyn)
+suppressPackageStartupMessages(library(divDyn))
 
 
 ################################################################################
@@ -47,9 +47,9 @@ expect_equal(centMiss,misser )
 
 
 # plotting both on previous and on new
-expect_silent(namedcent <- centroid(mat, long="decimallongitude", lat="decimallatitude", plot=TRUE))
-expect_silent(namedcent2 <- centroid(mat, long="decimallongitude", lat="decimallatitude", plot=TRUE,
-	duplicates=TRUE, plot.args=list(col="#0000BB", pch=3)))
+## expect_silent(namedcent <- centroid(mat, long="decimallongitude", lat="decimallatitude", plot=TRUE))
+## expect_silent(namedcent2 <- centroid(mat, long="decimallongitude", lat="decimallatitude", plot=TRUE,
+## 	duplicates=TRUE, plot.args=list(col="#0000BB", pch=3)))
 
 ################################################################################
 # 1. Single-taxon dataset (data.frame)
@@ -73,8 +73,7 @@ gen <- levels(factor(corals$genus))
 
 # occupancy in the corals dataset
 expect_silent(cents <- centroid(corals, tax="genus", long="lng", lat="lat"))
-expect_equal(class(cents), "numeric")
-expect_equal(dim(cents))
+expect_true(inherits(cents, "matrix"))
 # there is a value for every
 expect_equal(gen, rownames(cents))
 

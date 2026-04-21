@@ -18,44 +18,6 @@ SimpleCoordinates <- function(x, long="long", lat="lat"){
 }
 
 ################################################################################
-# Centroid
-################################################################################
-
-#' Calculate surface centroid of coordinates
-#'
-#' @param coordMat 2D numeric matrix with two columns: longitudes and latitudes.
-#' @param plot Logical, should the result be plotted? Will plot over active plot (as in \code{add=TRUE}).
-#' @param plot.args List arguments passed to the plotting function: \code{points}.
-#' @return A longitude and latitude value.
-#' @export
-#' @examples
-#' # 1. Canvas
-#' hex <- hexagrid(deg=5, sf=TRUE)
-#' plot(hex, reset=FALSE, xlim=c(-15, 40), ylim=c(25, 63))
-#'
-#' # 2. Records
-#' data(pinna)
-#'
-#' # just the coordinates
-#' coordMat <- SimpleCoordinates(pinna, long="decimallongitude", lat="decimallatitude")
-#' points(coordMat)
-#'
-#' # 3. calculate and visualize
-#' cent <- centroid_points(coordMat, plot=TRUE)
-#'
-#' # secondary visualization
-#' # points(cent[1], cent[2])
-centroid_points <- function(coordMat, plot=FALSE, plot.args=NULL){
-	result <- icosa::surfacecentroid(coordMat)
-	if(plot){
-		if(is.null(plot.args)) plot.args <- list(pch=4, cex=1.5, col="red")
-		arguments <- c(list(x=result[1]), list(y=result[2]), plot.args)
-		do.call("points", arguments)
-	}
-	return(result)
-}
-
-################################################################################
 # Convex hull (planar)
 ################################################################################
 

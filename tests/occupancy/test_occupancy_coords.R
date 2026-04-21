@@ -1,7 +1,7 @@
 # in data frame
 # occupancy: x: data.frame, sf: missing, icosa: missing
 library(tinytest)
-library(divDyn)
+suppressPackageStartupMessages(library(divDyn))
 
 
 ################################################################################

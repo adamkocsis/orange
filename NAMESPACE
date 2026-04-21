@@ -2,7 +2,7 @@
 
 export(SimpleCoordinates)
 export(cenrad)
-export(centroid_points)
+export(centroid)
 export(chullplane)
 export(chullsphere)
 export(circumcenter)
