@@ -17,6 +17,7 @@ parallel::clusterCall(cl, source, "orange/tests/source.R")
 # the online
 occupancy_results <- run_test_dir("orange/tests/occupancy")
 maxdist_results <- run_test_dir("orange/tests/maxdist")
+centroid_results <- run_test_dir("orange/tests/centroid")
 
 # Finish
 stopCluster(cl)
