@@ -334,9 +334,35 @@ The method calculates every point's distance to the centroid, tabulates the freq
 
 ## Additional 
 
+### Centroid
+
+Sets of funtions that calculate the surface projection (geographic coordinates) of centroid for a given geometry.
+
+#### Overview 
+
+|    | Internal Name            | Method                     | Args                 | What it does                             |
+|----|--------------------------|----------------------------|----------------------|------------------------------------------|
+| ✅ | `icosa::surfacecentroid` | `x`: *coordmat*/*coordmat* | `long`, `lat`        | Centroid coordinates of long-lat points. |
+| ✅ | `icosa::surfacecentroid` | `x`: *coorddat*            | `tax`, `long`, `lat` | Centroid coordinates of long-lat points. |
+
+
+#### Centroid coordinates of long-lat points 
+
+Returns the number of occupied coordinate pairs.
+
+| Field    | Value                                                 |
+|----------|-------------------------------------------------------|
+| Usage    | `occupancy(x=coordmat)`                          |
+| Internal | `occupancy_coords`                                    |
+| Return   | The number of occupied coordinate pairs. |
+
+- The `tax` column identifier `character` argument can be used to indicate iterated calculation for subsets.
+- The `full` argument is not applicable here, there are no intermediate data.
+- The `duplicates` argument modifies the calculation result. When set to `FALSE` (default), the duplicate coordinate entries will count as a single point in space. When set to `TRUE` the centroid will effectively be weigthed by the number of times the coordinate pair occurrs in the data, leading to slightly different results.
 
 
 
+# Old
 
 | [x] | `mgcd`       | cells, grid, q     | MGCD of cell centroids, or the great circle distance of a quantile.                       |
 | [x] | `mgcd`       | coords, q          | The maximum great circle distance of the points                                           |

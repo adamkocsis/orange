@@ -46,6 +46,10 @@ names(misser) <- c("long", "lat")
 expect_equal(centMiss,misser )
 
 
+# plotting both on previous and on new
+expect_silent(namedcent <- centroid(mat, long="decimallongitude", lat="decimallatitude", plot=TRUE))
+expect_silent(namedcent2 <- centroid(mat, long="decimallongitude", lat="decimallatitude", plot=TRUE,
+	duplicates=TRUE, plot.args=list(col="#0000BB", pch=3)))
 
 ################################################################################
 # 1. Single-taxon dataset (data.frame)
@@ -93,3 +97,8 @@ expect_silent(centsDupl <- centroid(corals, tax="genus", long="lng", lat="lat", 
 # should give a different result!!!
 expect_true(sum(abs(cents-centsDupl), na.rm=TRUE)>0)
 
+#################################################################################
+# Known issues
+
+# Multi-taxon plotting is not there yet
+expect_warning(centsDupl <- centroid(corals, tax="genus", long="lng", lat="lat", duplicates=TRUE, plot=TRUE))

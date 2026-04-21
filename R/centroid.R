@@ -7,12 +7,12 @@ qTest <- FALSE
 #' Calculate ranges with the occupancy method
 #'
 #' @param x Eiher a 2-column numeric matrix with two columns: longitudes and latitudes, or a \code{data.frame} with these columns.
-#' @param plot Logical, should the result be plotted? Will plot over active plot (as in \code{add=TRUE}).
-#' @param plot.args List arguments passed to the plotting function: \code{lines}.
+#' @param plot Logical, should the result be plotted? Will plot over active plot (as in \code{add=TRUE}), if here is any.
+#' @param tax \code{character}, used only in the \code{data.frame} method. Column name of groups (e.g. taxa) that allows the iteration of the method for multiple groups.
+#' @param plot.args List arguments passed to the plotting function: \code{points}.
 #' @param long \code{character}, column name of the longitudes.
 #' @param lat \code{character}, column name of the latitudes.
 #' @param q Minimum occupancy with \code{q} proportion of occurrences.
-#' @param full Logical switch indicating whether only estimate should be shown (\code{FALSE}), or other info as well.
 #' @return Either a single numeric or a list with an estimate and other information.
 #' @rdname occupancy
 #' @export
@@ -42,7 +42,7 @@ setGeneric(
 setMethod(
 	"centroid",
 	signature=c(x="matrix"),
-	definition=function(x,long=NULL,lat=NULL, duplicates=FALSE){
+	definition=function(x,long=NULL,lat=NULL, duplicates=FALSE, plot=FALSE, plot.args=NULL){
 		# if locality is given
 		if(!is.null(long) & !is.null(lat)) x <- x[,c(long, lat), drop=FALSE]
 		if(!duplicates) x <- unique(x)
@@ -57,6 +57,13 @@ setMethod(
 			cent <- c(NA, NA)
 			names(cent) <- c("long", "lat")
 		}
+		if(plot){
+			if(is.null(plot.args)) plot.args <- list(col="#BB0000", pch=16, cex=2)
+			arguments <- c(list(x=matrix(cent, ncol=2)), plot.args)
+			# if no plots are open yet, make one!
+			if(dev.cur()==1) plot(x)
+			do.call(points, arguments)
+		}
 		return(cent)
 	}
 )
@@ -66,7 +73,7 @@ setMethod(
 setMethod(
 	"centroid",
 	signature=c(x="data.frame"),
-	definition=function(x,tax=NULL, long="long", lat="lat", duplicates=FALSE){
+	definition=function(x,tax=NULL, long="long", lat="lat", duplicates=FALSE, plot=FALSE, plot.args=NULL){
 
 		if(!all(c(long, lat) %in% colnames(x))) stop("The 'long' and 'lat' parameters must be valid column names.")
 		x <- x[,c(tax, long, lat)]
@@ -74,9 +81,10 @@ setMethod(
 
 		# the result
 		if(!is.null(tax)){
+			if(plot) warning("Multi-taxon plotting is not yet supported.")
 			# iterate with tapply
 			resRaw <- tapply(X=x[, c(long,lat)], INDEX=x[,tax], FUN=function(a){
-				centroid(as.matrix(a), duplicates=duplicates)
+				centroid(as.matrix(a), duplicates=duplicates, plot=FALSE, plot.args=NULL)
 			})
 
 			#make this palateable...
@@ -87,32 +95,10 @@ setMethod(
 
 		}else{
 			# fall back to matrix method
-			res <- centroid(as.matrix(x), duplicates=duplicates)
+			res <- centroid(as.matrix(x), duplicates=duplicates, plot=plot, plot.args=plot.args)
 		}
 
 		return(res)
 	}
 )
 
-## # loc enries
-## #' @rdname occupancy
-## setMethod(
-## 	"occupancy",
-## 	signature=c(x="data.frame", s="character"),
-## 	definition=function(x,s, tax=NULL){
-
-## 		if(!any(s==colnames(x))) stop("The 'loc' argument must be a column in 'x'.")
-## 		y <- x[,c(tax, s)]
-## 		y <- unique(y)
-## 		# make sure that there are no NAs!
-## 		y <- y[!is.na(y[,tax]) & !is.na(y[,s]) , ]
-
-## 		# the result
-## 		res <- table(y[, tax])
-## 		resNum <- as.numeric(res)
-## 		names(resNum) <- names(res)
-
-## 		return(resNum)
-
-## 	}
-## )
