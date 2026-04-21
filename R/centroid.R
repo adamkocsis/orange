@@ -44,41 +44,55 @@ setMethod(
 	signature=c(x="matrix"),
 	definition=function(x,long=NULL,lat=NULL, duplicates=FALSE){
 		# if locality is given
-		y <- x
-		if(!is.null(long) & !is.null(lat)) y <- x[,c(long, lat)]
-		if(duplicates) y <- unique(y)
+		if(!is.null(long) & !is.null(lat)) x <- x[,c(long, lat), drop=FALSE]
+		if(!duplicates) x <- unique(x)
 		# omit missing
-		y <- y[!is.na(y[,1]) & !is.na(y[,2]), ]
+		notMiss <- !is.na(x[,1]) & !is.na(x[,2])
+		if(sum(notMiss)!=0){
+			x <- x[notMiss, , drop=FALSE]
 
-		# the result
-		cent <- icosa::surfacecentroid(y)
+			# the result
+			cent <- icosa::surfacecentroid(x)
+		}else{
+			cent <- c(NA, NA)
+			names(cent) <- c("long", "lat")
+		}
 		return(cent)
 	}
 )
 
-## # coordinate pairs
-## #' @rdname centroid
-## setMethod(
-## 	"centroid",
-## 	signature=c(x="data.frame"),
-## 	definition=function(x,tax=NULL, long="long", lat="lat", duplicates=FALSE){
+# coordinate pairs
+#' @rdname centroid
+setMethod(
+	"centroid",
+	signature=c(x="data.frame"),
+	definition=function(x,tax=NULL, long="long", lat="lat", duplicates=FALSE){
 
-## 		if(!all(c(long, lat) %in% colnames(x))) stop("The 'long' and 'lat' parameters must be valid column names.")
-## 		y <- x[,c(tax, long, lat)]
-## 		if(duplicates) y <- unique(y)
+		if(!all(c(long, lat) %in% colnames(x))) stop("The 'long' and 'lat' parameters must be valid column names.")
+		x <- x[,c(tax, long, lat)]
+		if(!duplicates) x <- unique(x)
 
-## 		# the result
-## 		if(!is.null(tax)){
-## 			res <- table(y[, tax])
-## 		}else{
-## 			res <- nrow(y)
-## 		}
-## 		resNum <- as.numeric(res)
-## 		names(resNum) <- names(res)
+		# the result
+		if(!is.null(tax)){
+			# iterate with tapply
+			resRaw <- tapply(X=x[, c(long,lat)], INDEX=x[,tax], FUN=function(a){
+				centroid(as.matrix(a), duplicates=duplicates)
+			})
 
-## 		return(resNum)
-## 	}
-## )
+			#make this palateable...
+			res <- matrix(NA, ncol=2, nrow=length(resRaw))
+			rownames(res) <- names(resRaw)
+			colnames(res) <- names(resRaw[[1]])
+			for(i in 1:length(resRaw)) res[i,] <- resRaw[[i]]
+
+		}else{
+			# fall back to matrix method
+			res <- centroid(as.matrix(x), duplicates=duplicates)
+		}
+
+		return(res)
+	}
+)
 
 ## # loc enries
 ## #' @rdname occupancy
