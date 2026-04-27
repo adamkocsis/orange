@@ -32,36 +32,35 @@ latrange(x, ...)
 )
 }
 \arguments{
-\item{x}{Eiher a 2-column numeric matrix with two columns: longitudes and latitudes, or a \code{data.frame} with these columns.}
+\item{x}{Either a 2D numeric \code{matrix} with two columns: longitudes and latitudes, a \code{data.frame} with the same information.}
 
 \item{long}{\code{character}, column name of the longitudes.}
 
 \item{lat}{\code{character}, column name of the latitudes.}
 
-\item{q}{Minimum occupancy with \code{q} proportion of occurrences.}
+\item{q}{\code{numeric}, a value between 0 and 1, the quantile.}
+
+\item{duplicates}{\code{logical}, should identical coordinates be included in the calculation (default is \code{FALSE})}
 
 \item{plot}{Logical, should the result be plotted? Will plot over active plot (as in \code{add=TRUE}), if here is any.}
 
-\item{plot.args}{List arguments passed to the plotting function: \code{points}.}
+\item{plot.args}{List arguments passed to the plotting function: \code{sf::plot}.}
 
 \item{tax}{\code{character}, used only in the \code{data.frame} method. Column name of groups (e.g. taxa) that allows the iteration of the method for multiple groups.}
 }
 \value{
-Either a single numeric or a list with an estimate and other information.
+Either a single numeric or a list with an estimate and other information. If iterated using `tax`, then either a named vector or list of lists.
 }
 \description{
 Calculate latitudinal ranges
 }
 \examples{
-# 1. Canvas
-hex <- hexagrid(deg=3, sf=TRUE)
-plot(hex, reset=FALSE, xlim=c(-15, 40), ylim=c(25, 63))
-
-# 2. Records
+# 1. Records
 data(pinna)
+plot(pinna[c("decimallongitude", "decimallatitude")], pch=16, col="#00BBAA66")
 
 # Number of unique coordinate pairs
-cent <- centroid(pinna, long="decimallongitude", lat="decimallatitude")
+lr <- latrange(pinna, long="decimallongitude", lat="decimallatitude", full=TRUE)
 
-points(cent, col="darkred", pch=3, lwd=4, cex=4)
+abline(h=lr$range, col="darkred", lty=3, lwd=4)
 }

@@ -1,6 +1,6 @@
 # Change log of the R package 'orange'
 
-# orange 0.1.0-5 - 2026-04-21
+# orange 0.1.0-6 - 2026-04-27
 
 ## Added
 
@@ -12,15 +12,16 @@
 
 - Omitted most likely irrelevant functions (based on an initial screening.
 - Omitted `ranges_` prefix from range calculation functions. 
-- Refactored functions
+- Refactored functions and standardized interface.
 
-## Known Missing
+## Known Missing 
 
+- `plot=TRUE` for `data.frame` methods when a metric is iterated with `tax` 
 - `maxdist` with `tax` entry and either `full=TRUE` or `dm!=NULL` 
 
 ## Initialization
 
-- The repo was forked from the 'biodome' project (v0.2.0-6) to efficiently focus on geographic range estimation. The corresponding functions were removed from that package.
+- The package was forked from the 'biodome' project (v0.2.0-6) to efficiently focus on geographic range estimation. The corresponding functions were removed from that package.
 
 
 * * *

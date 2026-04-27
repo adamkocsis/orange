@@ -6,28 +6,29 @@ qTest <- FALSE
 
 #' Calculate latitudinal ranges
 #'
-#' @param x Eiher a 2-column numeric matrix with two columns: longitudes and latitudes, or a \code{data.frame} with these columns.
-#' @param plot Logical, should the result be plotted? Will plot over active plot (as in \code{add=TRUE}), if here is any.
-#' @param tax \code{character}, used only in the \code{data.frame} method. Column name of groups (e.g. taxa) that allows the iteration of the method for multiple groups.
-#' @param plot.args List arguments passed to the plotting function: \code{points}.
+#' @param x Either a 2D numeric \code{matrix} with two columns: longitudes and latitudes, a \code{data.frame} with the same information.
 #' @param long \code{character}, column name of the longitudes.
 #' @param lat \code{character}, column name of the latitudes.
-#' @param q Minimum occupancy with \code{q} proportion of occurrences.
-#' @return Either a single numeric or a list with an estimate and other information.
+#' @param tax \code{character}, used only in the \code{data.frame} method. Column name of groups (e.g. taxa) that allows the iteration of the method for multiple groups.
+#' @param duplicates \code{logical}, should identical coordinates be included in the calculation (default is \code{FALSE})
+#' @param q \code{numeric}, a value between 0 and 1, the quantile.
+#' @param plot Logical, should the result be plotted? Will plot over active plot (as in \code{add=TRUE}), if here is any.
+#' @param plot.args List arguments passed to the plotting function: \code{points}.
+#' @param plot.args List arguments passed to the plotting function: \code{sf::plot}.
+#' @param long \code{character}, column name of the longitudes.
+#' @param lat \code{character}, column name of the latitudes.
+#' @return Either a single numeric or a list with an estimate and other information. If iterated using `tax`, then either a named vector or list of lists.
 #' @rdname latrange
 #' @export
 #' @examples
-#' # 1. Canvas
-#' hex <- hexagrid(deg=3, sf=TRUE)
-#' plot(hex, reset=FALSE, xlim=c(-15, 40), ylim=c(25, 63))
-#'
-#' # 2. Records
+#' # 1. Records
 #' data(pinna)
+#' plot(pinna[c("decimallongitude", "decimallatitude")], pch=16, col="#00BBAA66")
 #'
 #' # Number of unique coordinate pairs
-#' cent <- centroid(pinna, long="decimallongitude", lat="decimallatitude")
+#' lr <- latrange(pinna, long="decimallongitude", lat="decimallatitude", full=TRUE)
 #'
-#' points(cent, col="darkred", pch=3, lwd=4, cex=4)
+#' abline(h=lr$range, col="darkred", lty=3, lwd=4)
 setGeneric(
 	name="latrange",
 	package="orange",

@@ -126,7 +126,7 @@ There are three tiers of functions:
 
 ## 1. Range/extent esimators 
 
-### Occupancy
+### Occupancy - `occupancy`
 
 The metric is implemented with the `occupancy` function.
 
@@ -218,7 +218,7 @@ The original definition for occupancy. Executes an intersection join, and calcul
 The `sf`-method invokes the `sfc` method.
 
 
-### Maximum Distance
+### Maximum Distance - `maxdist`
 
 The method is implemented with the `maxdist` function. For convenience, the alias `mgcd` is also provided.
 
@@ -278,7 +278,48 @@ The visualization of the method is based on a histogram.
 
 * * *
 
-### Fixed radius
+### Latitudinal range - `latrange`
+
+#### Overview
+
+|    | Internal Name | Method             | Args                                | What it does                                          |
+|----|---------------|--------------------|-------------------------------------|-------------------------------------------------------|
+| ✅ | `range`       | `x`: *coordmat*    | `q=1`, `long`, `lat`                | Latitudinal range of a long-lat point cloud.          |
+| ✅ | `range`       | `x`: *coorddat*,   | `q=1`, `tax` , `long`, `lat`        | Latitudinal range of a long-lat point cloud.          |
+| ❌ | `range`       | `x`: *coordmat*,   | `q<1`, `long`, `lat`                | Quantile latitudinal range of a long-lat point cloud. |
+| ❌ | `range`       | `x`: *coorddat*,   | `q<1`, `tax` , `long`, `lat`        | Quantile latitudinal range of a long-lat point cloud. |
+| ❌ | `range`       | `x`: *SpatRaster*, | `q=1`, `long`, `lat`, `threshold=0` | Latitudinal range of an `SpatRaster`.                 |
+| ❌ | `range`       | `x`: *sf-points*,  | `q=1`, `long`, `lat`                | Latitudinal range of an `sf` point cloud.               |
+
+
+#### Latitudinal range of a long-lat point cloud
+
+Returns the latitudinal range of a single longitude-latitude point cloud.
+
+| Field     | Value                                                                                        |
+|-----------|----------------------------------------------------------------------------------------------|
+| Usage     | `occupancy(x=coordmat)`                                                                      |
+| Internal  | `range`                                                                                      |
+| Return    | `$estimate`: the number of occupied coordinate pairs, `$range`: minimum and maximum longiude |
+| Test case | `pinna`, `divDyn::corals`                                                                   |
+
+- `duplicates` have no effect when `q=1`
+
+#### Latitudinal range of a long-lat point cloud (`data.frame`)
+
+Returns the latitudinal range of a single or multiple longitude-latitude point cloud(s).
+
+| Field     | Value                                                                                        |
+|-----------|----------------------------------------------------------------------------------------------|
+| Usage     | `occupancy(x=coorddf)`                                                                       |
+| Internal  | `range`                                                                                      |
+| Return    | `$estimate`: the number of occupied coordinate pairs, `$range`: minimum and maximum longiude |
+| Test case | `pinna`, `divDyn::corals`                                                                    |
+
+- Use `tax` to iterate for multiple taxa. 
+
+
+### Fixed radius - `fixrad`
 
 The generic of this metric is the `fixrad` function. For convenience, the alias `` is also provided. This metric is similar to the Maximum Distance, but instead of calculating a full distance matrix, distances compared to a single point are assessed. This point defaults to the centroid.
 
@@ -312,16 +353,6 @@ The method calculates every point's distance to the centroid, tabulates the freq
 | Return    | `$estimate`: the distance calculated, `$index`: which coordinate is the farthest from the centroid. |
 | Test case | `pinna`                                                                                             |
 
-### Latitudinal range
-
-#### Overview
-
-| In | Internal Name     | Main Input         | What it does                                       |
-|----|-------------------|--------------------|----------------------------------------------------|
-| ✅ | `latrange_coords` | `x`=coords         | The latitutdinal range of the point cloud.         |
-| ❌ | `latrange_coords` | `x`=coords `q`=*q* | The quantile latitudinal range of the point cloud. |
-
-#### Latitudinal range of a point cloud
 
 ### Zonal area
 
