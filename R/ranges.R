@@ -252,52 +252,7 @@ cenrad <- function(coordMat, centroid=centroid_points(coordMat), plot=FALSE, plo
 	return(result)
 
 }
-################################################################################
-# Latitudinal range
-################################################################################
 
-#' Calculate latitudinal range
-#'
-#' @param coordMat 2D numeric matrix with two columns: longitudes and latitudes.
-#' @param plot Logical, should the result be plotted? Will plot over active plot (as in \code{add=TRUE}).
-#' @param plot.args List arguments passed to the plotting function: \code{sf::plot}.
-#' @return A list with an estimate and two latitudes: the minimum (southernmost) and maximum (northernmost) latitude.
-#' @export
-#' @examples
-#' # 1. Canvas
-#' hex <- hexagrid(deg=5, sf=TRUE)
-#' plot(hex, reset=FALSE, xlim=c(-15, 40), ylim=c(25, 63))
-#'
-#' # 2. Records
-#' data(pinna)
-#'
-#' # just the coordinates
-#' coordMat <- SimpleCoordinates(pinna, long="decimallongitude", lat="decimallatitude")
-#' points(coordMat)
-#'
-#' # 3. calculate and visualize
-#' latrange <- latrange(coordMat, plot=TRUE)
-#'
-#' # abline(h=latrange$range, lty=2)
-latrange <- function(coordMat, plot=FALSE, plot.args=NULL){
-	# the range
-	ran <- range(coordMat[, "lat"], na.rm=TRUE)
-
-	# the final object
-	result <- list(
-		estimate=diff(ran),
-		range=ran
-	)
-	if(plot){
-		if(is.null(plot.args)) plot.args <- list(col="#550000", lty=2)
-		arguments <- c(list(h=ran), plot.args)
-		do.call(abline, arguments)
-	}
-
-	# return
-	return(result)
-
-}
 
 ################################################################################
 # Minimum spanning tree length

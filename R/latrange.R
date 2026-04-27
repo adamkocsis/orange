@@ -1,10 +1,10 @@
 ################################################################################
-# Centroid-related code
+# Latitudinal range code
 ################################################################################
 
 qTest <- FALSE
 
-#' Calculate ranges with the occupancy method
+#' Calculate latitudinal ranges
 #'
 #' @param x Eiher a 2-column numeric matrix with two columns: longitudes and latitudes, or a \code{data.frame} with these columns.
 #' @param plot Logical, should the result be plotted? Will plot over active plot (as in \code{add=TRUE}), if here is any.
@@ -14,7 +14,7 @@ qTest <- FALSE
 #' @param lat \code{character}, column name of the latitudes.
 #' @param q Minimum occupancy with \code{q} proportion of occurrences.
 #' @return Either a single numeric or a list with an estimate and other information.
-#' @rdname centroid
+#' @rdname latrange
 #' @export
 #' @examples
 #' # 1. Canvas
@@ -29,20 +29,21 @@ qTest <- FALSE
 #'
 #' points(cent, col="darkred", pch=3, lwd=4, cex=4)
 setGeneric(
-	name="centroid",
+	name="latrange",
 	package="orange",
 	def=function(x, ...){
-		standardGeneric("centroid")
+		standardGeneric("latrange")
 	}
-
 )
 
 # coordinate pairs
-#' @rdname centroid
+#' @rdname latrange
 setMethod(
-	"centroid",
+	"latrange",
 	signature=c(x="matrix"),
-	definition=function(x,long=NULL,lat=NULL, duplicates=FALSE, plot=FALSE, plot.args=NULL){
+	definition=function(x,long=NULL,lat=NULL, q=1, duplicates=FALSE, plot=FALSE, plot.args=NULL, full=FALSE){
+
+		if(q!=1 & !qTest) stop("Feature not yet finalized!")
 		# if locality is given
 		if(!is.null(long) & !is.null(lat)) x <- x[,c(long, lat), drop=FALSE]
 		if(!duplicates) x <- unique(x)
@@ -50,30 +51,40 @@ setMethod(
 		notMiss <- !is.na(x[,1]) & !is.na(x[,2])
 		if(sum(notMiss)!=0){
 			x <- x[notMiss, , drop=FALSE]
-
 			# the result
-			cent <- icosa::surfacecentroid(x)
+			ranVals <- range(x[, 2])
 		}else{
-			cent <- c(NA, NA)
-			names(cent) <- c("long", "lat")
+			ranVals <- c(NA, NA)
 		}
 		if(plot){
-			if(is.null(plot.args)) plot.args <- list(col="#BB0000", pch=16, cex=2)
-			arguments <- c(list(x=matrix(cent, ncol=2)), plot.args)
+			if(is.null(plot.args)) plot.args <- list(col="#BB0000", lty=2, lwd=2)
+			arguments <- c(list(h=ranVals), plot.args)
 			# if no plots are open yet, make one!
 			if(dev.cur()<=1) plot(x)
-			do.call(points, arguments)
+			do.call(abline, arguments)
 		}
-		return(cent)
+		# a single estimate
+		estimate <- ranVals[2]-ranVals[1]
+
+		# full result vs estimate only
+		if(full){
+			result <- list(
+				estimate=estimate,
+				range=ranVals
+			)
+		}else{
+			result <- estimate
+		}
+		return(result)
 	}
 )
 
 # coordinate pairs
-#' @rdname centroid
+#' @rdname latrange
 setMethod(
-	"centroid",
+	"latrange",
 	signature=c(x="data.frame"),
-	definition=function(x,tax=NULL, long="long", lat="lat", duplicates=FALSE, plot=FALSE, plot.args=NULL){
+	definition=function(x,tax=NULL, q=1, long="long", lat="lat", duplicates=FALSE, plot=FALSE, plot.args=NULL, full=FALSE){
 
 		if(!all(c(long, lat) %in% colnames(x))) stop("The 'long' and 'lat' parameters must be valid column names.")
 		x <- x[,c(tax, long, lat)]
@@ -83,22 +94,18 @@ setMethod(
 		if(!is.null(tax)){
 			if(plot) warning("Multi-taxon plotting is not yet supported.")
 			# iterate with tapply
-			resRaw <- tapply(X=x[, c(long,lat)], INDEX=x[,tax], FUN=function(a){
-				centroid(as.matrix(a), duplicates=duplicates, plot=FALSE, plot.args=NULL)
+			res<- tapply(X=x[, c(long,lat)], INDEX=x[,tax], FUN=function(a){
+				latrange(as.matrix(a), duplicates=duplicates, plot=FALSE, plot.args=NULL, q=q, full=full)
 			})
-
-			#make this palateable...
-			res <- matrix(NA, ncol=2, nrow=length(resRaw))
-			rownames(res) <- names(resRaw)
-			colnames(res) <- names(resRaw[[1]])
-			for(i in 1:length(resRaw)) res[i,] <- resRaw[[i]]
+			resNames <- names(res)
+			dim(res) <- NULL
+			names(res) <- resNames
 
 		}else{
 			# fall back to matrix method
-			res <- centroid(as.matrix(x), duplicates=duplicates, plot=plot, plot.args=plot.args)
+			res <- latrange(as.matrix(x), duplicates=duplicates, plot=plot, plot.args=plot.args, q=q, full=full)
 		}
 
 		return(res)
 	}
 )
-
