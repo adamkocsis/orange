@@ -17,7 +17,7 @@
 ## Known Missing 
 
 - `plot=TRUE` for `data.frame` methods when a metric is iterated with `tax` 
-- `maxdist` with `tax` entry and either `full=TRUE` or `dm!=NULL` 
+- `mstlength`, `maxdist` with `tax` entry and either `full=TRUE` or `dm!=NULL`, because the tracing of coordates in the original dataset is not yet implemented
 
 ## Initialization
 

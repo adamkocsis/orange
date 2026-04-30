@@ -19,6 +19,7 @@ occupancy_results <- run_test_dir("orange/tests/occupancy")
 maxdist_results <- run_test_dir("orange/tests/maxdist")
 centroid_results <- run_test_dir("orange/tests/centroid")
 latrange_results <- run_test_dir("orange/tests/latrange")
+mstlengt_results <- run_test_dir("orange/tests/mstlength")
 
 # Finish
 stopCluster(cl)
