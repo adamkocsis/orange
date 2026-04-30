@@ -1,6 +1,6 @@
 # Change log of the R package 'orange'
 
-# orange 0.1.0-6 - 2026-04-27
+# orange 0.1.0-7 - 2026-04-30
 
 ## Added
 
@@ -10,7 +10,7 @@
 
 ## Changed
 
-- Omitted most likely irrelevant functions (based on an initial screening.
+- Omitted most likely irrelevant functions (based on an initial screening).
 - Omitted `ranges_` prefix from range calculation functions. 
 - Refactored functions and standardized interface.
 

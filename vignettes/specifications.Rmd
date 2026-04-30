@@ -356,7 +356,85 @@ The method calculates every point's distance to the centroid, tabulates the freq
 
 ### Zonal area
 
-### Minimum Spanning Tree Length
+### Minimum Spanning Tree (MST) Length
+#### Overview
+
+|    | Internal Name      | Method                       | Args                          | What it does                                                                                                                              |
+|----|--------------------|------------------------------|-------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------|
+| ✅ | `mstlength_coords` | `x`: *coordmat*, `dm`:NULL,  | `q=1`                         | The length of great circle arcs forming an MST in a point set.                                                                            |
+| ✅ | `mstlength_coords` | `x`: *coorddat*, `dm`:NULL,  | `q=1`,  `long`, `lat`, `tax`  | The length of great circle arcs forming an MST in a point set `data.frame`, iteratated for every `tax`.                                   |
+| ✅ | `mstlength_coords` | `x`: *coordmat*, `dm`:*dm*,  | `q=1`                         | The length of great circle arcs forming an MST in a point set with a pre-defined distance matrix.                                         |
+| ❌ | `mstlength_coords` | `x`: *coorddat*, `dm`:*dm*,  | `q=1`,  `long`, `lat`, `tax`  | The length of great circle arcs forming an MST in a point set with a pre-defined distance matrix, iteratated for every `tax`.             |
+| ❌ | `mstlength_coords` | `x`: *coordmat*, `dm`:NULL   | `q<1`,                        | The quantile length of great circle arcs forming an MST in a point set.                                                                   |
+| ❌ | `mstlength_coords` | `x`: *coorddat*, `dm`:NULL   | `q<1`,  `long`, `lat` , `tax` | The quantile length of great circle arcs forming an MST in a point set, iterated for every `tax`.                                         |
+| ❌ | `mstlength_coords` | `x`: *coordmat*, `dm`:*dm*,  | `q<1`,                        | The quantile length of great circle arcs forming an MST in a point set, with a pre-defined distance matrix.                               |
+| ❌ | `mstlength_coords` | `x`: *coorddat*, `dm`:*dm*,  | `q<1`,  `long`, `lat`, `tax`  | The quantile length of great circle arcs forming an MST in a point set, iterated for every `tax`, and with a pre-defined distance matrix. |
+| ❌ | `mstlength_icosa`  | `x`: *coordmat*, `s`:*icosa* | `q=1`                         | The length of great circle arcs forming an MST of icosahedral grid cell centers.                                                          |
+| ❌ | `mstlength_icosa`  | `x`: *coorddat*, `s`:*icosa* | `q=1`,  `long`, `lat`, `tax`  | The length of great circle arcs forming an MST of icosahedral grid cell centers, iterated for every `tax`.                                |
+| ❌ | `mstlength_icosa`  | `x`: *coordmat*, `s`:*icosa* | `q<1`,                        | The quantile length of great circle arcs forming an MST of icosahedral grid cell centers.                                                 |
+| ❌ | `mstlength_icosa`  | `x`: *coorddat*, `s`:*icosa* | `q<1`,  `long`, `lat`, `tax`  | The quantile length of great circle arcs forming an MST of icosahedral grid cell centers, iterated for every `tax`.                       |
+
+#### The length of great circle arcs forming an MST in a point set
+
+Takes every coordinate pair and constructs an MST from the great circle distances between the points. The sum length of this MST becomes the estimate.
+
+
+| Field     | Value                                                                                                                                                                                                     |
+|-----------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Usage     | `mstlength(coordmat)`                                                                                                                                                                                     |
+| Internal  | `mstlength_coords`                                                                                                                                                                                        |
+| Return    | `$estimate`: the total length of the MST (in km)                                   |
+|           | `$index`: the strucutre of the MST, which coordinate pair is connected with which |
+|           | `$show`: Matrix of coordinates indicating what should be visualized               |
+| Test case | `pinna`                                                                                                                                                                                                   |
+
+- When the distance matrix parameter `dm` is not provided, the method will omit duplicates and calculate the Great Circle Distance Matrix with `icosa::arcdistmat`.
+- `duplicates=TRUE` has no effect on the estimate as the distance between matching coordinate pairs is 0. 
+
+#### The length of great circle arcs forming an MST in a point set `data.frame`, iteratated for every `tax`.
+
+The same method as above, but iterated for every entry in `tax`.
+
+| Field     | Value                                                                                                                                                                                                     |
+|-----------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Usage     | `mstlength(coordmat)`                                                                                                                                                                                     |
+| Internal  | `mstlength_coords`                                                                                                                                                                                        |
+| Return    | `$estimate`: the total length of the MST (in km)                                   |
+|           | `$index`: the strucutre of the MST, which coordinate pair is connected with which |
+|           | `$show`: Matrix of coordinates indicating what should be visualized               |
+| Test case | `pinna`                                                                                                                                                                                                   |
+
+
+#### The length of great circle arcs forming an MST in a point set with a pre-specified distance matrix
+
+This can be used in case topography/habitat-defined routes are more important than great circle distances, or when the distance matrix would have to recalculated.
+
+| Field     | Value                                                                             |
+|-----------|-----------------------------------------------------------------------------------|
+| Usage     | `mstlength(coords, dm=dm)`                                                        |
+| Internal  | `mstlength_coords`                                                                |
+| Return    | `$estimate`: the total length of the MST (in km)                                  |
+|           | `$index`: the strucutre of the MST, which coordinate pair is connected with which |
+|           | `$show`: Matrix of coordinates indicating what should be visualized               |
+| Test case | `pinna`                                                                           |
+
+
+#### The quantile length of great circle arcs forming an MST in a point set
+
+- NOT YET DEFINED!
+- Candidate method 1: use subsampling (`q` proportion of the points) and re-calculate the MST iteratively 
+- Candidate method 2: mst length * q? 
+
+| Field     | Value                                 |
+|-----------|---------------------------------------|
+| Usage     | `maxdist(coords, dm=dm, q=0.95)`      |
+| Internal  | `maxdist_coords`                      |
+| Return    | `$estimate`: the distance calculated, |
+| Test case | `pinna`                               |
+
+
+* * *
+
 
 ### Hull Area
 
