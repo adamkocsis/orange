@@ -23,6 +23,10 @@ manual <- sum(stre$dist)
 expect_silent(mstMat <- mstlength(mat))
 expect_equal(manual, mstMat)
 
+# provided distance matrix
+expect_silent(mstMatDM <- mstlength(mat, dm=dm))
+expect_equal(mstMatDM, mstMat)
+
 # with full outpu
 expect_silent(mstMatFull <- mstlength(as.matrix(pinna[,c("decimallongitude", "decimallatitude")]), full=TRUE))
 expect_equal(names(mstMatFull), c("estimate", "index", "show"))
@@ -31,6 +35,7 @@ expect_equal(mstMat, mstMatFull$estimate)
 # duplicates make no difference
 expect_silent(mstMatDupl <- mstlength(as.matrix(pinna[,c("decimallongitude", "decimallatitude")]), duplicates=TRUE))
 expect_equal(mstMatDupl, mstMat)
+
 
 
 # Single instances
