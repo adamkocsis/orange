@@ -12,6 +12,7 @@
 
 - Omitted most likely irrelevant functions (based on an initial screening).
 - Omitted `ranges_` prefix from range calculation functions. 
+- The function `cenrad` was renamed to `radius`
 - Refactored functions and standardized interface.
 
 ## Known Missing 
