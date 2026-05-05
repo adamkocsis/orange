@@ -8,7 +8,6 @@ data(corals)
 
 ################################################################################
 # Base:
-
 # Matrix method
 ################################################################################
 mat <- as.matrix(pinna[, c("decimallongitude", "decimallatitude")])
@@ -70,9 +69,14 @@ expect_equal(radNamed, rad)
 
 ################################################################################
 # Matrix method with q!=1
+################################################################################
+
 # for now q is not yet implemented
 expect_error(maxdist(mat, q=0.7))
 
+################################################################################
+# Plotting
+################################################################################
 
 # no error without something to draw on
 p <- dev.cur()
@@ -104,62 +108,61 @@ expect_equal(singNone, sing)
 
 
 
-## ################################################################################
-## # Data.frame -  appropriate fallback to matrix method
-## expect_silent(mdDF <- maxdist(pinna, long="decimallongitude", lat="decimallatitude"))
-## expect_equal(mdDF, md)
-## expect_silent(mdDFfull <- maxdist(pinna, long="decimallongitude", lat="decimallatitude", full=TRUE))
-## expect_equal(mdDFfull, mdFull)
+################################################################################
+# Data.frame -  appropriate fallback to matrix method
+expect_silent(radDF <- radius(pinna, long="decimallongitude", lat="decimallatitude"))
+expect_equal(radDF, rad)
+expect_silent(radDFfull <- radius(pinna, long="decimallongitude", lat="decimallatitude", full=TRUE))
+expect_equal(radDFfull, radFull)
 
-## # appropriate defaults for coordinates - 2column df
-## df <- as.data.frame(mat)
-## colnames(df) <- c("long", "lat")
-## expect_silent(mdDFdefault <- maxdist(df))
-## expect_equal(mdDFdefault, md)
+# appropriate defaults for coordinates - 2column df
+df <- as.data.frame(mat)
+colnames(df) <- c("long", "lat")
+expect_silent(radDFdefault <- radius(df))
+expect_equal(radDFdefault, rad)
 
-## ################################################################################
-## # Data.frame - taxon iteration
-## # the corals
-## gen <- levels(factor(corals$genus))
-## mdTaxManual <- rep(NA, length(gen))
-## mdTaxListManual <- list()
-## for(i in 1:length(gen)){
-## 	# the slice
-## 	thisSlice <- corals[which(corals$genus==gen[i]), ]
-## 	expect_silent(one <- maxdist(thisSlice, long="lng", lat="lat", full=TRUE))
-## 	if(!is.na(one$estimate)){
-## 		oneManual <- arcdist(
-## 			as.matrix(thisSlice[one$index[1], c("lng", "lat")]),
-## 			as.matrix(thisSlice[one$index[2], c("lng", "lat")])
-## 		)
-## 		expect_equal(one$estimate, oneManual)
-## 	}
-## 	mdTaxManual[i] <- one$estimate
-## 	mdTaxListManual[[i]] <- one
-## 	## cat(i, "\r")
-## 	## flush.console()
-## }
-## dim(mdTaxManual) <- length(mdTaxManual) 
-## names(mdTaxManual) <- gen
-## dim(mdTaxListManual) <- length(mdTaxListManual) 
-## names(mdTaxListManual) <- gen
+################################################################################
+# Data.frame - taxon iteration
+# the corals
+gen <- levels(factor(corals$genus))
+radTaxManual <- rep(NA, length(gen))
+radTaxListManual <- list()
+for(i in 1:length(gen)){
+	# the slice
+	thisSlice <- corals[which(corals$genus==gen[i]), ]
+	expect_silent(one <- radius(thisSlice, long="lng", lat="lat", full=TRUE))
+	if(!is.na(one$estimate)){
+		oneManual <- arcdist(
+			as.matrix(thisSlice[one$index[1], c("lng", "lat")]),
+			matrix(centroid(thisSlice[, c("lng", "lat")], long="lng", lat="lat"), ncol=2)
+		)
+		expect_equal(one$estimate, oneManual)
+	}
+	radTaxManual[i] <- one$estimate
+	radTaxListManual[[i]] <- one
+	## cat(i, "\r")
+	## flush.console()
+}
+names(radTaxManual) <- gen
+dim(radTaxListManual) <- length(radTaxListManual) 
+names(radTaxListManual) <- gen
 
-## # somewhat slow!
-## expect_silent(mdTax <- maxdist(x=corals, long="lng", lat="lat", tax="genus" ))
-## expect_equal(mdTax, mdTaxManual)
+# somewhat slow!
+expect_silent(radTax <- radius(x=corals, long="lng", lat="lat", tax="genus" ))
+expect_equal(radTax, radTaxManual)
 
 ## ################################################################################
 ## # Not yet implemented
 ## ################################################################################
 
-## # The full output - not yet
-## expect_error(maxdist(x=corals, long="lng", lat="lat", tax="genus", full=TRUE ))
-## # The indices of the output needs to be properly set
-## ## expect_silent(mdTaxList <- maxdist(x=corals, long="lng", lat="lat", tax="genus", full=TRUE ))
-## ## expect_true(is.list(mdTaxList))
-## ## expect_equal(mdTaxList, mdTaxListManual)
+# The full output - not yet
+expect_error(radius(x=corals, long="lng", lat="lat", tax="genus", full=TRUE ))
+# The indices of the output needs to be properly set
+## expect_silent(mdTaxList <- maxdist(x=corals, long="lng", lat="lat", tax="genus", full=TRUE ))
+## expect_true(is.list(mdTaxList))
+## expect_equal(mdTaxList, mdTaxListManual)
 
 
-## # Full output with a given distance matrix
-## ## corDist <- arcdistmat(corals[, c("lng", "lat")])
-## ## expect_error(maxdist(x=corals, dm=corDist, long="lng", lat="lat", tax="genus", full=TRUE ))
+# Full output with a given distance matrix
+## corDist <- arcdistmat(corals[, c("lng", "lat")])
+## expect_error(maxdist(x=corals, dm=corDist, long="lng", lat="lat", tax="genus", full=TRUE ))

@@ -3,6 +3,7 @@
 \name{radius}
 \alias{radius}
 \alias{radius,matrix,missing-method}
+\alias{radius,data.frame,missing-method}
 \title{Calculate ranges with the radius-group of methods}
 \usage{
 radius(x, s, ...)
@@ -18,11 +19,26 @@ radius(x, s, ...)
   full = FALSE,
   q = 1
 )
+
+\S4method{radius}{data.frame,missing}(
+  x,
+  p = NULL,
+  long = "long",
+  lat = "lat",
+  tax = NULL,
+  duplicates = FALSE,
+  q = 1,
+  plot = FALSE,
+  plot.args = NULL,
+  full = FALSE
+)
 }
 \arguments{
-\item{x}{Either a 2D numeric \code{matrix} with two columns: longitudes and latitudes, a \code{data.frame} with the same information.}
+\item{x}{Either a 2D numeric \code{matrix} with two columns: longitudes and latitudes, a \code{data.frame} with the same information - or a character vector of cell identifiers.}
 
-\item{s}{Structure to replace the points, either missing (coordinate pairs) or a \code{trigrid} (icosahedral grid from the package icosa).}
+\item{s}{Structure to substitute the points, either missing (using coordinate pairs) or a \code{trigrid} (icosahedral grid from the package icosa).}
+
+\item{p}{A single point of reference (longitude/latitude). If missing, the point of reference will be the centroid given by \code{centroid}.}
 
 \item{long}{\code{character}, column name of the longitudes.}
 
@@ -39,8 +55,6 @@ radius(x, s, ...)
 \item{q}{\code{numeric}, a value between 0 and 1, the quantile.}
 
 \item{tax}{\code{character}, used only in the \code{data.frame} method. Column name of groups (e.g. taxa) that allows the iteration of the method for multiple groups.}
-
-\item{dm}{If there is a pre-made distance matrix, it can be plugged in here. If this is provided, the default coordinates will not be used.}
 }
 \value{
 A list with an estimate an two indices the rows of the input matrix that represent the length of the tree (or one of them).

@@ -9,14 +9,14 @@ qTest <- FALSE
 #'
 #' This group of methods rely on calculating single distances. 
 #'
-#' @param x Either a 2D numeric \code{matrix} with two columns: longitudes and latitudes, a \code{data.frame} with the same information.
-#' @param s Structure to replace the points, either missing (coordinate pairs) or a \code{trigrid} (icosahedral grid from the package icosa).
+#' @param x Either a 2D numeric \code{matrix} with two columns: longitudes and latitudes, a \code{data.frame} with the same information - or a character vector of cell identifiers.
+#' @param s Structure to substitute the points, either missing (using coordinate pairs) or a \code{trigrid} (icosahedral grid from the package icosa).
+#' @param p A single point of reference (longitude/latitude). If missing, the point of reference will be the centroid given by \code{centroid}.
 #' @param long \code{character}, column name of the longitudes.
 #' @param lat \code{character}, column name of the latitudes.
 #' @param tax \code{character}, used only in the \code{data.frame} method. Column name of groups (e.g. taxa) that allows the iteration of the method for multiple groups.
 #' @param duplicates \code{logical}, should identical coordinates be included in the calculation (default is \code{FALSE})
 #' @param q \code{numeric}, a value between 0 and 1, the quantile. 
-#' @param dm If there is a pre-made distance matrix, it can be plugged in here. If this is provided, the default coordinates will not be used.
 #' @param full \code{logical}, should only the estimate (\code{FALSE}) be returned, or additional data as well?(\code{TRUE}).
 #' @param plot Logical, should the result be plotted? Will plot over active plot (as in \code{add=TRUE}).
 #' @param plot.args List arguments passed to the plotting function: \code{sf::plot}.
@@ -81,45 +81,38 @@ setMethod(
 	}
 )
 
-## # uses the matrix method
-## #' @rdname mstlength
-## setMethod(
-## 	"mstlength",
-## 	signature=c(x="data.frame", s="missing"),
-## 	definition=function(x, long="long", lat="lat", tax=NULL, dm=NULL, duplicates=FALSE, q=1, plot=FALSE, plot.args=NULL, full=FALSE){
-## 		# the same as the matrix method
-## 		if(is.null(tax)){
-## 			x <- as.matrix(x[, c(long, lat)])
-## 			result <- mstlength(x, long=long, lat=lat, duplicates=duplicates, dm=dm,
-## 				q=q, plot=plot, plot.args=plot.args, full=full)
-## 		}else{
-## 			if(full) stop("Full output not yet implemented for tax-wise iteration.")
-## 			if(plot) warning("Multi-taxon plotting is not yet supported.")
-## 			if(is.null(dm)){
-## 				result <- tapply(
-## 					INDEX=x[,tax],
-## 					X=x[, c(long, lat)],
-## 					FUN=function(a){
+# uses the matrix method
+#' @rdname radius 
+setMethod(
+	"radius",
+	signature=c(x="data.frame", s="missing"),
+	definition=function(x, p=NULL, long="long", lat="lat", tax=NULL,  duplicates=FALSE, q=1, plot=FALSE, plot.args=NULL, full=FALSE){
+		# the same as the matrix method
+		if(is.null(tax)){
+			x <- as.matrix(x[, c(long, lat)])
+			result <- radius(x, p=p, long=long, lat=lat, duplicates=duplicates,
+				q=q, plot=plot, plot.args=plot.args, full=full)
+		}else{
+			if(full) stop("Full output not yet implemented for tax-wise iteration.")
+			if(plot) warning("Multi-taxon plotting is not yet supported.")
+			result <- tapply(
+				INDEX=x[,tax],
+				X=x[, c(long, lat)],
+				FUN=function(a){
 
-## 						# get rid of unnecessary recursion
-## 						a <- as.matrix(a)
-## 						result <- mstlength(a, long=long, lat=lat, duplicates=duplicates, dm=dm,
-## 							q=q, plot=FALSE, plot.args=plot.args, full=full)
-## 						}
-## 					)
-## 					resNames <- names(result)
-## 					dim(result) <- NULL
-## 					names(result) <- resNames
-
-				
-## 			# the distance matrix needs to be spliced!, and the
-## 			}else{
-## 				stop("Not yet!")
-## 			}
-## 		}
-## 		return(result)
-## 	}
-## )
+					# get rid of unnecessary recursion
+					a <- as.matrix(a)
+					result <- radius(a, p=p, long=long, lat=lat, duplicates=duplicates,
+						q=q, plot=FALSE, plot.args=plot.args, full=full)
+					}
+				)
+				resNames <- names(result)
+				dim(result) <- NULL
+				names(result) <- resNames
+		}
+		return(result)
+	}
+)
 
 
 ################################################################################
