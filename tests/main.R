@@ -14,13 +14,17 @@ setwd(wd)
 cl <- parallel::makeCluster(4, outfile="")
 parallel::clusterCall(cl, source, "orange/tests/source.R")
 
-# the online
+# the range metrics
 occupancy_results <- run_test_dir("orange/tests/occupancy")
 maxdist_results <- run_test_dir("orange/tests/maxdist")
 centroid_results <- run_test_dir("orange/tests/centroid")
 latrange_results <- run_test_dir("orange/tests/latrange")
 mstlengt_results <- run_test_dir("orange/tests/mstlength")
 radius_results <- run_test_dir("orange/tests/radius")
+
+
+# the shape metrics
+gappiness_results <- run_test_dir("orange/tests/gappiness")
 
 # Finish
 stopCluster(cl)
