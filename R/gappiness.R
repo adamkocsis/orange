@@ -61,20 +61,52 @@ setMethod(
 )
 
 
-## # uses the characer method
-## #' @rdname gappiness
-## setMethod(
-## 	"gappiness",
-## 	signature=c(x="matrix", s="trigrid"),
-## 		definition=function(x, s, exclude=NULL){
+# coordinate pairs - relies on the character method
+#' @rdname latrange
+setMethod(
+	"gappiness",
+	signature=c(x="matrix", s="trigrid"),
+	definition=function(x,s,long=NULL,lat=NULL, duplicates=FALSE, plot=FALSE, plot.args=NULL, full=FALSE, exclude=NULL){
 
-## 			# get the list of faces occupied
-## 			faceList <- locate(s, x)
+		# if locality is given
+		if(!is.null(long) & !is.null(lat)) x <- x[,c(long, lat), drop=FALSE]
+		if(!duplicates) x <- unique(x)
 
-## 			# calculate the gappiness based on the faces
-## 			gap <- gappiness(faceList, s, exclude=exclude)
+		# omit missing
+		notMiss <- !is.na(x[,1]) & !is.na(x[,2])
+		if(sum(notMiss)!=0){
+			x <- x[notMiss, , drop=FALSE]
 
-## 			# return the gappiness
-## 			return(gap)
-## 	}
-## )
+			# get the list of faces occupied
+			faceList <- locate(s, x)
+
+			# calculate the gappiness based on the faces
+			# calculate full output
+			result <- gappiness(
+				x=unique(faceList),
+				s=s,
+				exclude=exclude,
+				full=TRUE)
+		}else{
+			# construct the structure manually
+			result <- list(
+				estimate = NA,
+				holes= NULL,
+				occupied = NULL
+			) 
+		}
+		if(plot & sum(notMiss)!=0){
+			if(is.null(plot.args)) plot.args <- list(col="#BB000055", lwd=2, border="white")
+			arguments <- c(list(x=s, y=result$occupied), plot.args)
+			# if no plots are open yet, make one!
+			if(dev.cur()<=1) plot(x)
+			do.call(plot, arguments)
+		}
+		# streamline output
+		if(!full){
+			result <- result$estimate
+		}
+		
+		return(result)
+	}
+)
