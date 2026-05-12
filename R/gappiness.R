@@ -33,6 +33,8 @@ setMethod(
 		definition=function(x, s, exclude=NULL, full=FALSE){
 			if(any(!x%in%faces(s))) stop("All face names have to part faces of the grid.")
 
+			# get a unique list of occupied faces
+			occup <- unique(x)
 
 			if(all(x%in%exclude)){
 				gap <- NA
@@ -40,15 +42,15 @@ setMethod(
 			}else{
 
 				# the holes of this patch
-				theHoles<- holes(s,x )
+				theHoles<- holes(s,occup)
 
 				# gappiness is defined as number of hole cells divided by the holes and shape itself
-				gap <- (length(theHoles)-length(exclude))/(length(theHoles) + length(unique(x))-length(exclude))
+				gap <- (length(theHoles)-length(exclude))/(length(theHoles) + length(occup)-length(exclude))
 			}
 
 			# return both the metric and the way to plot it
 			if(full){
-				result <- list(estimate=gap, holes=theHoles)
+				result <- list(estimate=gap, holes=theHoles, occupied=occup)
 			}else{
 				result <- gap
 			}

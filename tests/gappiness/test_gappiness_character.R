@@ -21,7 +21,7 @@ expect_equal(one, 5/18)
 expect_silent(oneFull <- gappiness(shape, hex, full=TRUE))
 expect_equal(class(oneFull), "list")
 expect_equal(oneFull$estimate, one)
-expect_equal(length(oneFull), 2L)
+expect_equal(length(oneFull), 3L)
 
 # character-trigrid method
 # the gappiness
@@ -79,7 +79,7 @@ expect_true(inherits(oneExFull, "list") )
 ## ## plot(hex, cells, col="#FF550033", add=TRUE)
 ## expect_silent(two <- ranges_gappiness(kentOne, hex))
 ## expect_equal(class(two), "list")
-## expect_equal(length(two), 2L)
+## expect_equal(length(two), 3L)
 ## expect_equal(two$estimate, 1/9)
 ## hole <- 1L
 ## names(hole) <- "F23"
