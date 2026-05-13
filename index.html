@@ -18,8 +18,8 @@
 <link href="deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="deps/headroom-0.11.0/headroom.min.js"></script><script src="deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="deps/search-1.0.0/fuse.min.js"></script><script src="deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="pkgdown.js"></script><link href="extra.css" rel="stylesheet">
 <meta property="og:title" content="Spherical Ranges and Parametrization of Geographic Shapes">
-<meta name="description" content="This package is a collation of tools and metrics to characterize distribution data on the surfrace of a sphere or an ellipsoid. The primary group of these metrics is those that describe the extent of a distribution, i.e. geographic ranges. The calculation of geographic ranges can be executed using point coordinates data, vector polygons, as well as and cells on a discretized sphere. Besides ensuring the use a geometrically correct implementations, the package offers the exploration of partial results for visual diagnostics.">
-<meta property="og:description" content="This package is a collation of tools and metrics to characterize distribution data on the surfrace of a sphere or an ellipsoid. The primary group of these metrics is those that describe the extent of a distribution, i.e. geographic ranges. The calculation of geographic ranges can be executed using point coordinates data, vector polygons, as well as and cells on a discretized sphere. Besides ensuring the use a geometrically correct implementations, the package offers the exploration of partial results for visual diagnostics.">
+<meta name="description" content="A collation of tools and metrics to characterize distribution data on the surfrace of a sphere or an ellipsoid. The primary group of these metrics is those that describe the extent of a distribution, i.e. geographic ranges. The calculation of geographic ranges can be executed using point coordinates data, vector polygons, as well as and cells on a discretized sphere. Besides ensuring the use a geometrically correct implementations, the package offers the exploration of partial results for visual diagnostics.">
+<meta property="og:description" content="A collation of tools and metrics to characterize distribution data on the surfrace of a sphere or an ellipsoid. The primary group of these metrics is those that describe the extent of a distribution, i.e. geographic ranges. The calculation of geographic ranges can be executed using point coordinates data, vector polygons, as well as and cells on a discretized sphere. Besides ensuring the use a geometrically correct implementations, the package offers the exploration of partial results for visual diagnostics.">
 <meta property="og:image" content="https://adamkocsis.github.io/orange/logo.png">
 </head>
 <body>
@@ -30,7 +30,7 @@
 
     <a class="navbar-brand me-2" href="index.html">orange</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0-3</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0-9</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -72,7 +72,7 @@
 <img src="logo.png" class="logo" alt=""><h1 id="orange-">orange <a class="anchor" aria-label="anchor" href="#orange-"></a>
 </h1>
 </div>
-<p><a href="https://github.com/adamkocsis/orange" class="external-link"><img src="https://img.shields.io/badge/devel%20version-0.1.0--3-green.svg"></a> <a href="https://cran.r-project.org/package=orange" class="external-link"><img src="https://www.r-pkg.org/badges/version/orange?color=blue"></a> <a href="https://cran.r-project.org/package=orange" class="external-link"><img src="http://cranlogs.r-pkg.org/badges/grand-total/orange?color=yellow"></a> <a href="https://cran.r-project.org/web/checks/check_results_orange.html" class="external-link"><img src="https://badges.cranchecks.info/summary/orange.svg" alt="CRAN checks"></a></p>
+<p><a href="https://github.com/adamkocsis/orange" class="external-link"><img src="https://img.shields.io/badge/devel%20version-0.1.0--9-green.svg"></a> <a href="https://cran.r-project.org/package=orange" class="external-link"><img src="https://www.r-pkg.org/badges/version/orange?color=blue"></a> <a href="https://cran.r-project.org/package=orange" class="external-link"><img src="http://cranlogs.r-pkg.org/badges/grand-total/orange?color=yellow"></a> <a href="https://cran.r-project.org/web/checks/check_results_orange.html" class="external-link"><img src="https://badges.cranchecks.info/summary/orange.svg" alt="CRAN checks"></a></p>
 <div class="section level2">
 <h2 id="spherical-ranges-and-parametrization-of-geographic-shapes">Spherical Ranges and Parametrization of Geographic Shapes<a class="anchor" aria-label="anchor" href="#spherical-ranges-and-parametrization-of-geographic-shapes"></a>
 </h2>
@@ -110,11 +110,11 @@
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/points.html" class="external-link">points</a></span><span class="op">(</span><span class="va">coords</span>, pch<span class="op">=</span><span class="fl">3</span>, col<span class="op">=</span><span class="st">"#5d7327"</span>, cex<span class="op">=</span><span class="fl">2</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Maximum great circle distance</span></span>
-<span><span class="va">mgcd</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/mgcd.html">mgcd</a></span><span class="op">(</span><span class="va">coords</span>, plot<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="va">mgcd</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/maxdist.html">mgcd</a></span><span class="op">(</span><span class="va">coords</span>, plot<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Occupancy on a hexagonal grid</span></span>
 <span><span class="va">hex</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://icosa-grid.github.io/R-icosa/reference/hexagrid-class.html" class="external-link">hexagrid</a></span><span class="op">(</span>deg<span class="op">=</span><span class="fl">2</span>, sf<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span> <span class="co"># from package icosa</span></span>
-<span><span class="va">occ</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/occupancy.html">occupancy</a></span><span class="op">(</span><span class="va">coords</span>, icosa<span class="op">=</span><span class="va">hex</span>, plot<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="va">occ</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/occupancy.html">occupancy</a></span><span class="op">(</span><span class="va">coords</span>, s<span class="op">=</span><span class="va">hex</span>, plot<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Minimum spanning tree length</span></span>
 <span><span class="va">mst</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/mstlength.html">mstlength</a></span><span class="op">(</span><span class="va">coords</span>, plot<span class="op">=</span><span class="cn">TRUE</span>, plot.args<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>lwd<span class="op">=</span><span class="fl">3</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
@@ -122,12 +122,7 @@
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Maximum great circle distance</span></span>
 <span><span class="va">mgcd</span></span></code></pre></div>
-<div class="sourceCode" id="cb3"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a><span class="do">## $estimate</span></span>
-<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a><span class="do">## [1] 3452.84</span></span>
-<span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a><span class="do">## </span></span>
-<span id="cb3-4"><a href="#cb3-4" tabindex="-1"></a><span class="do">## $index</span></span>
-<span id="cb3-5"><a href="#cb3-5" tabindex="-1"></a><span class="do">##      row col</span></span>
-<span id="cb3-6"><a href="#cb3-6" tabindex="-1"></a><span class="do">## [1,] 786 851</span></span></code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a><span class="do">## [1] 3452.84</span></span></code></pre></div>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Occupancy count </span></span>
 <span><span class="va">occ</span></span></code></pre></div>

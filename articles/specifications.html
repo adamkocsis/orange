@@ -32,7 +32,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">orange</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0-3</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0-9</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -181,12 +181,11 @@ with an <code>igrid</code> type icosahedral grid.</li>
 <code>terra</code> package.</li>
 </ul>
 <p>In case of some input types, specific components can be specified
-with the following parameters. - <code>loc</code>: A location label in
-<em>coorddat</em> - <code>long</code>: Column name indicating longitudes
-(<code>character</code>) - <code>lat</code>: Column name indicating
-latitudes (<code>character</code>) - <code>tax</code>: Column name
-indicating taxa, or other functional units that can be used to split a
-dataset.</p>
+with the following parameters. - <code>long</code>: Column name
+indicating longitudes (<code>character</code>) - <code>lat</code>:
+Column name indicating latitudes (<code>character</code>) -
+<code>tax</code>: Column name indicating taxa, or other functional units
+that can be used to split a dataset.</p>
 <hr>
 </div>
 <div class="section level3">
@@ -195,6 +194,8 @@ dataset.</p>
 <p>This is a list of additional parameters that may be necessary for
 some metrics.</p>
 <ul>
+<li>
+<code>s</code>: A pre-specified structure.</li>
 <li>
 <code>sf</code>: A ‘simple feature’ type object, usually a polygon
 or multipolygon style object with class <code>sf</code> or
@@ -256,8 +257,8 @@ objects that inherit from the <code>orange</code> class. Every
 <code>orange</code> class object must have at least two elements: -
 <code>$estimate</code>: The numeric estimate calculated with the
 function. - <code>$plot</code>: An expression that can be used to plot
-the object - <em>partials</em>: Additional list elements that can be
-used to inspect the accuracy of the method, as well as plotting
+the object - not yet! - <em>partials</em>: Additional list elements that
+can be used to inspect the accuracy of the method, as well as plotting
 additional ftod</p>
 <hr>
 </div>
@@ -272,7 +273,7 @@ in terms of domain (input parameters) and range (output).</p>
 </h3>
 <p>There are three tiers of functions: - 1. <strong>Generics</strong>
 that defining the names of the methods. - 2. <strong>Methods</strong>
-that inovke an internal logic applicable for as set of input classes. -
+that invoke an internal logic applicable for as set of input classes. -
 3. <strong>Internals</strong> that implement a logic.</p>
 <p><strong>Methods</strong> are defined using the rules of S4 method
 dispatch, based on the arguments <code>x</code>, <code>sf</code>,</p>
@@ -282,20 +283,20 @@ dispatch, based on the arguments <code>x</code>, <code>sf</code>,</p>
 <h3 id="rangeextent-esimators">1. Range/extent esimators<a class="anchor" aria-label="anchor" href="#rangeextent-esimators"></a>
 </h3>
 <div class="section level4">
-<h4 id="occupancy">Occupancy<a class="anchor" aria-label="anchor" href="#occupancy"></a>
+<h4 id="occupancy---occupancy">Occupancy - <code>occupancy</code><a class="anchor" aria-label="anchor" href="#occupancy---occupancy"></a>
 </h4>
 <p>The metric is implemented with the <code>occupancy</code>
 function.</p>
 <div class="section level5">
 <h5 id="overview">Overview<a class="anchor" aria-label="anchor" href="#overview"></a>
 </h5>
-<table style="width:100%;" class="table">
+<table class="table">
 <colgroup>
-<col width="3%">
-<col width="19%">
-<col width="19%">
-<col width="17%">
-<col width="40%">
+<col width="2%">
+<col width="18%">
+<col width="22%">
+<col width="20%">
+<col width="35%">
 </colgroup>
 <thead><tr class="header">
 <th></th>
@@ -309,36 +310,38 @@ function.</p>
 <td>✅</td>
 <td><code>occupancy_coords</code></td>
 <td>
-<code>x</code>: <em>coorddat</em>
+<code>x</code>: <em>coordmat</em>
+<code>s</code>:<code>missing</code>
 </td>
-<td><code>tax</code></td>
-<td>Number of occupied coordinate pairs for every entry.</td>
+<td></td>
+<td>Number of occupied coordinate pairs.</td>
 </tr>
 <tr class="even">
 <td>✅</td>
 <td><code>occupancy_coords</code></td>
 <td>
-<code>x</code>: <em>coorddat</em>, <code>loc</code>
+<code>x</code>: <em>coorddat</em>
+<code>s</code>:<code>missing</code>
 </td>
-<td>
-<code>tax</code>, <code>long</code>, <code>lat</code>
-</td>
-<td>Number of occupied localities.</td>
+<td><code>tax</code></td>
+<td>Number of occupied coordinate pairs.</td>
 </tr>
 <tr class="odd">
 <td>✅</td>
-<td><code>occupancy_coords_icosa</code></td>
+<td><code>occupancy_coords</code></td>
 <td>
-<code>x</code>: <em>coordmat</em>, <code>icosa</code>
+<code>x</code>: <em>coorddat</em>,
+<code>s</code>:<code>char</code>
 </td>
-<td><code>q=1</code></td>
-<td>Number of occupied grid cells.</td>
+<td><code>tax</code></td>
+<td>Number of occupied localities (column).</td>
 </tr>
 <tr class="even">
 <td>✅</td>
 <td><code>occupancy_coords_icosa</code></td>
 <td>
-<code>x</code>: <em>coorddat</em>, <code>icosa</code>
+<code>x</code>: <em>coordmat</em>,
+<code>s</code>:<code>icosa</code>
 </td>
 <td>
 <code>q=1</code>, <code>long</code>, <code>lat</code>
@@ -346,62 +349,163 @@ function.</p>
 <td>Number of occupied grid cells.</td>
 </tr>
 <tr class="odd">
-<td>❓</td>
+<td>✅</td>
 <td><code>occupancy_coords_icosa</code></td>
 <td>
-<code>x</code>: <em>coordmat</em>, <code>icosa</code>
+<code>x</code>: <em>coorddat</em>,
+<code>s</code>:<code>icosa</code>
 </td>
 <td>
-<code>q&lt;1</code>, <code>method</code>=“min”</td>
-<td>Expected number of occupied grid cells.</td>
+<code>q=1</code>, <code>long</code>, <code>lat</code>,
+<code>tax</code>
+</td>
+<td>Number of occupied grid cells.</td>
 </tr>
 <tr class="even">
 <td>❓</td>
 <td><code>occupancy_coords_icosa</code></td>
 <td>
-<code>x</code>: <em>coorddat</em>, <code>icosa</code>
+<code>x</code>: <em>coordmat</em>,
+<code>s</code>:<code>icosa</code>
 </td>
 <td>
 <code>q&lt;1</code>, <code>method</code>=“min”</td>
 <td>Expected number of occupied grid cells.</td>
 </tr>
 <tr class="odd">
+<td>❓</td>
+<td><code>occupancy_coords_icosa</code></td>
+<td>
+<code>x</code>: <em>coorddat</em>,
+<code>s</code>:<code>icosa</code>
+</td>
+<td>
+<code>q&lt;1</code>, <code>method</code>=“min”</td>
+<td>Expected number of occupied grid cells.</td>
+</tr>
+<tr class="even">
 <td>❌</td>
 <td><code>occupancy_coords_sfc</code></td>
 <td>
-<code>x</code>: <em>coordmat</em>, <code>sf</code>
+<code>x</code>: <em>coordmat</em>,
+<code>s</code>:<code>sf</code>
 </td>
 <td><code>q=1</code></td>
-<td>Number of occupied features.</td>
+<td>Number of occupied polygonal features.</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>❌</td>
 <td><code>occupancy_coords_sfc</code></td>
 <td>
-<code>x</code>: <em>coordmat</em>, <code>sf</code>
+<code>x</code>: <em>coordmat</em>,
+<code>s</code>:<code>sf</code>
 </td>
 <td><code>q=q</code></td>
-<td>Expected number of features.</td>
+<td>Expected number of occupied polygonal features.</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>❌</td>
 <td><code>occupancy_rast_icosa</code></td>
 <td>
-<code>x</code>: <em>rast</em>, <code>icosa</code>
+<code>x</code>: <em>rast</em>,
+<code>s</code>:<code>icosa</code>
 </td>
 <td>
 <code>threshold</code>=0</td>
 <td>Number of occupied grid cells.</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>❌</td>
 <td><code>occupancy_rast_sfc</code></td>
 <td>
-<code>x</code>: <em>rast</em>, <code>sf</code>
+<code>x</code>: <em>rast</em>, <code>s</code>:<code>sf</code>
 </td>
 <td>
 <code>threshold</code>=0</td>
 <td>Number of occupied features.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section level5">
+<h5 id="number-of-occupied-coordinate-pairs">Number of occupied coordinate pairs<a class="anchor" aria-label="anchor" href="#number-of-occupied-coordinate-pairs"></a>
+</h5>
+<p>Returns the number of occupied coordinate pairs.</p>
+<table class="table">
+<thead><tr class="header">
+<th>Field</th>
+<th>Value</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td>Usage</td>
+<td><code>occupancy(x=coordmat)</code></td>
+</tr>
+<tr class="even">
+<td>Internal</td>
+<td><code>occupancy_coords</code></td>
+</tr>
+<tr class="odd">
+<td>Return</td>
+<td>
+<code>$estimate</code>: the number of occupied coordinate
+pairs.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section level5">
+<h5 id="number-of-occupied-coordinate-pairs-1">Number of occupied coordinate pairs<a class="anchor" aria-label="anchor" href="#number-of-occupied-coordinate-pairs-1"></a>
+</h5>
+<p>Returns the number of occupied coordinate pairs - can be repeated for
+every taxon.</p>
+<table class="table">
+<thead><tr class="header">
+<th>Field</th>
+<th>Value</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td>Usage</td>
+<td><code>occupancy(x=coorddat, tax)</code></td>
+</tr>
+<tr class="even">
+<td>Internal</td>
+<td><code>occupancy_coords</code></td>
+</tr>
+<tr class="odd">
+<td>Return</td>
+<td>
+<code>$estimate</code>: the number of occupied coordinate
+pairs.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section level5">
+<h5 id="number-of-occupied-localities">Number of occupied localities<a class="anchor" aria-label="anchor" href="#number-of-occupied-localities"></a>
+</h5>
+<p>Returns the number of different locality entries - can be repeated
+for every taxon..</p>
+<table class="table">
+<thead><tr class="header">
+<th>Field</th>
+<th>Value</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td>Usage</td>
+<td><code>occupancy(x=coorddat, s, tax)</code></td>
+</tr>
+<tr class="even">
+<td>Internal</td>
+<td><code>occupancy_coords</code></td>
+</tr>
+<tr class="odd">
+<td>Return</td>
+<td>
+<code>$estimate</code>: the number of <em>s</em> entries
+occupied.</td>
 </tr>
 </tbody>
 </table>
@@ -422,11 +526,14 @@ function.</p>
 <tbody>
 <tr class="odd">
 <td>Usage</td>
-<td><code>occupancy(x=coordmat, s=icosa)</code></td>
+<td>
+<code>occupancy(x=coordmat, s=icosa)</code>,
+<code>occupancy(x=coorddat, s=icosa)</code>
+</td>
 </tr>
 <tr class="even">
 <td>Internal</td>
-<td><code>occupancy_coords_icosa</code></td>
+<td><code>occupancy_coords</code></td>
 </tr>
 <tr class="odd">
 <td>Return</td>
@@ -468,7 +575,7 @@ considered - the expectation for the range,
 <tbody>
 <tr class="odd">
 <td>Usage</td>
-<td><code>occupancy(x=coords, s=igrid, q=0.95)</code></td>
+<td><code>occupancy(x=coords, s=icosa, q=0.95)</code></td>
 </tr>
 <tr class="even">
 <td>Internal</td>
@@ -529,7 +636,7 @@ and calculates</p>
 </div>
 </div>
 <div class="section level4">
-<h4 id="maximum-distance">Maximum Distance<a class="anchor" aria-label="anchor" href="#maximum-distance"></a>
+<h4 id="maximum-distance---maxdist">Maximum Distance - <code>maxdist</code><a class="anchor" aria-label="anchor" href="#maximum-distance---maxdist"></a>
 </h4>
 <p>The method is implemented with the <code>maxdist</code> function. For
 convenience, the alias <code>mgcd</code> is also provided.</p>
@@ -538,15 +645,17 @@ convenience, the alias <code>mgcd</code> is also provided.</p>
 </h5>
 <table class="table">
 <colgroup>
-<col width="3%">
+<col width="2%">
+<col width="10%">
 <col width="16%">
-<col width="29%">
-<col width="50%">
+<col width="14%">
+<col width="56%">
 </colgroup>
 <thead><tr class="header">
 <th></th>
 <th>Internal Name</th>
-<th>Main Input</th>
+<th>Method</th>
+<th>Args</th>
 <th>What it does</th>
 </tr></thead>
 <tbody>
@@ -554,33 +663,122 @@ convenience, the alias <code>mgcd</code> is also provided.</p>
 <td>✅</td>
 <td><code>maxdist_coords</code></td>
 <td>
-<code>x</code>=coords, <code>dm</code>=NULL</td>
-<td>The maximum great circle distance</td>
+<code>x</code>: <em>coordmat</em>, <code>dm</code>:NULL,</td>
+<td><code>q=1</code></td>
+<td>The maximum great circle distance in a point set.</td>
 </tr>
 <tr class="even">
 <td>✅</td>
 <td><code>maxdist_coords</code></td>
 <td>
-<code>x</code>=coords, <code>dm</code>=dm</td>
-<td>Maximum distance in a pre-defined distance matrix</td>
+<code>x</code>: <em>coorddat</em>, <code>dm</code>:NULL,</td>
+<td>
+<code>q=1</code>, <code>long</code>, <code>lat</code>
+</td>
+<td>The maximum great circle distance in a point set
+<code>data.frame</code>.</td>
 </tr>
 <tr class="odd">
 <td>✅</td>
 <td><code>maxdist_coords</code></td>
 <td>
-<code>x</code>=coords, <code>dm</code>=NULL,
-<code>q</code>=<em>q</em>
-</td>
-<td>Quantile great circle distance</td>
+<code>x</code>: <em>coordmat</em>, <code>dm</code>:<em>dm</em>,</td>
+<td><code>q=1</code></td>
+<td>The maximum great circle distance in a point set with a pre-defined
+distance matrix.</td>
 </tr>
 <tr class="even">
 <td>✅</td>
 <td><code>maxdist_coords</code></td>
 <td>
-<code>x</code>=coords, <code>dm</code>=dm,
-<code>q</code>=<em>q</em>
+<code>x</code>: <em>coorddat</em>, <code>dm</code>:<em>dm</em>,</td>
+<td>
+<code>q=1</code>, <code>long</code>, <code>lat</code>
 </td>
-<td>Quantile great circle in a pre-defined distance matrix</td>
+<td>The maximum great circle distance in a point set
+<code>data.frame</code> with a pre-defined distance matrix.</td>
+</tr>
+<tr class="odd">
+<td>❌</td>
+<td><code>maxdist_coords</code></td>
+<td>
+<code>x</code>: <em>coordmat</em>, <code>dm</code>:NULL</td>
+<td>
+<code>q</code>=<em>q</em>,</td>
+<td>Quantile great circle distance</td>
+</tr>
+<tr class="even">
+<td>❌</td>
+<td><code>maxdist_coords</code></td>
+<td>
+<code>x</code>: <em>coorddat</em>, <code>dm</code>:NULL</td>
+<td>
+<code>q</code>=<em>q</em>, <code>long</code>, <code>lat</code>
+</td>
+<td>Quantile great circle distance</td>
+</tr>
+<tr class="odd">
+<td>❌</td>
+<td><code>maxdist_coords</code></td>
+<td>
+<code>x</code>: <em>coordmat</em>, <code>dm</code>:<em>dm</em>,</td>
+<td>
+<code>q</code>=<em>q</em>,</td>
+<td>Quantile great circle distance in a point set with a pre-defined
+distance matrix.</td>
+</tr>
+<tr class="even">
+<td>❌</td>
+<td><code>maxdist_coords</code></td>
+<td>
+<code>x</code>: <em>coorddat</em>, <code>dm</code>:<em>dm</em>,</td>
+<td>
+<code>q</code>=<em>q</em>, <code>long</code>, <code>lat</code>
+</td>
+<td>Quantile great circle distance in a point set
+<code>data.frame</code> with a pre-defined distance matrix.</td>
+</tr>
+<tr class="odd">
+<td>❌</td>
+<td><code>maxdist_coords</code></td>
+<td>
+<code>x</code>: <em>coordmat</em>, <code>icosa</code>
+</td>
+<td><code>q=1</code></td>
+<td>The maximum great circle distance in a point set.</td>
+</tr>
+<tr class="even">
+<td>❌</td>
+<td><code>maxdist_coords</code></td>
+<td>
+<code>x</code>: <em>coorddat</em>, <code>icosa</code>
+</td>
+<td>
+<code>q=1</code>, <code>long</code>, <code>lat</code>
+</td>
+<td>The maximum great circle distance in a point set
+<code>data.frame</code>.</td>
+</tr>
+<tr class="odd">
+<td>❌</td>
+<td><code>maxdist_coords</code></td>
+<td>
+<code>x</code>: <em>coordmat</em>, <code>icosa</code>
+</td>
+<td>
+<code>q</code>=<em>q</em>,</td>
+<td>Quantile great circle distance</td>
+</tr>
+<tr class="even">
+<td>❌</td>
+<td><code>maxdist_coords</code></td>
+<td>
+<code>x</code>: <em>coorddat</em>, <code>icosa</code>
+</td>
+<td>
+<code>q</code>=<em>q</em>, <code>long</code>, <code>lat</code>
+</td>
+<td>Quantile great circle distance</td>
 </tr>
 </tbody>
 </table>
@@ -602,7 +800,7 @@ convenience, the alias <code>mgcd</code> is also provided.</p>
 <tr class="odd">
 <td>Usage</td>
 <td>
-<code>maxdist(coords)</code>, <code>mgcd(x=coords)</code>
+<code>maxdist(coordmat)</code>, <code>mgcd(x=coordmat)</code>
 </td>
 </tr>
 <tr class="even">
@@ -613,7 +811,7 @@ convenience, the alias <code>mgcd</code> is also provided.</p>
 <td>Return</td>
 <td>
 <code>$estimate</code>: the number of grid cells occupied,
-<code>$ids</code>: The IDs of occupied polygons</td>
+<code>$where</code>: Indices of point pairs.</td>
 </tr>
 <tr class="even">
 <td>Test case</td>
@@ -702,7 +900,182 @@ estimate. Works both with and without a pre-specify distance matrix.</p>
 </div>
 </div>
 <div class="section level4">
-<h4 id="fixed-radius">Fixed radius<a class="anchor" aria-label="anchor" href="#fixed-radius"></a>
+<h4 id="latitudinal-range---latrange">Latitudinal range - <code>latrange</code><a class="anchor" aria-label="anchor" href="#latitudinal-range---latrange"></a>
+</h4>
+<div class="section level5">
+<h5 id="overview-2">Overview<a class="anchor" aria-label="anchor" href="#overview-2"></a>
+</h5>
+<table class="table">
+<colgroup>
+<col width="3%">
+<col width="11%">
+<col width="15%">
+<col width="28%">
+<col width="41%">
+</colgroup>
+<thead><tr class="header">
+<th></th>
+<th>Internal Name</th>
+<th>Method</th>
+<th>Args</th>
+<th>What it does</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td>✅</td>
+<td><code>range</code></td>
+<td>
+<code>x</code>: <em>coordmat</em>
+</td>
+<td>
+<code>q=1</code>, <code>long</code>, <code>lat</code>
+</td>
+<td>Latitudinal range of a long-lat point cloud.</td>
+</tr>
+<tr class="even">
+<td>✅</td>
+<td><code>range</code></td>
+<td>
+<code>x</code>: <em>coorddat</em>,</td>
+<td>
+<code>q=1</code>, <code>tax</code> , <code>long</code>,
+<code>lat</code>
+</td>
+<td>Latitudinal range of a long-lat point cloud.</td>
+</tr>
+<tr class="odd">
+<td>❌</td>
+<td><code>range</code></td>
+<td>
+<code>x</code>: <em>coordmat</em>,</td>
+<td>
+<code>q&lt;1</code>, <code>long</code>, <code>lat</code>
+</td>
+<td>Quantile latitudinal range of a long-lat point cloud.</td>
+</tr>
+<tr class="even">
+<td>❌</td>
+<td><code>range</code></td>
+<td>
+<code>x</code>: <em>coorddat</em>,</td>
+<td>
+<code>q&lt;1</code>, <code>tax</code> , <code>long</code>,
+<code>lat</code>
+</td>
+<td>Quantile latitudinal range of a long-lat point cloud.</td>
+</tr>
+<tr class="odd">
+<td>❌</td>
+<td><code>range</code></td>
+<td>
+<code>x</code>: <em>SpatRaster</em>,</td>
+<td>
+<code>q=1</code>, <code>long</code>, <code>lat</code>,
+<code>threshold=0</code>
+</td>
+<td>Latitudinal range of an <code>SpatRaster</code>.</td>
+</tr>
+<tr class="even">
+<td>❌</td>
+<td><code>range</code></td>
+<td>
+<code>x</code>: <em>sf-points</em>,</td>
+<td>
+<code>q=1</code>, <code>long</code>, <code>lat</code>
+</td>
+<td>Latitudinal range of an <code>sf</code> point cloud.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section level5">
+<h5 id="latitudinal-range-of-a-long-lat-point-cloud">Latitudinal range of a long-lat point cloud<a class="anchor" aria-label="anchor" href="#latitudinal-range-of-a-long-lat-point-cloud"></a>
+</h5>
+<p>Returns the latitudinal range of a single longitude-latitude point
+cloud.</p>
+<table class="table">
+<colgroup>
+<col width="10%">
+<col width="89%">
+</colgroup>
+<thead><tr class="header">
+<th>Field</th>
+<th>Value</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td>Usage</td>
+<td><code>occupancy(x=coordmat)</code></td>
+</tr>
+<tr class="even">
+<td>Internal</td>
+<td><code>range</code></td>
+</tr>
+<tr class="odd">
+<td>Return</td>
+<td>
+<code>$estimate</code>: the number of occupied coordinate pairs,
+<code>$range</code>: minimum and maximum longiude</td>
+</tr>
+<tr class="even">
+<td>Test case</td>
+<td>
+<code>pinna</code>, <code><a href="https://rdrr.io/pkg/divDyn/man/corals.html" class="external-link">divDyn::corals</a></code>
+</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>
+<code>duplicates</code> have no effect when <code>q=1</code>
+</li>
+</ul>
+</div>
+<div class="section level5">
+<h5 id="latitudinal-range-of-a-long-lat-point-cloud-data-frame">Latitudinal range of a long-lat point cloud
+(<code>data.frame</code>)<a class="anchor" aria-label="anchor" href="#latitudinal-range-of-a-long-lat-point-cloud-data-frame"></a>
+</h5>
+<p>Returns the latitudinal range of a single or multiple
+longitude-latitude point cloud(s).</p>
+<table class="table">
+<colgroup>
+<col width="10%">
+<col width="89%">
+</colgroup>
+<thead><tr class="header">
+<th>Field</th>
+<th>Value</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td>Usage</td>
+<td><code>occupancy(x=coorddf)</code></td>
+</tr>
+<tr class="even">
+<td>Internal</td>
+<td><code>range</code></td>
+</tr>
+<tr class="odd">
+<td>Return</td>
+<td>
+<code>$estimate</code>: the number of occupied coordinate pairs,
+<code>$range</code>: minimum and maximum longiude</td>
+</tr>
+<tr class="even">
+<td>Test case</td>
+<td>
+<code>pinna</code>, <code><a href="https://rdrr.io/pkg/divDyn/man/corals.html" class="external-link">divDyn::corals</a></code>
+</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>Use <code>tax</code> to iterate for multiple taxa.</li>
+</ul>
+</div>
+</div>
+<div class="section level4">
+<h4 id="fixed-radius---fixrad">Fixed radius - <code>fixrad</code><a class="anchor" aria-label="anchor" href="#fixed-radius---fixrad"></a>
 </h4>
 <p>The generic of this metric is the <code>fixrad</code> function. For
 convenience, the alias `` is also provided. This metric is similar to
@@ -710,7 +1083,7 @@ the Maximum Distance, but instead of calculating a full distance matrix,
 distances compared to a single point are assessed. This point defaults
 to the centroid.</p>
 <div class="section level5">
-<h5 id="overview-2">Overview<a class="anchor" aria-label="anchor" href="#overview-2"></a>
+<h5 id="overview-3">Overview<a class="anchor" aria-label="anchor" href="#overview-3"></a>
 </h5>
 <table class="table">
 <colgroup>
@@ -822,55 +1195,361 @@ centroid.</td>
 </div>
 </div>
 <div class="section level4">
-<h4 id="latitudinal-range">Latitudinal range<a class="anchor" aria-label="anchor" href="#latitudinal-range"></a>
+<h4 id="zonal-area">Zonal area<a class="anchor" aria-label="anchor" href="#zonal-area"></a>
+</h4>
+</div>
+<div class="section level4">
+<h4 id="minimum-spanning-tree-mst-length">Minimum Spanning Tree (MST) Length<a class="anchor" aria-label="anchor" href="#minimum-spanning-tree-mst-length"></a>
 </h4>
 <div class="section level5">
-<h5 id="overview-3">Overview<a class="anchor" aria-label="anchor" href="#overview-3"></a>
+<h5 id="overview-4">Overview<a class="anchor" aria-label="anchor" href="#overview-4"></a>
 </h5>
 <table class="table">
 <colgroup>
-<col width="4%">
-<col width="20%">
-<col width="21%">
-<col width="54%">
+<col width="1%">
+<col width="8%">
+<col width="13%">
+<col width="13%">
+<col width="62%">
 </colgroup>
 <thead><tr class="header">
-<th>In</th>
+<th></th>
 <th>Internal Name</th>
-<th>Main Input</th>
+<th>Method</th>
+<th>Args</th>
 <th>What it does</th>
 </tr></thead>
 <tbody>
 <tr class="odd">
 <td>✅</td>
-<td><code>latrange_coords</code></td>
+<td><code>mstlength_coords</code></td>
 <td>
-<code>x</code>=coords</td>
-<td>The latitutdinal range of the point cloud.</td>
+<code>x</code>: <em>coordmat</em>, <code>dm</code>:NULL,</td>
+<td><code>q=1</code></td>
+<td>The length of great circle arcs forming an MST in a point set.</td>
+</tr>
+<tr class="even">
+<td>✅</td>
+<td><code>mstlength_coords</code></td>
+<td>
+<code>x</code>: <em>coorddat</em>, <code>dm</code>:NULL,</td>
+<td>
+<code>q=1</code>, <code>long</code>, <code>lat</code>,
+<code>tax</code>
+</td>
+<td>The length of great circle arcs forming an MST in a point set
+<code>data.frame</code>, iteratated for every <code>tax</code>.</td>
+</tr>
+<tr class="odd">
+<td>✅</td>
+<td><code>mstlength_coords</code></td>
+<td>
+<code>x</code>: <em>coordmat</em>, <code>dm</code>:<em>dm</em>,</td>
+<td><code>q=1</code></td>
+<td>The length of great circle arcs forming an MST in a point set with a
+pre-defined distance matrix.</td>
 </tr>
 <tr class="even">
 <td>❌</td>
-<td><code>latrange_coords</code></td>
+<td><code>mstlength_coords</code></td>
 <td>
-<code>x</code>=coords <code>q</code>=<em>q</em>
+<code>x</code>: <em>coorddat</em>, <code>dm</code>:<em>dm</em>,</td>
+<td>
+<code>q=1</code>, <code>long</code>, <code>lat</code>,
+<code>tax</code>
 </td>
-<td>The quantile latitudinal range of the point cloud.</td>
+<td>The length of great circle arcs forming an MST in a point set with a
+pre-defined distance matrix, iteratated for every <code>tax</code>.</td>
+</tr>
+<tr class="odd">
+<td>❌</td>
+<td><code>mstlength_coords</code></td>
+<td>
+<code>x</code>: <em>coordmat</em>, <code>dm</code>:NULL</td>
+<td>
+<code>q&lt;1</code>,</td>
+<td>The quantile length of great circle arcs forming an MST in a point
+set.</td>
+</tr>
+<tr class="even">
+<td>❌</td>
+<td><code>mstlength_coords</code></td>
+<td>
+<code>x</code>: <em>coorddat</em>, <code>dm</code>:NULL</td>
+<td>
+<code>q&lt;1</code>, <code>long</code>, <code>lat</code> ,
+<code>tax</code>
+</td>
+<td>The quantile length of great circle arcs forming an MST in a point
+set, iterated for every <code>tax</code>.</td>
+</tr>
+<tr class="odd">
+<td>❌</td>
+<td><code>mstlength_coords</code></td>
+<td>
+<code>x</code>: <em>coordmat</em>, <code>dm</code>:<em>dm</em>,</td>
+<td>
+<code>q&lt;1</code>,</td>
+<td>The quantile length of great circle arcs forming an MST in a point
+set, with a pre-defined distance matrix.</td>
+</tr>
+<tr class="even">
+<td>❌</td>
+<td><code>mstlength_coords</code></td>
+<td>
+<code>x</code>: <em>coorddat</em>, <code>dm</code>:<em>dm</em>,</td>
+<td>
+<code>q&lt;1</code>, <code>long</code>, <code>lat</code>,
+<code>tax</code>
+</td>
+<td>The quantile length of great circle arcs forming an MST in a point
+set, iterated for every <code>tax</code>, and with a pre-defined
+distance matrix.</td>
+</tr>
+<tr class="odd">
+<td>❌</td>
+<td><code>mstlength_icosa</code></td>
+<td>
+<code>x</code>: <em>coordmat</em>,
+<code>s</code>:<em>icosa</em>
+</td>
+<td><code>q=1</code></td>
+<td>The length of great circle arcs forming an MST of icosahedral grid
+cell centers.</td>
+</tr>
+<tr class="even">
+<td>❌</td>
+<td><code>mstlength_icosa</code></td>
+<td>
+<code>x</code>: <em>coorddat</em>,
+<code>s</code>:<em>icosa</em>
+</td>
+<td>
+<code>q=1</code>, <code>long</code>, <code>lat</code>,
+<code>tax</code>
+</td>
+<td>The length of great circle arcs forming an MST of icosahedral grid
+cell centers, iterated for every <code>tax</code>.</td>
+</tr>
+<tr class="odd">
+<td>❌</td>
+<td><code>mstlength_icosa</code></td>
+<td>
+<code>x</code>: <em>coordmat</em>,
+<code>s</code>:<em>icosa</em>
+</td>
+<td>
+<code>q&lt;1</code>,</td>
+<td>The quantile length of great circle arcs forming an MST of
+icosahedral grid cell centers.</td>
+</tr>
+<tr class="even">
+<td>❌</td>
+<td><code>mstlength_icosa</code></td>
+<td>
+<code>x</code>: <em>coorddat</em>,
+<code>s</code>:<em>icosa</em>
+</td>
+<td>
+<code>q&lt;1</code>, <code>long</code>, <code>lat</code>,
+<code>tax</code>
+</td>
+<td>The quantile length of great circle arcs forming an MST of
+icosahedral grid cell centers, iterated for every <code>tax</code>.</td>
 </tr>
 </tbody>
 </table>
 </div>
 <div class="section level5">
-<h5 id="latitudinal-range-of-a-point-cloud">Latitudinal range of a point cloud<a class="anchor" aria-label="anchor" href="#latitudinal-range-of-a-point-cloud"></a>
+<h5 id="the-length-of-great-circle-arcs-forming-an-mst-in-a-point-set">The length of great circle arcs forming an MST in a point set<a class="anchor" aria-label="anchor" href="#the-length-of-great-circle-arcs-forming-an-mst-in-a-point-set"></a>
 </h5>
+<p>Takes every coordinate pair and constructs an MST from the great
+circle distances between the points. The sum length of this MST becomes
+the estimate.</p>
+<table class="table">
+<colgroup>
+<col width="5%">
+<col width="94%">
+</colgroup>
+<thead><tr class="header">
+<th>Field</th>
+<th>Value</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td>Usage</td>
+<td><code>mstlength(coordmat)</code></td>
+</tr>
+<tr class="even">
+<td>Internal</td>
+<td><code>mstlength_coords</code></td>
+</tr>
+<tr class="odd">
+<td>Return</td>
+<td>
+<code>$estimate</code>: the total length of the MST (in km)</td>
+</tr>
+<tr class="even">
+<td></td>
+<td>
+<code>$index</code>: the strucutre of the MST, which coordinate pair
+is connected with which</td>
+</tr>
+<tr class="odd">
+<td></td>
+<td>
+<code>$show</code>: Matrix of coordinates indicating what should be
+visualized</td>
+</tr>
+<tr class="even">
+<td>Test case</td>
+<td><code>pinna</code></td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>When the distance matrix parameter <code>dm</code> is not provided,
+the method will omit duplicates and calculate the Great Circle Distance
+Matrix with <code><a href="https://icosa-grid.github.io/R-icosa/reference/arcdistmat.html" class="external-link">icosa::arcdistmat</a></code>.</li>
+<li>
+<code>duplicates=TRUE</code> has no effect on the estimate as the
+distance between matching coordinate pairs is 0.</li>
+</ul>
 </div>
+<div class="section level5">
+<h5 id="the-length-of-great-circle-arcs-forming-an-mst-in-a-point-set-data-frame-iteratated-for-every-tax-">The length of great circle arcs forming an MST in a point set
+<code>data.frame</code>, iteratated for every <code>tax</code>.<a class="anchor" aria-label="anchor" href="#the-length-of-great-circle-arcs-forming-an-mst-in-a-point-set-data-frame-iteratated-for-every-tax-"></a>
+</h5>
+<p>The same method as above, but iterated for every entry in
+<code>tax</code>.</p>
+<table class="table">
+<colgroup>
+<col width="5%">
+<col width="94%">
+</colgroup>
+<thead><tr class="header">
+<th>Field</th>
+<th>Value</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td>Usage</td>
+<td><code>mstlength(coordmat)</code></td>
+</tr>
+<tr class="even">
+<td>Internal</td>
+<td><code>mstlength_coords</code></td>
+</tr>
+<tr class="odd">
+<td>Return</td>
+<td>
+<code>$estimate</code>: the total length of the MST (in km)</td>
+</tr>
+<tr class="even">
+<td></td>
+<td>
+<code>$index</code>: the strucutre of the MST, which coordinate pair
+is connected with which</td>
+</tr>
+<tr class="odd">
+<td></td>
+<td>
+<code>$show</code>: Matrix of coordinates indicating what should be
+visualized</td>
+</tr>
+<tr class="even">
+<td>Test case</td>
+<td><code>pinna</code></td>
+</tr>
+</tbody>
+</table>
 </div>
-<div class="section level4">
-<h4 id="zonal-area">Zonal area<a class="anchor" aria-label="anchor" href="#zonal-area"></a>
-</h4>
+<div class="section level5">
+<h5 id="the-length-of-great-circle-arcs-forming-an-mst-in-a-point-set-with-a-pre-specified-distance-matrix">The length of great circle arcs forming an MST in a point set with a
+pre-specified distance matrix<a class="anchor" aria-label="anchor" href="#the-length-of-great-circle-arcs-forming-an-mst-in-a-point-set-with-a-pre-specified-distance-matrix"></a>
+</h5>
+<p>This can be used in case topography/habitat-defined routes are more
+important than great circle distances, or when the distance matrix would
+have to recalculated.</p>
+<table class="table">
+<colgroup>
+<col width="11%">
+<col width="88%">
+</colgroup>
+<thead><tr class="header">
+<th>Field</th>
+<th>Value</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td>Usage</td>
+<td><code>mstlength(coords, dm=dm)</code></td>
+</tr>
+<tr class="even">
+<td>Internal</td>
+<td><code>mstlength_coords</code></td>
+</tr>
+<tr class="odd">
+<td>Return</td>
+<td>
+<code>$estimate</code>: the total length of the MST (in km)</td>
+</tr>
+<tr class="even">
+<td></td>
+<td>
+<code>$index</code>: the strucutre of the MST, which coordinate pair
+is connected with which</td>
+</tr>
+<tr class="odd">
+<td></td>
+<td>
+<code>$show</code>: Matrix of coordinates indicating what should be
+visualized</td>
+</tr>
+<tr class="even">
+<td>Test case</td>
+<td><code>pinna</code></td>
+</tr>
+</tbody>
+</table>
 </div>
-<div class="section level4">
-<h4 id="minimum-spanning-tree-length">Minimum Spanning Tree Length<a class="anchor" aria-label="anchor" href="#minimum-spanning-tree-length"></a>
-</h4>
+<div class="section level5">
+<h5 id="the-quantile-length-of-great-circle-arcs-forming-an-mst-in-a-point-set">The quantile length of great circle arcs forming an MST in a point
+set<a class="anchor" aria-label="anchor" href="#the-quantile-length-of-great-circle-arcs-forming-an-mst-in-a-point-set"></a>
+</h5>
+<ul>
+<li>NOT YET DEFINED!</li>
+<li>Candidate method 1: use subsampling (<code>q</code> proportion of
+the points) and re-calculate the MST iteratively</li>
+<li>Candidate method 2: mst length * q?</li>
+</ul>
+<table class="table">
+<thead><tr class="header">
+<th>Field</th>
+<th>Value</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td>Usage</td>
+<td><code>maxdist(coords, dm=dm, q=0.95)</code></td>
+</tr>
+<tr class="even">
+<td>Internal</td>
+<td><code>maxdist_coords</code></td>
+</tr>
+<tr class="odd">
+<td>Return</td>
+<td>
+<code>$estimate</code>: the distance calculated,</td>
+</tr>
+<tr class="even">
+<td>Test case</td>
+<td><code>pinna</code></td>
+</tr>
+</tbody>
+</table>
+<hr>
+</div>
 </div>
 <div class="section level4">
 <h4 id="hull-area">Hull Area<a class="anchor" aria-label="anchor" href="#hull-area"></a>
@@ -884,6 +1563,98 @@ centroid.</td>
 <div class="section level3">
 <h3 id="additional">Additional<a class="anchor" aria-label="anchor" href="#additional"></a>
 </h3>
+<div class="section level4">
+<h4 id="centroid">Centroid<a class="anchor" aria-label="anchor" href="#centroid"></a>
+</h4>
+<p>Sets of funtions that calculate the surface projection (geographic
+coordinates) of centroid for a given geometry.</p>
+<div class="section level5">
+<h5 id="overview-5">Overview<a class="anchor" aria-label="anchor" href="#overview-5"></a>
+</h5>
+<table class="table">
+<colgroup>
+<col width="3%">
+<col width="21%">
+<col width="22%">
+<col width="18%">
+<col width="34%">
+</colgroup>
+<thead><tr class="header">
+<th></th>
+<th>Internal Name</th>
+<th>Method</th>
+<th>Args</th>
+<th>What it does</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td>✅</td>
+<td><code><a href="https://icosa-grid.github.io/R-icosa/reference/surfacecentroid.html" class="external-link">icosa::surfacecentroid</a></code></td>
+<td>
+<code>x</code>: <em>coordmat</em>/<em>coordmat</em>
+</td>
+<td>
+<code>long</code>, <code>lat</code>
+</td>
+<td>Centroid coordinates of long-lat points.</td>
+</tr>
+<tr class="even">
+<td>✅</td>
+<td><code><a href="https://icosa-grid.github.io/R-icosa/reference/surfacecentroid.html" class="external-link">icosa::surfacecentroid</a></code></td>
+<td>
+<code>x</code>: <em>coorddat</em>
+</td>
+<td>
+<code>tax</code>, <code>long</code>, <code>lat</code>
+</td>
+<td>Centroid coordinates of long-lat points.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section level5">
+<h5 id="centroid-coordinates-of-long-lat-points">Centroid coordinates of long-lat points<a class="anchor" aria-label="anchor" href="#centroid-coordinates-of-long-lat-points"></a>
+</h5>
+<p>Returns the number of occupied coordinate pairs.</p>
+<table class="table">
+<thead><tr class="header">
+<th>Field</th>
+<th>Value</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td>Usage</td>
+<td><code>occupancy(x=coordmat)</code></td>
+</tr>
+<tr class="even">
+<td>Internal</td>
+<td><code>occupancy_coords</code></td>
+</tr>
+<tr class="odd">
+<td>Return</td>
+<td>The number of occupied coordinate pairs.</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>The <code>tax</code> column identifier <code>character</code>
+argument can be used to indicate iterated calculation for subsets.</li>
+<li>The <code>full</code> argument is not applicable here, there are no
+intermediate data.</li>
+<li>The <code>duplicates</code> argument modifies the calculation
+result. When set to <code>FALSE</code> (default), the duplicate
+coordinate entries will count as a single point in space. When set to
+<code>TRUE</code> the centroid will effectively be weigthed by the
+number of times the coordinate pair occurrs in the data, leading to
+slightly different results.</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class="section level2">
+<h2 id="old">Old<a class="anchor" aria-label="anchor" href="#old"></a>
+</h2>
 <div class="line-block">[x] | <code>mgcd</code> | cells, grid, q | MGCD
 of cell centroids, or the great circle distance of a quantile. |<br>
 [x] | <code>mgcd</code> | coords, q | The maximum great circle distance
@@ -916,7 +1687,6 @@ area, radius and position that covers q proportion of the points |<br>
 ellipse of a set of points, shorter and longer axis . |<br>
 [ ] | <code>density</code> | coords, q | The densitiy of occurrence
 records |</div>
-</div>
 </div>
 <div class="section level2">
 <h2 id="other-esimators">Other esimators<a class="anchor" aria-label="anchor" href="#other-esimators"></a>

@@ -8,20 +8,21 @@
 <url><loc>https://adamkocsis.github.io/orange/index.html</loc></url>
 <url><loc>https://adamkocsis.github.io/orange/news/index.html</loc></url>
 <url><loc>https://adamkocsis.github.io/orange/reference/SimpleCoordinates.html</loc></url>
-<url><loc>https://adamkocsis.github.io/orange/reference/cenrad.html</loc></url>
-<url><loc>https://adamkocsis.github.io/orange/reference/centroid_points.html</loc></url>
+<url><loc>https://adamkocsis.github.io/orange/reference/centroid.html</loc></url>
 <url><loc>https://adamkocsis.github.io/orange/reference/chullplane.html</loc></url>
 <url><loc>https://adamkocsis.github.io/orange/reference/chullsphere.html</loc></url>
-<url><loc>https://adamkocsis.github.io/orange/reference/circumcenter.html</loc></url>
 <url><loc>https://adamkocsis.github.io/orange/reference/gappiness.html</loc></url>
 <url><loc>https://adamkocsis.github.io/orange/reference/index.html</loc></url>
 <url><loc>https://adamkocsis.github.io/orange/reference/kentsamples.html</loc></url>
 <url><loc>https://adamkocsis.github.io/orange/reference/latrange.html</loc></url>
-<url><loc>https://adamkocsis.github.io/orange/reference/mgcd.html</loc></url>
+<url><loc>https://adamkocsis.github.io/orange/reference/maxdist.html</loc></url>
 <url><loc>https://adamkocsis.github.io/orange/reference/mstlength.html</loc></url>
 <url><loc>https://adamkocsis.github.io/orange/reference/occupancy.html</loc></url>
 <url><loc>https://adamkocsis.github.io/orange/reference/orange.html</loc></url>
 <url><loc>https://adamkocsis.github.io/orange/reference/pinna.html</loc></url>
-<url><loc>https://adamkocsis.github.io/orange/reference/smallcircles.html</loc></url>
+<url><loc>https://adamkocsis.github.io/orange/reference/radius.html</loc></url>
+<url><loc>https://adamkocsis.github.io/orange/reference/sc_center.html</loc></url>
+<url><loc>https://adamkocsis.github.io/orange/reference/sc_in.html</loc></url>
+<url><loc>https://adamkocsis.github.io/orange/reference/sc_shape.html</loc></url>
 </urlset>
 

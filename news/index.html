@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">orange</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0-3</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0-9</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -41,21 +41,33 @@
     </div>
 
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="0.1.0-3" id="orange-010-3---2026-03-31">orange 0.1.0-3 - 2026-03-31<a class="anchor" aria-label="anchor" href="#orange-010-3---2026-03-31"></a></h2>
+<h2 class="pkg-version" data-toc-text="0.1.0-7" id="orange-010-7---2026-04-30">orange 0.1.0-7 - 2026-04-30<a class="anchor" aria-label="anchor" href="#orange-010-7---2026-04-30"></a></h2>
 <div class="section level3">
-<h3 id="added-0-1-0-3">Added<a class="anchor" aria-label="anchor" href="#added-0-1-0-3"></a></h3>
+<h3 id="added-0-1-0-7">Added<a class="anchor" aria-label="anchor" href="#added-0-1-0-7"></a></h3>
 <ul><li>The <code>kentsamples</code> data for testing and demonstration.</li>
-<li>The <code>circumcenter</code> function to calculate the small circle</li>
-<li>The <code>smallcircles</code> function to calculate points on small circles</li>
+<li>The <code>sc_shape</code> function to calculate points on small circles</li>
+<li>The <code>sc_center</code> function to calculate a small circle based on points on the sphere</li>
+<li>The <code>sc_in</code> function to calculate whether a bunch of points are inside a small circle or not (based on planes, rather than distances, about 10x faster).</li>
 </ul></div>
 <div class="section level3">
-<h3 id="changed-0-1-0-3">Changed<a class="anchor" aria-label="anchor" href="#changed-0-1-0-3"></a></h3>
-<ul><li>Omitted most likely irrelevant functions (based on an initial screening.</li>
-<li>Omitted <code>ranges_</code> prefix from range calculation functions. `</li>
+<h3 id="changed-0-1-0-7">Changed<a class="anchor" aria-label="anchor" href="#changed-0-1-0-7"></a></h3>
+<ul><li>Omitted most likely irrelevant functions (based on an initial screening).</li>
+<li>Omitted <code>ranges_</code> prefix from range calculation functions.</li>
+<li>The function <code>cenrad</code> was renamed to <code>radius</code>
+</li>
+<li>Refactored functions and standardized interface.</li>
 </ul></div>
 <div class="section level3">
-<h3 id="initialization-0-1-0-3">Initialization<a class="anchor" aria-label="anchor" href="#initialization-0-1-0-3"></a></h3>
-<ul><li>The project was forked from ‘biodome’ project (v0.2.0-6) to efficiently focus on geographic range estimation. The corresponding functions were removed from that package.</li>
+<h3 id="known-missing-0-1-0-7">Known Missing<a class="anchor" aria-label="anchor" href="#known-missing-0-1-0-7"></a></h3>
+<ul><li>
+<code>plot=TRUE</code> for <code>data.frame</code> methods when a metric is iterated with <code>tax</code>
+</li>
+<li>
+<code>mstlength</code>, <code>maxdist</code> with <code>tax</code> entry and either <code>full=TRUE</code> or <code>dm!=NULL</code>, because the tracing of coordates in the original dataset is not yet implemented</li>
+</ul></div>
+<div class="section level3">
+<h3 id="initialization-0-1-0-7">Initialization<a class="anchor" aria-label="anchor" href="#initialization-0-1-0-7"></a></h3>
+<ul><li>The package was forked from the ‘biodome’ project (v0.2.0-6) to efficiently focus on geographic range estimation. The corresponding functions were removed from that package.</li>
 </ul><hr></div>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
