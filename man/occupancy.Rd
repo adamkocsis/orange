@@ -45,6 +45,8 @@ occupancy(x, s, ...)
 
 \item{s}{Structure to be occupied, either \code{NULL} (coordinate pairs), \code{character} (column name indicating locality) or a \code{trigrid} (icosahedral grid from the package icosa).}
 
+\item{...}{Additional arguments passed to class-specific methods.}
+
 \item{long}{\code{character}, column name of the longitudes.}
 
 \item{lat}{\code{character}, column name of the latitudes.}

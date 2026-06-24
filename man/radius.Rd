@@ -38,6 +38,8 @@ radius(x, s, ...)
 
 \item{s}{Structure to substitute the points, either missing (using coordinate pairs) or a \code{trigrid} (icosahedral grid from the package icosa).}
 
+\item{...}{Additional arguments passed to class-specific methods.}
+
 \item{p}{A single point of reference (longitude/latitude). If missing, the point of reference will be the centroid given by \code{centroid}.}
 
 \item{long}{\code{character}, column name of the longitudes.}

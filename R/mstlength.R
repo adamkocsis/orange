@@ -20,6 +20,7 @@ qTest <- FALSE
 #' @param full \code{logical}, should only the estimate (\code{FALSE}) be returned, or additional data as well?(\code{TRUE}).
 #' @param plot Logical, should the result be plotted? Will plot over active plot (as in \code{add=TRUE}).
 #' @param plot.args List arguments passed to the plotting function: \code{sf::plot}.
+#' @param ... Additional arguments passed to class-specific methods.
 #' @return A list with an estimate an two indices the rows of the input matrix that represent the length of the tree (or one of them).
 #' @export
 #' @rdname mstlength

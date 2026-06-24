@@ -38,6 +38,8 @@ mstlength(x, s, ...)
 
 \item{s}{Structure to replace the points, either missing (coordinate pairs) or a \code{trigrid} (icosahedral grid from the package icosa).}
 
+\item{...}{Additional arguments passed to class-specific methods.}
+
 \item{dm}{If there is a pre-made distance matrix, it can be plugged in here. If this is provided, the default coordinates will not be used.}
 
 \item{long}{\code{character}, column name of the longitudes.}

@@ -14,6 +14,7 @@ qTest <- FALSE
 #' @param lat \code{character}, column name of the latitudes.
 #' @param q Minimum occupancy with \code{q} proportion of occurrences.
 #' @param full Logical switch indicating whether only estimate should be shown (\code{FALSE}), or other info as well.
+#' @param ... Additional arguments passed to class-specific methods.
 #' @return Either a single numeric or a list with an estimate and other information.
 #' @rdname occupancy
 #' @export

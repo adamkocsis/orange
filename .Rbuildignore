@@ -13,3 +13,4 @@ vignettes/1_installation.Rmd
 ^pkgdown$
 _demo/
 man/figures/range_example.png
+tests/

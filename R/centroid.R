@@ -12,7 +12,7 @@ qTest <- FALSE
 #' @param plot.args List arguments passed to the plotting function: \code{points}.
 #' @param long \code{character}, column name of the longitudes.
 #' @param lat \code{character}, column name of the latitudes.
-#' @param q Minimum occupancy with \code{q} proportion of occurrences.
+#' @param ... Additional arguments passed to class-specific methods.
 #' @return Either a single numeric or a list with an estimate and other information.
 #' @rdname centroid
 #' @export
@@ -61,7 +61,7 @@ setMethod(
 			if(is.null(plot.args)) plot.args <- list(col="#BB0000", pch=16, cex=2)
 			arguments <- c(list(x=matrix(cent, ncol=2)), plot.args)
 			# if no plots are open yet, make one!
-			if(dev.cur()<=1) plot(x)
+			if(grDevices::dev.cur()<=1) plot(x)
 			do.call(points, arguments)
 		}
 		return(cent)

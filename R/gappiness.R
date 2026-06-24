@@ -99,7 +99,7 @@ setMethod(
 			if(is.null(plot.args)) plot.args <- list(col="#BB000055", lwd=2, border="white")
 			arguments <- c(list(x=s, y=result$occupied), plot.args)
 			# if no plots are open yet, make one!
-			if(dev.cur()<=1) plot(x)
+			if(grDevices::dev.cur()<=1) plot(x)
 			do.call(plot, arguments)
 		}
 		# streamline output

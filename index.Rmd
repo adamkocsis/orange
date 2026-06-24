@@ -59,7 +59,7 @@ png("man/figures/range_example.png", width=1400,height=800)
 
 	# Occupancy on a hexagonal grid
 	hex <- hexagrid(deg=2, sf=TRUE) # from package icosa
-	occ <- occupancy(coords, icosa=hex, plot=TRUE)
+	occ <- occupancy(coords, s=hex, plot=TRUE)
 
 	# minimum spanning tree length
 	mst <- mstlength(coords, plot=TRUE, plot.args=list(lwd=2))
@@ -94,7 +94,7 @@ mgcd <- mgcd(coords, plot=TRUE)
 
 # Occupancy on a hexagonal grid
 hex <- hexagrid(deg=2, sf=TRUE) # from package icosa
-occ <- occupancy(coords, icosa=hex, plot=TRUE)
+occ <- occupancy(coords, s=hex, plot=TRUE)
 
 # Minimum spanning tree length
 mst <- mstlength(coords, plot=TRUE, plot.args=list(lwd=3))

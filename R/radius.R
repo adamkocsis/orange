@@ -1,5 +1,5 @@
 ################################################################################
-# Radius family of extent metrics
+# Radius family of range metrics
 ################################################################################
 
 qTest <- FALSE
@@ -20,6 +20,7 @@ qTest <- FALSE
 #' @param full \code{logical}, should only the estimate (\code{FALSE}) be returned, or additional data as well?(\code{TRUE}).
 #' @param plot Logical, should the result be plotted? Will plot over active plot (as in \code{add=TRUE}).
 #' @param plot.args List arguments passed to the plotting function: \code{sf::plot}.
+#' @param ... Additional arguments passed to class-specific methods.
 #' @return A list with an estimate an two indices the rows of the input matrix that represent the length of the tree (or one of them).
 #' @export
 #' @rdname radius 
@@ -137,7 +138,7 @@ qradius_coords <- function(x, focus, q=1, plot=FALSE, plot.args=NULL, full=FALSE
 	dists <- icosa::arcdistmat(points1=x, points2=matrix(focus, ncol=2))
 
 	# between which points is this observed - technically this can be between more than one pair!
-	estimate <- as.numeric(quantile(dists,q,  na.rm=TRUE))
+	estimate <- as.numeric(stats::quantile(dists,q,  na.rm=TRUE))
 
 	# do this only if necessary
 	if( full | plot ){
@@ -169,7 +170,7 @@ qradius_coords <- function(x, focus, q=1, plot=FALSE, plot.args=NULL, full=FALSE
 			do.call(icosa::arcs, arguments)
 
 			# draft the small circle
-			circ <- smallcircles(x=focus, r=estimate)
+			circ <- sc_shape(x=focus, r=estimate)
 			arcs(circ, lty=2)
 			
 		}

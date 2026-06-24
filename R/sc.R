@@ -1,3 +1,5 @@
+
+
 # getting a cross product
 create3D <- function(x) head(c(x, rep(0, 3)), 3)
 cross <- function(x, y, i=1:3) {
@@ -5,6 +7,35 @@ cross <- function(x, y, i=1:3) {
   y <- create3D(y)
   j <- function(i) (i-1) %% 3+1
   return (x[j(i+1)]*y[j(i+2)] - x[j(i+2)]*y[j(i+1)])
+}
+
+
+# return the z coordinate for an x and y coordinate pair for a plane defined by 3 points in planePoints
+# @param x a vector of x coordinates
+# @param y a vector of y coordinates
+# @planePoints A 3-by-3 matrix of three points in given as xyz coordinates (in columns)
+# @return the z coordinate on the plane
+planez<- function(x, y, planePoints){
+
+	# the points
+	P1 <- planePoints[1,]
+	P2 <- planePoints[2,]
+	P3 <- planePoints[3,]
+
+	# 1st find the Omega: the origin's projection in the plane
+	A <- P2-P1
+	B <- P3-P1
+
+	# get the normal
+	n <- cross(A,B)
+	n <- n / sqrt(sum(n^2))
+	k <- 0 - sum(n*P1)
+
+	# the z coordinate on the  plane
+	z <- (0-n[1]*x - n[2]*y -k)/n[3]
+
+	# does not give good answers when n[3]=0, i.e. when the plane is parallel to z!!
+	return(z)
 }
 
 #' Identify the center of a small circle based on three points of a sphere
@@ -16,15 +47,15 @@ cross <- function(x, y, i=1:3) {
 #' @examples
 #' # generate 3 points on a sphere
 #' ps <- icosa::rpsphere(3, output="polar")
-#' small <- circumcenter(x=ps)
-#' circle<- smallcircles(x=small$center, r=small$r, output="polar")
+#' small <- sc_center(x=ps)
+#' circle<- sc_shape(x=small$center, r=small$r, output="polar")
 #'
 #' plot(NULL, NULL, xlim=c(-180, 180), ylim=c(-90, 90))
 #' points(ps, col="red", pch=3, cex=4)
 #' points(small$center, col="blue", pch=16)
 #' points(circle, col="green", pch=16)
 #' @export
-circumcenter <- function(x, origin=c(0,0,0), output="polar"){
+sc_center <- function(x, origin=c(0,0,0), output="polar"){
 
 #	origin <- c(0, 0,0)
 	# translate the Cartesian
@@ -33,6 +64,7 @@ circumcenter <- function(x, origin=c(0,0,0), output="polar"){
 	}else{
 		three <- x
 	}
+	if(nrow(x)!=3) stop("Exactly 3 points are required for this method.")
 
 
 	# the points
@@ -68,10 +100,9 @@ circumcenter <- function(x, origin=c(0,0,0), output="polar"){
 	return(list(center=surfaceCenter, r=dis))
 }
 
-authRadius <- icosa:::authRadius
 
 # create small circle
-standardSmallCircle <- function(rad, n, radius=authRadius){
+standardSmallCircle <- function(rad, n, radius=6371.007){
 	# the center of the circle
 	x <- cos(rad)*radius
 
@@ -107,7 +138,7 @@ standardSmallCircle <- function(rad, n, radius=authRadius){
 #' The setting output="cartesian" will return the 3D cartesian coordinates of the small circles in an array. The option output="sf" will return an sfc geometry collection.
 #' @return Either a numeric array or and sfc geometry collection.
 #' @export
-smallcircles <- function(x="random", r=NULL, r.ex=NULL, r.rad=NULL, r.deg=NULL, n=NULL, breaks=100,radius=authRadius, origin=c(0,0,0), output="polar", sf.type="polygon", sf.wrap.dateline=TRUE, drop=TRUE){
+sc_shape <- function(x="random", r=NULL, r.ex=NULL, r.rad=NULL, r.deg=NULL, n=NULL, breaks=100,radius=6371.007, origin=c(0,0,0), output="polar", sf.type="polygon", sf.wrap.dateline=TRUE, drop=TRUE){
 
 ## x="random"
 ## r=NULL
@@ -204,4 +235,55 @@ smallcircles <- function(x="random", r=NULL, r.ex=NULL, r.rad=NULL, r.deg=NULL, 
 
 	return(results)
 
+}
+
+#' Identify whether a given set of points is in, on or out of a small circle
+#'
+#' @param x A set of points to be determined a matrix of longtidues and latitudes.
+#' @param center The center of a small circle
+#' @param r The surface radius of a small circle.
+#' @param origin The origin of the sphere.
+#' @return A numeric vector indicating whether the points are in (1), on (0) or outside of the small circle.
+#' @examples
+#' # generate 3 points on a sphere
+#' ps <- icosa::rpsphere(3, output="polar")
+#' small <- sc_center(x=ps)
+#' circle<- sc_shape(x=small$center, r=small$r, output="polar")
+#'
+#' plot(NULL, NULL, xlim=c(-180, 180), ylim=c(-90, 90))
+#' points(ps, col="red", pch=3, cex=4)
+#' points(small$center, col="blue", pch=16)
+#' points(circle, col="green", pch=16)
+#' @export
+sc_in <- function(x, center, r,  origin=c(0,0,0)){
+
+	# if the center is given as longlat, change to cartesian
+	if(ncol(x)==2){
+		xCart <- icosa::PolToCar(x)
+	}else{
+		xCart <- x
+	}
+	# if the center is given as longlat, change to cartesian
+	if(ncol(center)==2){
+		centerCart <- icosa::PolToCar(center)
+	}else{
+		centerCart <- center
+	}
+
+	# create 3 points on the small circle to get the plane - could be made faster
+	three <- sc_shape(x=centerCart, r=r, breaks=4, output="cartesian", origin=origin)[1:3, ]
+
+	# direction of the center either positive or negative
+	centerDir <- sign(centerCart[3]-planez(centerCart[1], centerCart[2], planePoints=three))
+
+	# the points
+	pointDir <- sign(xCart[,3] - planez(xCart[,1], xCart[,2], planePoints=three))
+
+	# should give 0s when the small circle coords are fed to the function!
+	res <- rep(NA, nrow(xCart))
+
+	res[pointDir==centerDir] <- 1
+	res[pointDir!=centerDir] <- -1
+	res[pointDir==0] <- 0
+	return(res)
 }

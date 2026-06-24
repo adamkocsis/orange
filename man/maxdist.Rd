@@ -41,6 +41,8 @@ mgcd(x, ...)
 
 \item{icosa}{An icosahedral grid object the inherits from the \code{trigrid} class. Providing this argumnet reduces the point cloud to the centers of the grid cells. (not yet)}
 
+\item{...}{Additional arguments passed to class-specific methods.}
+
 \item{dm}{If there is a pre-made distance matrix, it can be plugged in here. If this is provided, the default coordinates will not be used.}
 
 \item{long}{\code{character}, column name of the longitudes.}

@@ -30,6 +30,8 @@ centroid(x, ...)
 \arguments{
 \item{x}{Eiher a 2-column numeric matrix with two columns: longitudes and latitudes, or a \code{data.frame} with these columns.}
 
+\item{...}{Additional arguments passed to class-specific methods.}
+
 \item{long}{\code{character}, column name of the longitudes.}
 
 \item{lat}{\code{character}, column name of the latitudes.}
@@ -39,8 +41,6 @@ centroid(x, ...)
 \item{plot.args}{List arguments passed to the plotting function: \code{points}.}
 
 \item{tax}{\code{character}, used only in the \code{data.frame} method. Column name of groups (e.g. taxa) that allows the iteration of the method for multiple groups.}
-
-\item{q}{Minimum occupancy with \code{q} proportion of occurrences.}
 }
 \value{
 Either a single numeric or a list with an estimate and other information.

@@ -19,6 +19,7 @@
 #' @param plot Logical, should the result be plotted? Will plot over active plot (as in \code{add=TRUE}).
 #' @param icosa An icosahedral grid object the inherits from the \code{trigrid} class. Providing this argumnet reduces the point cloud to the centers of the grid cells. (not yet)
 #' @param plot.args List arguments passed to the plotting function: \code{sf::plot}.
+#' @param ... Additional arguments passed to class-specific methods.
 #' @return A list with an estimate an two indices the rows of the input matrix that represent the longest great circle (or one of them).
 #' @export
 #' @rdname maxdist 
@@ -172,7 +173,7 @@ maxdist_coords <- function(x, dm, q=1, plot=FALSE, plot.args=NULL, full=FALSE){
 		if(plot){
 			if(is.null(plot.args)) plot.args <- list(col="#550000", lwd=3)
 			arguments <- c(list(x=x[where, ]), plot.args)
-			if(dev.cur()==1) plot(x, pch=16)
+			if(grDevices::dev.cur()==1) plot(x, pch=16)
 			do.call(icosa::arcs, arguments)
 		}
 
