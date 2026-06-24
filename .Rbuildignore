@@ -6,8 +6,7 @@ README.html
 index.md
 index.Rmd
 index.html
-vignettes/specifications.Rmd
-vignettes/1_installation.Rmd
+vignettes/*
 ^_pkgdown\.yml$
 ^docs$
 ^pkgdown$

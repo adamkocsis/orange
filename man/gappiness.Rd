@@ -3,11 +3,24 @@
 \name{gappiness}
 \alias{gappiness}
 \alias{gappiness,character,trigrid-method}
+\alias{gappiness,matrix,trigrid-method}
 \title{The gappiness a of shape}
 \usage{
 gappiness(x, s, ...)
 
 \S4method{gappiness}{character,trigrid}(x, s, exclude = NULL, full = FALSE)
+
+\S4method{gappiness}{matrix,trigrid}(
+  x,
+  s,
+  long = NULL,
+  lat = NULL,
+  duplicates = FALSE,
+  plot = FALSE,
+  plot.args = NULL,
+  full = FALSE,
+  exclude = NULL
+)
 }
 \arguments{
 \item{x}{The list of faces that are part of the shape.}
@@ -19,6 +32,16 @@ gappiness(x, s, ...)
 \item{exclude}{The list of faces that is to be excluded from the calculation}
 
 \item{full}{\code{logical}, should only the estimate (\code{FALSE}) be returned, or additional data as well?(\code{TRUE}).}
+
+\item{long}{\code{character}, column name of the longitudes.}
+
+\item{lat}{\code{character}, column name of the latitudes.}
+
+\item{duplicates}{\code{logical}, should identical coordinates be included in the calculation (default is \code{FALSE})}
+
+\item{plot}{Logical, should the result be plotted? Will plot over active plot (as in \code{add=TRUE}), if here is any.}
+
+\item{plot.args}{List arguments passed to the plotting function: \code{plot}.}
 }
 \value{
 A proportion that gives the ratio of hole-cells compared to all occupied cells.

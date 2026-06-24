@@ -36,6 +36,8 @@ centroid(x, ...)
 
 \item{lat}{\code{character}, column name of the latitudes.}
 
+\item{duplicates}{\code{logical}, should identical coordinates be included in the calculation (default is \code{FALSE}).}
+
 \item{plot}{Logical, should the result be plotted? Will plot over active plot (as in \code{add=TRUE}), if here is any.}
 
 \item{plot.args}{List arguments passed to the plotting function: \code{points}.}

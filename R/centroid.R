@@ -12,6 +12,7 @@ qTest <- FALSE
 #' @param plot.args List arguments passed to the plotting function: \code{points}.
 #' @param long \code{character}, column name of the longitudes.
 #' @param lat \code{character}, column name of the latitudes.
+#' @param duplicates \code{logical}, should identical coordinates be included in the calculation (default is \code{FALSE}).
 #' @param ... Additional arguments passed to class-specific methods.
 #' @return Either a single numeric or a list with an estimate and other information.
 #' @rdname centroid

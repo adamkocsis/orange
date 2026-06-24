@@ -47,6 +47,8 @@ occupancy(x, s, ...)
 
 \item{...}{Additional arguments passed to class-specific methods.}
 
+\item{tax}{\code{character}, used only in the \code{data.frame} method. Column name of groups (e.g. taxa) that allows the iteration of the method for multiple groups.}
+
 \item{long}{\code{character}, column name of the longitudes.}
 
 \item{lat}{\code{character}, column name of the latitudes.}

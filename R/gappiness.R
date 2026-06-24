@@ -4,6 +4,11 @@
 #'
 #' @param x The list of faces that are part of the shape.
 #' @param s Spatial discretization strucutre (currently only \code{trigrid}-class icosahedral grid).
+#' @param long \code{character}, column name of the longitudes.
+#' @param plot Logical, should the result be plotted? Will plot over active plot (as in \code{add=TRUE}), if here is any.
+#' @param duplicates \code{logical}, should identical coordinates be included in the calculation (default is \code{FALSE})
+#' @param plot.args List arguments passed to the plotting function: \code{plot}.
+#' @param lat \code{character}, column name of the latitudes.
 #' @param full \code{logical}, should only the estimate (\code{FALSE}) be returned, or additional data as well?(\code{TRUE}).
 #' @param ... Arguments passed to class-specific methods.
 #' @param exclude The list of faces that is to be excluded from the calculation
@@ -62,7 +67,7 @@ setMethod(
 
 
 # coordinate pairs - relies on the character method
-#' @rdname latrange
+#' @rdname gappiness
 setMethod(
 	"gappiness",
 	signature=c(x="matrix", s="trigrid"),

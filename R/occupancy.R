@@ -8,6 +8,7 @@ qTest <- FALSE
 #'
 #' @param x Eiher a 2-column numeric matrix with two columns: longitudes and latitudes, or a \code{data.frame} with these columns.
 #' @param s Structure to be occupied, either \code{NULL} (coordinate pairs), \code{character} (column name indicating locality) or a \code{trigrid} (icosahedral grid from the package icosa).
+#' @param tax \code{character}, used only in the \code{data.frame} method. Column name of groups (e.g. taxa) that allows the iteration of the method for multiple groups.
 #' @param plot Logical, should the result be plotted? Will plot over active plot (as in \code{add=TRUE}).
 #' @param plot.args List arguments passed to the plotting function: \code{lines}.
 #' @param long \code{character}, column name of the longitudes.

@@ -13,7 +13,7 @@ Date: 2026-06-24
 BugReports: https://github.com/adamkocsis/orange/issues
 Encoding: UTF-8
 LazyData: false
-URL: https://adamkocsis.github.io/orange
+URL: https://adamtkocsis.com/orange/
 Depends:
     R (>= 4.0.0),
 	icosa (>= 0.12.0)

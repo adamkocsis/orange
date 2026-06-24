@@ -15,6 +15,7 @@ This is still the pre-alpha version. Notes about found bugs and suggestions are 
 \seealso{
 Useful links:
 \itemize{
+  \item \url{https://adamtkocsis.com/orange/}
   \item Report bugs at \url{https://github.com/adamkocsis/orange/issues}
 }
 

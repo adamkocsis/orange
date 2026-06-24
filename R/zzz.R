@@ -20,5 +20,6 @@
 #' @importFrom graphics points
 #' @importFrom stats as.dist
 #' @importFrom stats quantile
+#' @importFrom methods setMethod
 #' @import icosa
 NULL

@@ -14,9 +14,8 @@ qTest <- FALSE
 #' @param q \code{numeric}, a value between 0 and 1, the quantile.
 #' @param plot Logical, should the result be plotted? Will plot over active plot (as in \code{add=TRUE}), if here is any.
 #' @param plot.args List arguments passed to the plotting function: \code{points}.
-#' @param plot.args List arguments passed to the plotting function: \code{sf::plot}.
-#' @param long \code{character}, column name of the longitudes.
-#' @param lat \code{character}, column name of the latitudes.
+#' @param full \code{logical}, should only the estimate (\code{FALSE}) be returned, or additional data as well?(\code{TRUE}).
+#' @param ... Arguments passed to class-specific methods.
 #' @return Either a single numeric or a list with an estimate and other information. If iterated using `tax`, then either a named vector or list of lists.
 #' @rdname latrange
 #' @export

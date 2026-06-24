@@ -41,6 +41,10 @@ sc_shape(
 
 \item{output}{Output structure for the function. The value output="polar" will return the polar (longitude-latitude) coordinates of the small circles in an array.}
 
+\item{sf.type}{The type of sf object to be returned.}
+
+\item{sf.wrap.dateline}{Argument indicating whether returned sf object should be wrapped around the dateline.}
+
 \item{drop}{If there is a single small circle to generate, should its array wrapper be dropped?
 The setting output="cartesian" will return the 3D cartesian coordinates of the small circles in an array. The option output="sf" will return an sfc geometry collection.}
 }

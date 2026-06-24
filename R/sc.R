@@ -136,6 +136,8 @@ standardSmallCircle <- function(rad, n, radius=6371.007){
 #' @param output Output structure for the function. The value output="polar" will return the polar (longitude-latitude) coordinates of the small circles in an array.
 #' @param drop If there is a single small circle to generate, should its array wrapper be dropped?
 #' The setting output="cartesian" will return the 3D cartesian coordinates of the small circles in an array. The option output="sf" will return an sfc geometry collection.
+#' @param sf.type The type of sf object to be returned.
+#' @param sf.wrap.dateline Argument indicating whether returned sf object should be wrapped around the dateline.
 #' @return Either a numeric array or and sfc geometry collection.
 #' @export
 sc_shape <- function(x="random", r=NULL, r.ex=NULL, r.rad=NULL, r.deg=NULL, n=NULL, breaks=100,radius=6371.007, origin=c(0,0,0), output="polar", sf.type="polygon", sf.wrap.dateline=TRUE, drop=TRUE){
