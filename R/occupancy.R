@@ -54,7 +54,15 @@ setMethod(
 		# if locality is given
 		y <- x
 		if(!is.null(long) & !is.null(lat)) y <- x[,c(long, lat)]
-		 y <- unique(y)
+		if(ncol(y)!=2) stop ("You must provide a 2-column matrix!")
+		# ensure missing values are omitted
+		b1 <- !is.na(y[,1])
+		b2 <- !is.na(y[,2])
+
+		if(sum(b1)!=sum(b2)) warning("Some coordinate pairs are missing partially, they are omitted!")
+		
+		y <- y[b1 & b2, , drop=FALSE]
+		 y  <- unique(y)
 		# the result
 		resNum <- nrow(y)
 		return(resNum)
