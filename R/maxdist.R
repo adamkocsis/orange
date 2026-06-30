@@ -17,7 +17,7 @@
 #' @param dm If there is a pre-made distance matrix, it can be plugged in here. If this is provided, the default coordinates will not be used.
 #' @param full \code{logical}, should only the estimate (\code{FALSE}) be returned, or additional data as well?(\code{TRUE}).
 #' @param plot Logical, should the result be plotted? Will plot over active plot (as in \code{add=TRUE}).
-#' @param icosa An icosahedral grid object the inherits from the \code{trigrid} class. Providing this argumnet reduces the point cloud to the centers of the grid cells. (not yet)
+#' @param s Substitute spatial structure. An icosahedral grid object the inherits from the \code{trigrid} class. Providing this argumnet reduces the point cloud to the centers of the grid cells. (not yet)
 #' @param plot.args List arguments passed to the plotting function: \code{sf::plot}.
 #' @param ... Additional arguments passed to class-specific methods.
 #' @return A list with an estimate an two indices the rows of the input matrix that represent the longest great circle (or one of them).
@@ -38,7 +38,7 @@
 setGeneric(
 	name="maxdist",
 	package="orange",
-	def=function(x, icosa, ...){
+	def=function(x, s, ...){
 		standardGeneric("maxdist")
 	}
 
@@ -53,7 +53,7 @@ mgcd <- function(x, ...){
 #' @rdname maxdist 
 setMethod(
 	"maxdist",
-	signature=c(x="matrix", icosa="missing"),
+	signature=c(x="matrix", s="missing"),
 	definition=function(x, dm=NULL, long=NULL, lat=NULL, duplicates=FALSE, plot=FALSE, plot.args=NULL, full=FALSE, q=1){
 
 
@@ -61,7 +61,11 @@ setMethod(
 		if(!is.null(long) | !is.null(lat)) x <- x[, c(long, lat), drop=FALSE]
 
 		# create a copy
-		if(full) xOrig <- x
+		if(full){
+			n <- nrow(x)
+			origRows <- rownames(x)
+			rownames(x) <- 1:n
+		}
 
 		# if given
 		if(!duplicates) x <- unique(x)
@@ -93,13 +97,12 @@ setMethod(
 
 		# translate the indices to the original
 		if(full){
-			# the first point's first match
-			result$index <- c(
-				which(x[result$index[1,1],1] == xOrig[,1] & x[result$index[1,1],2] == xOrig[,2])[1], 
-				which(x[result$index[1,2],1] == xOrig[,1] & x[result$index[1,2],2] == xOrig[,2])[1]
+			name1 <- rownames(x)[result$index[1,1]]
+			name2 <- rownames(x)[result$index[1,2]]
+			result$index<-c(
+				which(1:n==as.integer(name1)),
+				which(1:n==as.integer(name2))
 			)
-			# get rid of the names
-			names(result$index) <- NULL
 		}
 
 		return(result)
@@ -110,27 +113,53 @@ setMethod(
 #' @rdname maxdist 
 setMethod(
 	"maxdist",
-	signature=c(x="data.frame", icosa="missing"),
-	definition=function(x, long="long", lat="lat", tax=NULL, dm=NULL, duplicates=FALSE, q=1, plot=FALSE, plot.args=NULL, full=FALSE){
+	signature=c(x="data.frame", s="missing"),
+	definition=function(x, long="long", lat="lat", tax=NULL, dm=NULL, duplicates=FALSE, q=1, plot=FALSE, plot.args=NULL, full=FALSE, listout=FALSE){
 		# the same as the matrix method
 		if(is.null(tax)){
 			x <- as.matrix(x[, c(long, lat)])
 			result <- maxdist(x, long=long, lat=lat, duplicates=duplicates, dm=dm,
 				q=q, plot=plot, plot.args=plot.args, full=full)
 		}else{
-			if(full) stop("Full output not yet implemented for tax-wise iteration.")
+			#if(full) stop("Full output not yet implemented for tax-wise iteration.")
 			if(is.null(dm)){
+				# create rownames from row index to identify coordinate pairs
+				coordDF <-x[, c(long, lat)]
+				rownames(coordDF) <- 1:nrow(coordDF)
 				result <- tapply(
 					INDEX=x[,tax],
-					X=x[, c(long, lat)],
+					X=coordDF,
 					FUN=function(a){
-
 						# get rid of unnecessary recursion
 						a <- as.matrix(a)
-						result <- maxdist(a, long=long, lat=lat, duplicates=duplicates, dm=dm,
+						resint <- maxdist(a, long=long, lat=lat, duplicates=duplicates, dm=dm,
 							q=q, plot=plot, plot.args=plot.args, full=full)
+						if(full){
+							ind <- as.integer(rownames(a))[resint$index] 
+							dim(ind) <- dim(resint$index)
+							resint$index <- ind
 						}
+						return(resint)
+					}
+					# in case the the output should not be a list, transform into a data frame for easy manipulation
+				)
+				if(full & !listout){
+					df <- data.frame(
+						estimate=rep(0, length(result)),
+						index1=rep(0, length(result)),
+						index2=rep(0, length(result))
 					)
+					rownames(df) <- names(result)
+
+					for(i in 1:length(result)){
+						df$estimate[i] <- result[[i]]$estimate 
+						df$index1[i] <- result[[i]]$index[1]
+						df$index2[i] <- result[[i]]$index[2]
+					}
+					result <- df
+					
+
+				}
 			# the distance matrix needs to be spliced!, and the 
 			}else{
 				stop("Not yet!")

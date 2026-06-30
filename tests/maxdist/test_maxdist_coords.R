@@ -30,6 +30,14 @@ remanual <- arcdist(
 expect_equal(mdFull$estimate, remanual)
 
 
+# Full-output must work properly even when the matrix is gappy!
+matNA <- mat
+matNA[2, ] <- NA
+expect_silent(mdFullNA <- maxdist(matNA, full=TRUE))
+expect_equal(mdFullNA, mdFull)
+
+
+
 # should be the same with duplicates, add a duplicate manually for testing
 matDupl <- rbind(mat[1,], mat)
 expect_silent(mdDup <- maxdist(matDupl, duplicates=TRUE))
@@ -109,8 +117,21 @@ colnames(df) <- c("long", "lat")
 expect_silent(mdDFdefault <- maxdist(df))
 expect_equal(mdDFdefault, md)
 
+
+
+
+
+
+
+
+
+
+
+
+
 ################################################################################
-# Data.frame - taxon iteration
+# II. Data.frame - taxon iteration
+################################################################################
 # the corals
 gen <- levels(factor(corals$genus))
 mdTaxManual <- rep(NA, length(gen))
@@ -145,11 +166,23 @@ expect_equal(mdTax, mdTaxManual)
 ################################################################################
 
 # The full output - not yet
-expect_error(maxdist(x=corals, long="lng", lat="lat", tax="genus", full=TRUE ))
-# The indices of the output needs to be properly set
-## expect_silent(mdTaxList <- maxdist(x=corals, long="lng", lat="lat", tax="genus", full=TRUE ))
-## expect_true(is.list(mdTaxList))
-## expect_equal(mdTaxList, mdTaxListManual)
+expect_silent(mdTaxFull <- maxdist(x=corals, long="lng", lat="lat", tax="genus", full=TRUE ))
+
+# test listout
+est <- mdTaxFull$estimate
+dim(est) <- length(est)
+names(est) <- rownames(mdTaxFull)
+expect_equal(est, mdTax)
+
+
+# test the indices thes should yield the correct estimates!
+for(i in 1:nrow(mdTaxFull)){
+	cur1 <- mdTaxFull[i,2]
+	cur2 <- mdTaxFull[i,3]
+	here <- maxdist(corals[c(cur1, cur2), c("lng", "lat")], long="lng", lat="lat",  )
+	expect_equal(here, mdTaxFull[i,1])
+}
+
 
 
 # Full output with a given distance matrix
