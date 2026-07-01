@@ -27,9 +27,11 @@ qTest <- FALSE
 #' @examples
 #' # 1. Records
 #' data(pinna)
+#' # Subset to Pinna nobilis
+#' nobilis <- pinna[pinna$species=="Pinna nobilis", ]
 #'
 #' # 2. calculate and visualize
-#' rad <- radius(pinna, long="decimallongitude", lat="decimallatitude", plot=TRUE, full=TRUE)
+#' rad <- radius(nobilis, long="decimalLongitude", lat="decimalLatitude", plot=TRUE, full=TRUE)
 #'
 setGeneric(
 	name="radius",

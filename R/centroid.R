@@ -24,9 +24,10 @@ qTest <- FALSE
 #'
 #' # 2. Records
 #' data(pinna)
+#' nobilis <- pinna[pinna$species=="Pinna nobilis", ]
 #'
 #' # Number of unique coordinate pairs
-#' cent <- centroid(pinna, long="decimallongitude", lat="decimallatitude")
+#' cent <- centroid(nobilis, long="decimalLongitude", lat="decimalLatitude")
 #'
 #' points(cent, col="darkred", pch=3, lwd=4, cex=4)
 setGeneric(

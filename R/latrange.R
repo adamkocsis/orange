@@ -22,10 +22,12 @@ qTest <- FALSE
 #' @examples
 #' # 1. Records
 #' data(pinna)
-#' plot(pinna[c("decimallongitude", "decimallatitude")], pch=16, col="#00BBAA66")
+#' # Subset to Pinna nobilis
+#' nobilis <- pinna[pinna$species=="Pinna nobilis", ]
+#' plot(nobilis[c("decimalLongitude", "decimalLatitude")], pch=16, col="#00BBAA66")
 #'
 #' # Number of unique coordinate pairs
-#' lr <- latrange(pinna, long="decimallongitude", lat="decimallatitude", full=TRUE)
+#' lr <- latrange(nobilis, long="decimalLongitude", lat="decimalLatitude", full=TRUE)
 #'
 #' abline(h=lr$range, col="darkred", lty=3, lwd=4)
 setGeneric(

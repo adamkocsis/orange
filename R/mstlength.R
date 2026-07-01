@@ -27,9 +27,11 @@ qTest <- FALSE
 #' @examples
 #' # 1. Records
 #' data(pinna)
+#' # Subset to Pinna nobilis
+#' nobilis <- pinna[pinna$species=="Pinna nobilis", ]
 #'
 #' # 2. calculate and visualize
-#' mst <- mstlength(pinna, long="decimallongitude", lat="decimallatitude", plot=TRUE, full=TRUE)
+#' mst <- mstlength(nobilis, long="decimalLongitude", lat="decimalLatitude", plot=TRUE, full=TRUE)
 #'
 setGeneric(
 	name="mstlength",

@@ -1,21 +1,41 @@
-#' Occurrences of Pinna nobilis from OBIS
+#' Occurrences of the genus Pinna from OBIS
 #'
-#' Occurrence records downloaded from OBIS on 2024-10-23
+#' Occurrence records downloaded from OBIS on 2026-07-01
 #'
 #' This is an example occurrence record \code{data.frame}.
 #'
 #' @format A \code{data.frame} with 1466 observations and 6 variables:
 #' 	\describe{
-#' 		\item{\code{scientificname}}{Taxon name.}
-#' 		\item{\code{basisofrecord}}{The basis of the record.}
-#' 		\item{\code{date_year}}{Year.}
+#' 		\item{\code{scientificName}}{Taxon name.}
+#' 		\item{\code{species}}{Species name.}
+#' 		\item{\code{basisOfRecord}}{The basis of the record.}
+#' 		\item{\code{year}}{Year.}
 #' 		\item{\code{depth}}{Depth in meters.}
-#' 		\item{\code{decimallongiude}}{Longitude in decimal degrees.}
-#' 		\item{\code{decimallatitude}}{Latitude in decimal degrees.}
+#' 		\item{\code{decimalLongitude}}{Longitude in decimal degrees.}
+#' 		\item{\code{decimalLatitude}}{Latitude in decimal degrees.}
 #' 	}
 #'
 #' @usage data(pinna)
 "pinna"
+
+#' Occurrences of Bradypus variegatus from GBIF
+#'
+#' Occurrence records downloaded from OBIS on 2026-07-01
+#'
+#' This is an example occurrence record \code{data.frame} of a single terrestrial species.
+#'
+#' @format A \code{data.frame} with 1466 observations and 6 variables:
+#' 	\describe{
+#' 		\item{\code{scientificName}}{Taxon name.}
+#' 		\item{\code{species}}{Species name.}
+#' 		\item{\code{basisOfRecord}}{The basis of the record.}
+#' 		\item{\code{elevation}}{Elevation of recors}
+#' 		\item{\code{decimalLongitude}}{Longitude in decimal degrees.}
+#' 		\item{\code{decimalLatitude}}{Latitude in decimal degrees.}
+#' 	}
+#'
+#' @usage data(bradypus)
+"bradypus"
 
 #' Samples generated from various Kent distributions
 #'

@@ -7,7 +7,7 @@
 \alias{maxdist,data.frame,missing-method}
 \title{Calculate ranges with the maximum distance method}
 \usage{
-maxdist(x, icosa, ...)
+maxdist(x, s, ...)
 
 mgcd(x, ...)
 
@@ -33,13 +33,14 @@ mgcd(x, ...)
   q = 1,
   plot = FALSE,
   plot.args = NULL,
-  full = FALSE
+  full = FALSE,
+  listout = FALSE
 )
 }
 \arguments{
 \item{x}{Either a 2D numeric \code{matrix} with two columns: longitudes and latitudes, a \code{data.frame} with the same information.}
 
-\item{icosa}{An icosahedral grid object the inherits from the \code{trigrid} class. Providing this argumnet reduces the point cloud to the centers of the grid cells. (not yet)}
+\item{s}{Substitute spatial structure. An icosahedral grid object the inherits from the \code{trigrid} class. Providing this argumnet reduces the point cloud to the centers of the grid cells. (not yet)}
 
 \item{...}{Additional arguments passed to class-specific methods.}
 
@@ -77,9 +78,11 @@ plot(hex, reset=FALSE, xlim=c(-15, 40), ylim=c(25, 63))
 
 # 2. Records
 data(pinna)
-points(pinna[, c("decimallongitude","decimallatitude")])
+# Subset to Pinna nobilis
+nobilis <- pinna[pinna$species=="Pinna nobilis", ]
+points(nobilis[, c("decimalLongitude","decimalLatitude")])
 
 # 3. calculate and visualize
-mgcd <- maxdist(pinna, long="decimallongitude", lat="decimallatitude", plot=TRUE, full=TRUE)
+mgcd <- maxdist(nobilis, long="decimalLongitude", lat="decimalLatitude", plot=TRUE, full=TRUE)
 
 }

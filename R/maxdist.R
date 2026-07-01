@@ -30,10 +30,12 @@
 #'
 #' # 2. Records
 #' data(pinna)
-#' points(pinna[, c("decimallongitude","decimallatitude")])
+#' # Subset to Pinna nobilis
+#' nobilis <- pinna[pinna$species=="Pinna nobilis", ]
+#' points(nobilis[, c("decimalLongitude","decimalLatitude")])
 #'
 #' # 3. calculate and visualize
-#' mgcd <- maxdist(pinna, long="decimallongitude", lat="decimallatitude", plot=TRUE, full=TRUE)
+#' mgcd <- maxdist(nobilis, long="decimalLongitude", lat="decimalLatitude", plot=TRUE, full=TRUE)
 #'
 setGeneric(
 	name="maxdist",

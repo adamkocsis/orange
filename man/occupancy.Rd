@@ -74,14 +74,16 @@ plot(hex, reset=FALSE, xlim=c(-15, 40), ylim=c(25, 63))
 
 # 2. Records
 data(pinna)
+# Subset to Pinna nobilis
+nobilis <- pinna[pinna$species=="Pinna nobilis", ]
 
 # Number of unique coordinate pairs
-cpairs <- occupancy(pinna, long="decimallongitude", lat="decimallatitude")
+cpairs <- occupancy(nobilis, long="decimalLongitude", lat="decimalLatitude")
 
 # just the coordinates
 
 # 3. calculate and visualize
-occ <- occupancy(pinna, s=hex, plot=TRUE, long="decimallongitude", lat="decimallatitude")
+occ <- occupancy(nobilis, s=hex, plot=TRUE, long="decimalLongitude", lat="decimalLatitude")
 
 # plot(hex, occ$cells, add=TRUE, col="green")
 }

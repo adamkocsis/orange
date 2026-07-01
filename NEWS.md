@@ -1,16 +1,18 @@
 # Change log of the R package 'orange'
 
-# orange 0.1.0-11 - 2026-06-24
+# orange 0.1.0-12 - 2026-07-01
 
 ## Added
 
 - The `kentsamples` data for testing and demonstration.
+- The `bradypus` dataset for testing and demonstration.
 - The `sc_shape` function to calculate points on small circles 
 - The `sc_center` function to calculate a small circle based on points on the sphere
 - The `sc_in` function to calculate whether a bunch of points are inside a small circle or not (based on planes, rather than distances, about 10x faster).
 
 ## Changed
 
+- The `pinna` dataset is now includes all species from the genus.
 - Omitted irrelevant functions from `biodome` (based on an initial screening).
 - Omitted `ranges_` prefix from range calculation functions. 
 - The function `cenrad` was renamed to `radius`
