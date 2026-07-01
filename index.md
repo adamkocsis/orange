@@ -1,7 +1,7 @@
 
 # orange <img src="man/figures/logo.png" align="right" />
 
-[![](https://img.shields.io/badge/devel%20version-0.1.0--8-green.svg)](https://github.com/adamkocsis/orange)
+[![](https://img.shields.io/badge/devel%20version-0.1.0--12-green.svg)](https://github.com/adamkocsis/orange)
 [![](https://www.r-pkg.org/badges/version/orange?color=blue)](https://cran.r-project.org/package=orange)
 [![](http://cranlogs.r-pkg.org/badges/grand-total/orange?color=yellow)](https://cran.r-project.org/package=orange)
 [![CRAN
@@ -40,12 +40,15 @@ ne <- fetch("NaturalEarth", verbose=FALSE)
 
 # some example raw data (Pinna nobilis from OBIS)
 data(pinna)
+nobilis <- pinna[pinna$species=="Pinna nobilis", ]
+
 # only coords
-coords <- unique(pinna[, c("decimallongitude", "decimallatitude")]) 
+coords <- unique(nobilis[, c("decimalLongitude", "decimalLatitude")]) 
 # rename to standard
 colnames(coords) <- c("long", "lat") 
-# omit anomaly 
-coords <- coords[-855, ] 
+
+# omit issue localities
+coords <- coords[-c(127,155), ]
 
 # basic plot
 plot(ne$geometry, reset=FALSE, xlim=c(-15, 40), ylim=c(30, 50),
@@ -77,7 +80,7 @@ mgcd
 occ
 ```
 
-    ## [1] 23
+    ## [1] 25
 
 ------------------------------------------------------------------------
 

@@ -39,13 +39,14 @@ ne <- fetch("NaturalEarth", verbose=FALSE)
 
 # some example data
 data(pinna)
+nobilis <- pinna[pinna$species=="Pinna nobilis", ]
 
 # omit duplicates and rename coordinates
-coords <- unique(pinna[, c("decimallongitude", "decimallatitude")])
+coords <- unique(nobilis[, c("decimalLongitude", "decimalLatitude")])
 colnames(coords) <- c("long", "lat")
 
 # omit issue coordinate
-coords <- coords[-855, ]
+coords <- coords[-c(127,155), ]
 
 
 png("man/figures/range_example.png", width=1400,height=800)
@@ -77,12 +78,15 @@ ne <- fetch("NaturalEarth", verbose=FALSE)
 
 # some example raw data (Pinna nobilis from OBIS)
 data(pinna)
+nobilis <- pinna[pinna$species=="Pinna nobilis", ]
+
 # only coords
-coords <- unique(pinna[, c("decimallongitude", "decimallatitude")]) 
+coords <- unique(nobilis[, c("decimalLongitude", "decimalLatitude")]) 
 # rename to standard
 colnames(coords) <- c("long", "lat") 
-# omit anomaly 
-coords <- coords[-855, ] 
+
+# omit issue localities
+coords <- coords[-c(127,155), ]
 
 # basic plot
 plot(ne$geometry, reset=FALSE, xlim=c(-15, 40), ylim=c(30, 50),
