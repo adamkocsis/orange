@@ -52,7 +52,7 @@ setGeneric(
 setMethod(
 	"occupancy",
 	signature=c(x="matrix", s="missing"),
-	definition=function(x,tax=NULL, long=NULL, lat=NULL){
+	definition=function(x,tax=NULL, long=NULL, lat=NULL, full=FALSE){
 		# if locality is given
 		y <- x
 		if(!is.null(long) & !is.null(lat)) y <- x[,c(long, lat)]
@@ -66,8 +66,16 @@ setMethod(
 		y <- y[b1 & b2, , drop=FALSE]
 		 y  <- unique(y)
 		# the result
-		resNum <- nrow(y)
-		return(resNum)
+		res <- nrow(y)
+		if(full){
+			fullRes <- list(
+				estimate=res,
+				occupied=y
+			)
+
+		}else{
+			return(res)
+		}
 
 	}
 )
@@ -77,22 +85,29 @@ setMethod(
 setMethod(
 	"occupancy",
 	signature=c(x="data.frame", s="missing"),
-	definition=function(x,tax=NULL, long="long", lat="lat"){
+	definition=function(x,tax=NULL, long="long", lat="lat", full=FALSE){
 
 		if(!all(c(long, lat) %in% colnames(x))) stop("The 'long' and 'lat' parameters must be valid column names.")
 		y <- x[,c(tax, long, lat)]
 		y <- unique(y)
 
 		# the result
+		# taxon - iteration
 		if(!is.null(tax)){
-			res <- table(y[, tax])
+			if(!full){
+				res <- table(y[, tax])
+				resNum <- as.numeric(res)
+				names(resNum) <- names(res)
+				return(resNum)
+			}else{
+				stop("It's not gonna suck itself!")
+			}
+		# single taxon 
 		}else{
-			res <- occupancy(as.matrix(y[, c(long, lat)])) 
+			# use the same as the matrix method
+			res <- occupancy(as.matrix(y[, c(long, lat)]), full=full) 
+			return(res)
 		}
-		resNum <- as.numeric(res)
-		names(resNum) <- names(res)
-				
-		return(resNum)
 	}
 )
 
@@ -107,10 +122,14 @@ setMethod(
 		y <- x[,c(tax, s)]
 		y <- unique(y)
 		# make sure that there are no NAs!
-		y <- y[!is.na(y[,tax]) & !is.na(y[,s]) , ]
+		if(!is.null(tax)){
+			 y <- y[!is.na(y[,tax]) & !is.na(y[,s]) , ]
+			# the result
+			res <- table(y[, tax])
+		}else{
+			res <- length(levels(factor(y)))
+		}
 
-		# the result
-		res <- table(y[, tax])
 		resNum <- as.numeric(res)
 		names(resNum) <- names(res)
 
