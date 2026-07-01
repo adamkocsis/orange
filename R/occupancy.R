@@ -15,6 +15,7 @@ qTest <- FALSE
 #' @param lat \code{character}, column name of the latitudes.
 #' @param q Minimum occupancy with \code{q} proportion of occurrences.
 #' @param full Logical switch indicating whether only estimate should be shown (\code{FALSE}), or other info as well.
+#' @param listarray If the full traceable output is required, should this be organized with list-array (native output of tapply).
 #' @param ... Additional arguments passed to class-specific methods.
 #' @return Either a single numeric or a list with an estimate and other information.
 #' @rdname occupancy
@@ -85,7 +86,7 @@ setMethod(
 setMethod(
 	"occupancy",
 	signature=c(x="data.frame", s="missing"),
-	definition=function(x,tax=NULL, long="long", lat="lat", full=FALSE){
+	definition=function(x,tax=NULL, long="long", lat="lat", full=FALSE, listarray=TRUE){
 
 		if(!all(c(long, lat) %in% colnames(x))) stop("The 'long' and 'lat' parameters must be valid column names.")
 		y <- x[,c(tax, long, lat)]
@@ -95,12 +96,29 @@ setMethod(
 		# taxon - iteration
 		if(!is.null(tax)){
 			if(!full){
+				# omit any missing!
+				y <- y[!is.na(y[,long]) & !is.na(y[,lat]) & !is.na(y[,tax]), ] 
 				res <- table(y[, tax])
 				resNum <- as.numeric(res)
 				names(resNum) <- names(res)
 				return(resNum)
 			}else{
-				stop("It's not gonna suck itself!")
+				# if this is to be a list-style output
+				if(listarray){
+					# use a simple tapply to iterate functionally
+					res <- tapply(
+						INDEX=y[, tax],
+						X=y[, c(long, lat)],
+						FUN=function(a){
+							occupancy(a, long=long, lat=lat, full=full)
+						}
+
+					)
+					return(res)
+				}else{
+					stop("Donkey, snow, wine: not yet so fine!")
+				}
+
 			}
 		# single taxon 
 		}else{
@@ -116,7 +134,7 @@ setMethod(
 setMethod(
 	"occupancy",
 	signature=c(x="data.frame", s="character"),
-	definition=function(x,s, tax=NULL){
+	definition=function(x,s, tax=NULL, full=FALSE){
 
 		if(!any(s==colnames(x))) stop("The 'loc' argument must be a column in 'x'.")
 		y <- x[,c(tax, s)]
@@ -126,14 +144,24 @@ setMethod(
 			 y <- y[!is.na(y[,tax]) & !is.na(y[,s]) , ]
 			# the result
 			res <- table(y[, tax])
+			resNum <- as.numeric(res)
+			names(resNum) <- names(res)
+		# no taxon iteration
 		}else{
-			res <- length(levels(factor(y)))
+			occupied <- levels(factor(y))
+			res <- length(occupied)
+			if(full){
+				result <- list(
+					estimate=res,
+					occupied=occupied
+				)
+
+			}else{
+				result <- res
+			}
+
 		}
-
-		resNum <- as.numeric(res)
-		names(resNum) <- names(res)
-
-		return(resNum)
+		return(result)
 
 	}
 )

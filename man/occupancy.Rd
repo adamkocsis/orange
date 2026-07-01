@@ -11,11 +11,18 @@
 \usage{
 occupancy(x, s, ...)
 
-\S4method{occupancy}{matrix,missing}(x, tax = NULL, long = NULL, lat = NULL)
+\S4method{occupancy}{matrix,missing}(x, tax = NULL, long = NULL, lat = NULL, full = FALSE)
 
-\S4method{occupancy}{data.frame,missing}(x, tax = NULL, long = "long", lat = "lat")
+\S4method{occupancy}{data.frame,missing}(
+  x,
+  tax = NULL,
+  long = "long",
+  lat = "lat",
+  full = FALSE,
+  listarray = TRUE
+)
 
-\S4method{occupancy}{data.frame,character}(x, s, tax = NULL)
+\S4method{occupancy}{data.frame,character}(x, s, tax = NULL, full = FALSE)
 
 \S4method{occupancy}{matrix,trigrid}(
   x,
@@ -53,13 +60,15 @@ occupancy(x, s, ...)
 
 \item{lat}{\code{character}, column name of the latitudes.}
 
+\item{full}{Logical switch indicating whether only estimate should be shown (\code{FALSE}), or other info as well.}
+
+\item{listarray}{If the full traceable output is required, should this be organized with list-array (native output of tapply).}
+
 \item{q}{Minimum occupancy with \code{q} proportion of occurrences.}
 
 \item{plot}{Logical, should the result be plotted? Will plot over active plot (as in \code{add=TRUE}).}
 
 \item{plot.args}{List arguments passed to the plotting function: \code{lines}.}
-
-\item{full}{Logical switch indicating whether only estimate should be shown (\code{FALSE}), or other info as well.}
 }
 \value{
 Either a single numeric or a list with an estimate and other information.
