@@ -1,7 +1,6 @@
 ---
 title: "Specifications"
-description: >
-  Design and overview of orange. 
+description: "Design and overview of orange."
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Specifications}
@@ -59,22 +58,33 @@ Although many metrics defined here have been available in simple application sce
 
 ### Primary input: distribution sample
 
-The functions of metrics are S4 methods that are implemented for multiple primary data input classes. The primary input is (following R tradition) parametrized as `x`. The `x` parameter can be any of the following can be following input data structures:
+The functions of metrics are S4 methods that are implemented for multiple primary data input classes. The primary input is (following R tradition) parametrized as `x`. The `x` parameter can be any of the following input data structures:
 
 - *coordmat*: A two-column tabular structure that inherits from `matrix`. The simplest input format, implies long-lat for the two columns.
-- *coorddat*: A `data.frame` with geographic coordinates. The column of coordinates need to be specified, they default to `long="long"` and `lat="lat"`.  
+- *coorddat*: A `data.frame` with geographic coordinates. The column of coordinates need to be specified, they default to `long="long"` and `lat="lat"`, but these can be specified. May contain subsets (implied: different taxa), for which most functions support iteration ( `tax` is the index for this). 
 - *sfpoints*: A multipoint object, either of classes `sf` or `sfc`. 
-- *sfpolygons*: A multipolygon class object `sf` or `sfc`. 
-- *icell*: Vector of cell identifiers of an icosahedral grid (`icosa::hexagrid` or `icosa::trigrid`), a `character` vector. Note that these can only be used together with an `igrid` type icosahedral grid. 
+- *sf-polygons*: A multipolygon class object `sf` or `sfc`. 
+- *icell*: Vector of cell identifiers of an icosahedral grid (`icosa::hexagrid` or `icosa::trigrid`), a `character` vector. Note that these can only be used together with an `s=icosa` type icosahedral grid. 
 - *rast*: A `SpatRaster` class object defined in the `terra` package.
 
-Note that the input types *coordmat* -> *coorddat* -> *sfpoints* represent a natural order of promotion. If a method is described for a lower rank type, it is automatically assumed that without the addition of other parameters, the methods for the higher-rank types are implemented as well.
-
+Note that the input types *coordmat* -> *coorddat* -> *sfpoints* represent a natural order of promotion. If a method is described for a lower rank type, it is automatically assumed that without the addition of other parameters, the methods for the higher-rank types are implemented as well. Arguments based on sf are not yet supported, they will be included later.
 
 In case of some input types, specific components can be specified with the following parameters.
 - `long`: Column name indicating longitudes (`character`) 
 - `lat`: Column name indicating latitudes (`character`) 
-- `tax`: Column name indicating taxa, or other functional units that can be used to split a dataset.
+- `tax`: Column name indicating taxa, or other functional units that can be used to split a dataset and the calculation of a metric to be iterated with it.
+
+* * *
+
+### Secondary input: spatial structures 
+
+Many methods either rely or can incorporate additional spatial structures to interact with the original distribution data. These pre-specified structures are denoted with `s`. This parameter might have a pivotal influence on how a metric behaves. For example `occupancy` is defined in most cases as how much of `s` is occupied by `x`. In other cases, `s` can be used as a discretization substitute for the original data `x`, for example, by replacing the original point distribution data with the centers of cells in an icosahedral grid. The different types of `s` include:
+
+- `missing`: If `s` is an parameter of a function, then there might be cases when spatial structuring is implied. 
+- `character`: Used when a `x=coorddat`, a column name that included implied structure, such as locality names.
+- `icosa`: An icosahedral grid object defined with either `icosa::trigrid` or the derived class `icosa::hexagrid`.  
+- `sf-polygons`: an sf/sfc class object that includes polygons.
+- `rast`: A SpatRaster-type object.
 
 * * *
 
@@ -82,12 +92,10 @@ In case of some input types, specific components can be specified with the follo
 
 This is a list of additional parameters that may be necessary for some metrics.  
 
-- `s`: A pre-specified structure. 
-- `sf`: A 'simple feature' type object, usually a polygon or multipolygon style object with class `sf` or `sfc`
 - `p`: Geographic coordinates (long, lat) of a single point given as a two-column matrix. 
-- `icosa`: An icosahedral grid object defined with either `icosa::trigrid` or the derived class `icosa::hexagrid`.  
 - `mask`: Another spatial structure that allows the exclusion of a certain area from the calculation of a metric.
 - `q`: A single real number in the range of `[0,1]`, expressing confidence or critical interval, `numeric`.
+- `prop`: In some cases this switch can be used to trigger proportional results. 
 - `dm`: A distance matrix that may replace a default distance matrix (e.g. a great circle distance matrix). Frequently used to refine the spatial environment, e.g. consider distances only on water, only on land, etc.
 - `unique`: A logical switch indicating whether duplicate coordinates be omitted before the calculations, which can have effects on the results in some cases (e.g. centroid calculation). For the sake of efficiency and transparency, **this is set to to `TRUE` by default, which means that every coordinate pair is considered only once in the calculations**. The effects can be explored after a deliberate inclusion of duplicates. 
 
@@ -98,7 +106,7 @@ This is a list of additional parameters that may be necessary for some metrics.
 This list of parameters that change the behavior of functions.
 - `full`: Boolean switch indicating whether a single estimate or diagnostic/partial data should be returned from an object.
 - `plot`: Boolean switch indicating whether the standard visualization of the method should be executed or not. Defaults to `FALSE`.
-- `iter`: Natural number indicating the number of iterations to be executed. Usually used for Monte-Carlo estimation-based metrics.
+- `iter`: Natural number indicating the number of iterations to be executed. Usually used for metrics using Monte Carlo estimation.
 
 * * *
 
@@ -106,23 +114,23 @@ This list of parameters that change the behavior of functions.
 
 The default behavior of estimators is to return a single `numeric` value for every distribution, which is the result of the argumentation `full=FALSE`. This can be switched to `TRUE`, which will make range and shape metrics output objects that inherit from the `orange` class. Every `orange` class object must have at least two elements:
 - `$estimate`: The numeric estimate calculated with the function.
-- `$plot`: An expression that can be used to plot the object - not yet!
 - *partials*: Additional list elements that can be used to inspect the accuracy of the method, as well as plotting additional  ftod
 
 
+* * *
+
 ## Metrics and methods
 
-This section systematically treats specific methods and defines them in terms of domain (input parameters) and range (output). 
+This sections deals with some implementation details.
 
-
-### Implementation notes 
+### Function call stack notes 
 
 There are three tiers of functions:
-- 1. **Generics** that defining the names of the methods.
+- 1. **Generics** that define the names of the methods.
 - 2. **Methods** that invoke an internal logic applicable for as set of input classes. 
 - 3. **Internals** that implement a logic.
 
-**Methods** are defined using the rules of S4 method dispatch, based on the arguments `x`, `sf`, 
+**Methods** are defined using the rules of S4 method dispatch, based on the primary arguments `x` and `s`, 
 
 * * *
 
@@ -130,89 +138,117 @@ There are three tiers of functions:
 
 ## Occupancy
 
-The metrics are implemented with the `occupancy` generic function. Occupancy is the numer of spatial structures (`s`) that are occupied by a set of coordinates. These spatial structures can be implied, named localities as well as irregular and regular (grids) sets of spherical polygons.
+The metrics are implemented with the `occupancy` generic function. Occupancy is the number of elements in a spatial structure (`s`) that is indicated to occupied by the distribution object (`x`). These spatial structures can be implied (coordinates), named localities, or irregular and regular (grids) sets of spherical polygons.
 
 ### Overview of occupancy methods
 
-| Status | Method                         | Args                         | Description                                                                                                                                                                           |
-|--------|--------------------------------|------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| ✅     | `x`: *coordmat*  `s`:`missing` |                              | [<small>Number of occupied coordinate pairs </small>](#number-of-occupied-coordinate-pairs)                                                                                           |
-| ✅     | `x`: *coorddat*  `s`:`missing` | `tax`   `long`, `lat`        | [<small>Number of occupied coordinate pairs iterated for taxa</small>](#number-of-occupied-coordinate-pairs-iterated-for-taxa)                                                        |
-| ✅     | `x`: *coorddat*, `s`:`char`    |                              | [<small>Number of occupied named localities</small>](#number-of-occupied-named-localities)                                                                                            |
-| ✅     | `x`: *coorddat*, `s`:`char`    | `tax`                        | [<small>Number of occupied named localities, iterated for taxa</small>](#number-of-occupied-named-localities-iterated-for-taxa)                                                       |
-| ✅     | `x`: *coordmat*, `s`:`icosa`   | `q=1`, `long`, `lat`         | [<small>Occupied grid cells in an icosahedral grid based on point data</small>](#occupied-grid-cells-in-an-icosahedral-grid-based-on-point-data)                                      |
-| ✅     | `x`: *coorddat*, `s`:`icosa`   | `tax`, `q=1`, `long`, `lat`  | [<small>Occupied grid cells in an icosahedral grid based on point data, iterated for taxa</small>](#occupied-grid-cells-in-an-icosahedral-grid-based-on-point-data-iterated-for-taxa) |
-| ❓     | `x`: *coordmat*, `s`:`icosa`   | `q<1`, `method`="min"        | [x](#occupied-grid-cells-in-an-icosahedral-grid,-with-a-confidence-cut-off)                                                                                                           |
-| ❓     | `x`: *coorddat*, `s`:`icosa`   | `tax`, `q<1`, `method`="min" | [x](#occupied-grid-cells-in-an-icosahedral-grid,-with-a-confidence-cut-off-iterated-for-taxa)                                                                                         |
-| ❌     | `x`: *coordmat*, `s`:`sf`      | `q=1`                        | [x](#occupied-polygons-in-an-sf-or-sfc-polygon/multipolygon-object)                                                                                                                   |
-| ❌     | `x`: *coorddat*, `s`:`sf`      | `tax`, `q=1`                 | [x](#occupied-polygons-in-an-sf-or-sfc-polygon/multipolygon-object-iterated-for-taxa)                                                                                                 |
-| ❌     | `x`: *rast*                    | `threshold`=0                | [x](#occupied-cells-in-a-SpatRaster-object)                                                                                                                                           |
-| ❌     | `x`: *rast*, `s`:`icosa`       | `threshold`=0                | [x](#occupied-cells-in-an-icosahedral-grid-based-on-a-SpatRaster-object)                                                                                                              |
-| ❌     | `x`: *rast*, `s`:`sf`          | `threshold`=0                | [x](#occupied-polygons-based-on-a-SpatRaster-object)                                                                                                                                  |
+| Status | Metric                                                                                                                                                                                                    | Method                             | Args                         |
+|--------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|------------------------------------|------------------------------|
+| ✅     | [<small>No. of occupied coordinate pairs </small>](#number-of-occupied-coordinate-pairs)                                                                                                                  | `x`: *coordmat*  `s`:`missing`     |                              |
+| ✅     | [<small>No. of occupied coordinate pairs, iterated for taxa</small>](#number-of-occupied-coordinate-pairs-iterated-for-taxa)                                                                              | `x`: *coorddat*  `s`:`missing`     | `tax`   `long`, `lat`        |
+| ✅     | [<small>No. of occupied named localities</small>](#number-of-occupied-named-localities)                                                                                                                   | `x`: *coorddat*, `s`:`char`        |                              |
+| ✅     | [<small>No. of occupied named localities, iterated for taxa</small>](#number-of-occupied-named-localities-iterated-for-taxa)                                                                              | `x`: *coorddat*, `s`:`char`        | `tax`                        |
+| ✅     | [<small>No. of occupied grid cells in an icosahedral grid based on point data</small>](#occupied-grid-cells-in-an-icosahedral-grid-based-on-point-data)                                                   | `x`: *coordmat*, `s`:`icosa`       | `q=1`, `long`, `lat`         |
+| ✅     | [<small>No. of occupied grid cells in an icosahedral grid based on point data, iterated for taxa</small>](#occupied-grid-cells-in-an-icosahedral-grid-based-on-point-data-iterated-for-taxa)              | `x`: *coorddat*, `s`:`icosa`       | `tax`, `q=1`, `long`, `lat`  |
+| ❓     | [<small>No. of occupied grid cells in an icosahedral grid, with a confidence cut-off</small>](#occupied-grid-cells-in-an-icosahedral-grid-with-a-confidence-cut-off)                                      | `x`: *coordmat*, `s`:`icosa`       | `q<1`, `method`="min"        |
+| ❓     | [<small>No. of occupied grid cells in an icosahedral grid, with a confidence cut-off, iterated for taxa</small>](#occupied-grid-cells-in-an-icosahedral-grid-with-a-confidence-cut-off-iterated-for-taxa) | `x`: *coorddat*, `s`:`icosa`       | `tax`, `q<1`, `method`="min" |
+| ❌     | [<small>No. of occupied polygons in an sf or sfc polygon/multipolygon object</small>](#occupied-polygons-in-an-sf-or-sfc-polygonmultipolygon-object)                                                      | `x`: *coordmat*, `s`:`sf-polygons` | `q=1`                        |
+| ❌     | [<small>No. of occupied polygons in an sf or sfc polygon/multipolygon object, iterated for taxa</small>](#occupied-polygons-in-an-sf-or-sfc-polygonmultipolygon-object-iterated-for-taxa)                 | `x`: *coorddat*, `s`:`sf-polygons` | `tax`, `q=1`                 |
+| ❌     | [<small>No. of occupied cells in a SpatRaster object</small>](#occupied-cells-in-a-spatraster-object)                                                                                                     | `x`: *rast*                        | `threshold`=0                |
+| ❌     | [<small>No. of occupied cells in an icosahedral grid based on a SpatRaster object</small>](#occupied-cells-in-an-icosahedral-grid-based-on-a-spatraster-object)                                           | `x`: *rast*, `s`:`icosa`           | `threshold`=0                |
+| ❌     | [<small>No. of occupied polygons based on a SpatRaster object</small>](#occupied-polygons-based-on-a-spatraster-object)                                                                                   | `x`: *rast*, `s`:`sf-polygons`     | `threshold`=0                |
 
-: Occupancy methods {tbl-colwidths="[5,30, 30, 35]"}
+: Occupancy methods {tbl-colwidths="[5,35, 30, 30]"}
 
-### Number of occupied coordinate pairs 
+### Number of occupied coordinate pairs
 
 Returns the number of occupied coordinate pairs.
 
-| Field    | Value                                                 |
-|----------|-------------------------------------------------------|
-| Usage    | `occupancy(x=coordmat)`                               |
-| Internal | `occupancy_coords`                                    |
-| Return   | `$estimate`: the number of occupied coordinate pairs. |
+| Field        | Value                                                     |
+|--------------|-----------------------------------------------------------|
+| Usage        | `occupancy(x=coordmat)`                                   |
+| Internal     | `occupancy_coords`                                        |
+| Basic return | The number of occupied coordinate pairs.                  |
+| Full return  | `$estimate`: The number of occupied coordinate pairs.     |
+|              | `$occupied`: Unique coordiate pairs occupied by the data. |
+
+[Back to table](#overview-of-occupancy-methods)
+
 
 ### Number of occupied coordinate pairs iterated for taxa
 
 Returns the number of occupied coordinate pairs - can be repeated for every taxon.
 
-| Field    | Value                                                 |
-|----------|-------------------------------------------------------|
-| Usage    | `occupancy(x=coorddat, tax)`                          |
-| Internal | `occupancy_coords`                                    |
-| Return   | `$estimate`: the number of occupied coordinate pairs. |
+| Field        | Value                                                                                          |
+|--------------|------------------------------------------------------------------------------------------------|
+| Usage        | `occupancy(x=coorddat, tax)`                                                                   |
+| Internal     | `occupancy_coords`                                                                             |
+| Basic return | The number of occupied coordinate pairs: a vector of occupancies for every taxon.              |
+| Full return  | A list-array of taxa, every element referring to one taxon. The elements of these entries are: |
+|              | `$estimate`: The number of occupied coordinate pairs.                                          |
+|              | `$occupied`: Unique coordiate pairs occupied by the taxon.                                      |
+
+[Back to table](#overview-of-occupancy-methods)
 
 ### Number of occupied named localities
 
 Returns the number of different locality entries.
 
-| Field    | Value                                            |
-|----------|--------------------------------------------------|
-| Usage    | `occupancy(x=coorddat, s)`                       |
-| Internal | `occupancy_coords`                               |
-| Return   | `$estimate`: the number of *s* entries occupied. |
+| Field        | Value                                                                |
+|--------------|----------------------------------------------------------------------|
+| Usage        | `occupancy(x=coorddat, s)`                                           |
+| Internal     | `occupancy_coords`                                                   |
+| Basic return | The number of localities.                                            |
+| Full return  | `$estimate`: The number of localities occupie.                       |
+|              | `$occupied`: Vector of unique locality entries occupied by the data. |
+
+[Back to table](#overview-of-occupancy-methods)
 
 ### Number of occupied named localities, iterated for taxa
 
 Returns the number of different locality entries - can be repeated for every taxon.
 
-| Field    | Value                                            |
-|----------|--------------------------------------------------|
-| Usage    | `occupancy(x=coorddat, s, tax)`                  |
-| Internal | `occupancy_coords`                               |
-| Return   | `$estimate`: the number of *s* entries occupied. |
+| Field        | Value                                                                                          |
+|--------------|------------------------------------------------------------------------------------------------|
+| Usage        | `occupancy(x=coorddat, s, tax)`                                                                |
+| Internal     | `occupancy_coords`                                                                             |
+| Basic return | The number of occupied localities: a named vector of occupancies for every taxon.              |
+| Full return  | A list-array of taxa, every element referring to one taxon. The elements of these entries are: |
+|              | `$estimate`: The number of occupied localities.                                                |
+|              | `$occupied`: Vector of unique locality entries occupied by the taxon.                           |
+
+[Back to table](#overview-of-occupancy-methods)
 
 ### Occupied grid cells in an icosahedral grid based on point data
 
 Returns the number of occupied grid cells in an icosahedral grid.
 
-| Field     | Value                                                                               |
-|-----------|-------------------------------------------------------------------------------------|
-| Usage     | `occupancy(x=coordmat, s=icosa)`                                                    |
-| Internal  | `occupancy_coords`                                                                  |
-| Return    | `$estimate`: the number of grid cells occupied, `$cells`: The IDs of occupied cells |
-| Test case | `pinna` and `hexagrid(deg=5)`                                                       |
+| Field        | Value                                                                      |
+|--------------|----------------------------------------------------------------------------|
+| Usage        | `occupancy(x=coordmat, s=icosa)`                                           |
+| Internal     | `occupancy_coords`                                                         |
+| Basic return | The number of grid cells occupied.                                         |
+| Full return  | `$estimate`: The number of grid cells occupied.                            |
+|              | `$occupied`: Vector of unique grid cells identifiers occupied by the data. |
+| Test case    | `pinna` and `hexagrid(deg=5)`                                              |
+
+[Back to table](#overview-of-occupancy-methods)
 
 ### Occupied grid cells in an icosahedral grid based on point data, iterated for taxa
 
 Returns the number of occupied grid cells in an icosahedral grid.
 
-| Field     | Value                                                                               |
-|-----------|-------------------------------------------------------------------------------------|
-| Usage     | `occupancy(x=coorddat, s=icosa, tax)`                                               |
-| Internal  | `occupancy_coords`                                                                  |
-| Return    | `$estimate`: the number of grid cells occupied, `$cells`: The IDs of occupied cells |
-| Test case | `pinna` and `hexagrid(deg=5)`                                                       |
+| Field        | Value                                                                                          |
+|--------------|------------------------------------------------------------------------------------------------|
+| Usage        | `occupancy(x=coorddat, s=icosa, tax)`                                                          |
+| Internal     | `occupancy_coords`                                                                             |
+| Basic return | The number of occupied grid cells: a named vector of occupancies for every taxon.              |
+| Full return  | A list-array of taxa, every element referring to one taxon. The elements of these entries are: |
+|              | `$estimate`: The number of grid cells occupied by the taxon.                                   |
+|              | `$occupied`: Vector of unique grid cells occupied by the taxon.                                |
+| Test case    | `pinna` and `hexagrid(deg=5)`                                                                  |
+
+[Back to table](#overview-of-occupancy-methods)
 
 ### Occupied grid cells in an icosahedral grid, with a confidence cut-off
 
@@ -230,6 +266,7 @@ Multiple implementations possible. These can be:
 | Return    | `$estimate`: the number of grid cells occupied, `$cells`: The IDs of occupied cells |
 | Test case | `pinna` and `hexagrid(deg=5)`                                                       |
 
+[Back to table](#overview-of-occupancy-methods)
 
 ### Occupied grid cells in an icosahedral grid, with a confidence cut-off, iterated for taxa
 
@@ -247,6 +284,9 @@ Multiple implementations possible. These can be:
 | Return    | `$estimate`: the number of grid cells occupied, `$cells`: The IDs of occupied cells |
 | Test case | `pinna` and `hexagrid(deg=5)`                                                       |
 
+
+[Back to table](#overview-of-occupancy-methods)
+
 ### Occupied polygons in an sf or sfc polygon/multipolygon object
 
 The original definition for occupancy. Executes an intersection join, and calculates the number of occupied polygons.
@@ -261,6 +301,8 @@ The original definition for occupancy. Executes an intersection join, and calcul
 
 The `sf`-method invokes the `sfc` method.
 
+[Back to table](#overview-of-occupancy-methods)
+
 ### Occupied polygons in an sf or sfc polygon/multipolygon object, iterated for taxa
 
 The original definition for occupancy. Executes an intersection join, and calculates the number of occupied polygons.
@@ -273,6 +315,8 @@ The original definition for occupancy. Executes an intersection join, and calcul
 | Test case | `countries` and some terrestrial data                                                |
 
 
+[Back to table](#overview-of-occupancy-methods)
+
 ### Occupied cells in a SpatRaster object 
 
 Returs the number of cells where the value is at least the value given as `threshold`. 
@@ -284,6 +328,8 @@ Returs the number of cells where the value is at least the value given as `thres
 | Return   | `$estimate`: the number of grid cells occupied, |
 	
 
+[Back to table](#overview-of-occupancy-methods)
+
 ### Occupied cells in an icosahedral grid based on a SpatRaster object 
 
 Returns the number of cells where at least one raster cell has a value that is at least the value given as `threshold`. 
@@ -294,6 +340,7 @@ Returns the number of cells where at least one raster cell has a value that is a
 | Internal | `occupancy_coords_rast`                                                             |
 | Return   | `$estimate`: the number of grid cells occupied, `$cells`: The IDs of occupied cells |
 	
+[Back to table](#overview-of-occupancy-methods)
 
 ### Occupied polygons based on a SpatRaster object 
 
@@ -305,7 +352,29 @@ Returns the number of polygon	s where at least one raster cell has a value that 
 | Internal | `occupancy_coords_rast`                                                              |
 | Return   | `$estimate`: the number of grid cells occupied, `$ids`: The IDs of occupied polygons |
 
-### Maximum Distance - `maxdist`
+[Back to table](#overview-of-occupancy-methods)
+
+* * *
+
+## Proportional occupancy
+
+These metrics are also implemented with the `occupancy` function, and are triggered when the `prop` general argument is set to a non-`NULL` value. The implementation of these metrics are strongly tied to normal occupany calculations, and their output matches that of normal `occupancy` calls, except that these will return proportions instead of counts as `estimate`s. Two different metrics are defined here, depending on what a proportion relates to:
+
+1. Global proportional occupancies (`prop="global"`)  
+2. Relative proportional occupancies (`prop="relative"`)  
+
+### Global proportional occupancies
+
+*Global proportional occupancies* express how many out of the **globally available** spatial slots are occupied by the distribution data `x`, where global is given by the spatial structure itself. This can be the total number of grid cells, the total number of polygons, etc.
+These metrics are available only in those cases when `s` is a self-sufficient spatial structure, such as `icosa`, `sf-polygons` or a `SpatRaster` object. For cases when `s` is `missing` or `character`, setting `prop="global"` triggers an error: since in these cases the number globally available spatial slots is unknown to the function.
+
+### Relative proportional occupancies
+
+In contrast, *relative proportional occupancies* express how many out of the **sampled** spatial slots is occupied by the data, where what is sampled is given by `x` itself. For instance, when a `tax` argument is used to iterate the calculation of the metric across different taxa, the relative proportional occupancies will return how many of the spatial slots out of the totally sampled ones are occupied by a taxon. This can be particularly useful when comparing data from multiple temporal horizons, where the spatial coverage of overall sampling varies. When this method is triggered with `tax=NULL`, the estimates default to `1.0` (i.e. total occupancy).
+
+* * *
+
+## Maximum Distance
 
 The method is implemented with the `maxdist` function. For convenience, the alias `mgcd` is also provided.
 
@@ -533,7 +602,6 @@ This can be used in case topography/habitat-defined routes are more important th
 ### Centroid
 
 Sets of funtions that calculate the surface projection (geographic coordinates) of centroid for a given geometry.
-
 #### Overview 
 
 |    | Internal Name            | Method                     | Args                 | What it does                             |
@@ -603,3 +671,13 @@ Returns the number of occupied coordinate pairs.
 | In  | Function   | Input  | What it does                       |
 |-----|------------|--------|------------------------------------|
 | [x] | `centroid` | coords | Latitude, longitude of point cloud |
+
+
+# X. Geometry functions
+
+## Small circles 
+
+This group of functions implement operations using small circles on a sphere.
+
+
+

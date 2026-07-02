@@ -11,7 +11,7 @@
 \usage{
 occupancy(x, s, ...)
 
-\S4method{occupancy}{matrix,missing}(x, tax = NULL, long = NULL, lat = NULL, full = FALSE)
+\S4method{occupancy}{matrix,missing}(x, long = NULL, lat = NULL, full = FALSE, prop = NULL)
 
 \S4method{occupancy}{data.frame,missing}(
   x,
@@ -19,10 +19,11 @@ occupancy(x, s, ...)
   long = "long",
   lat = "lat",
   full = FALSE,
-  listarray = TRUE
+  listarray = TRUE,
+  prop = NULL
 )
 
-\S4method{occupancy}{data.frame,character}(x, s, tax = NULL, full = FALSE)
+\S4method{occupancy}{data.frame,character}(x, s, tax = NULL, full = FALSE, prop = NULL)
 
 \S4method{occupancy}{matrix,trigrid}(
   x,
@@ -32,7 +33,8 @@ occupancy(x, s, ...)
   q = 1,
   plot = FALSE,
   plot.args = NULL,
-  full = FALSE
+  full = FALSE,
+  prop = NULL
 )
 
 \S4method{occupancy}{data.frame,trigrid}(
@@ -44,7 +46,8 @@ occupancy(x, s, ...)
   q = 1,
   plot = FALSE,
   plot.args = NULL,
-  full = FALSE
+  full = FALSE,
+  prop = NULL
 )
 }
 \arguments{
@@ -54,13 +57,15 @@ occupancy(x, s, ...)
 
 \item{...}{Additional arguments passed to class-specific methods.}
 
-\item{tax}{\code{character}, used only in the \code{data.frame} method. Column name of groups (e.g. taxa) that allows the iteration of the method for multiple groups.}
-
 \item{long}{\code{character}, column name of the longitudes.}
 
 \item{lat}{\code{character}, column name of the latitudes.}
 
 \item{full}{Logical switch indicating whether only estimate should be shown (\code{FALSE}), or other info as well.}
+
+\item{prop}{Should counts be returned (\code{prop=NULL}), or proportions? If \code{prop="global"}, then global proportions are returned, if \code{prop="relative"}, relative proporitions are calculated.}
+
+\item{tax}{\code{character}, used only in the \code{data.frame} method. Column name of groups (e.g. taxa) that allows the iteration of the method for multiple groups.}
 
 \item{listarray}{If the full traceable output is required, should this be organized with list-array (native output of tapply).}
 
@@ -74,14 +79,18 @@ occupancy(x, s, ...)
 Either a single numeric or a list with an estimate and other information.
 }
 \description{
-Calculate ranges with the occupancy method
+High-level abstract function to calculate how many components of a pre-specified spatial structure is occupied by a distribution dataset
+}
+\details{
+The function normally returns counts (i.e. natural numbers) of how many discrete units are occupied.
+However, there are many cases, when proportions are much more useful, which can be set with the \code{prop} argument.
+Proportions are either global or relative. Global proportions, express how much of the overall spatial structure (\code{s}) is occupied; for example, what proportion of a total grid is occupied.
+This method is only applicable, when \code{s} is defined as a spatial structure that is independent from \code{x}.
+In contrast, relative proportional occupancies express protions in the sampled set, i.e. what proportion of the overall sampled grid cells or localities are occupied by a taxon. This is particularly useful when \code{tax!=NULL}.
 }
 \examples{
-# 1. Canvas
-hex <- hexagrid(deg=3, sf=TRUE)
-plot(hex, reset=FALSE, xlim=c(-15, 40), ylim=c(25, 63))
-
-# 2. Records
+# I. Single taxon: Pinna nobilsi
+# 1. Records
 data(pinna)
 # Subset to Pinna nobilis
 nobilis <- pinna[pinna$species=="Pinna nobilis", ]
@@ -89,10 +98,21 @@ nobilis <- pinna[pinna$species=="Pinna nobilis", ]
 # Number of unique coordinate pairs
 cpairs <- occupancy(nobilis, long="decimalLongitude", lat="decimalLatitude")
 
-# just the coordinates
+# 2. Occupancy in icosahedral grid 
+hex <- hexagrid(deg=3, sf=TRUE)
+plot(hex, reset=FALSE, xlim=c(-15, 40), ylim=c(25, 63))
+points(nobilis[, c("decimalLongitude", "decimalLatitude")], pch=3)
 
-# 3. calculate and visualize
-occ <- occupancy(nobilis, s=hex, plot=TRUE, long="decimalLongitude", lat="decimalLatitude")
+# calculate occupancy
+occ <- occupancy(nobilis, s=hex, plot=TRUE, long="decimalLongitude", lat="decimalLatitude", full=TRUE)
 
-# plot(hex, occ$cells, add=TRUE, col="green")
+# manual coloring from full output
+plot(hex, occ$occupied, add=TRUE, col="#00BB0088")
+
+# global proportional occupancies - relative to the grid
+occprop <- occupancy(nobilis, s=hex, long="decimalLongitude", lat="decimalLatitude", prop="global")
+# same as
+occ$estimate/length(hex)
+
+# II. Multiple taxa 
 }

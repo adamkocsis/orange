@@ -6,6 +6,13 @@ qTest <- FALSE
 
 #' Calculate ranges with the occupancy method
 #'
+#' High-level abstract function to calculate how many components of a pre-specified spatial structure is occupied by a distribution dataset
+#'
+#' The function normally returns counts (i.e. natural numbers) of how many discrete units are occupied.
+#' However, there are many cases, when proportions are much more useful, which can be set with the \code{prop} argument.
+#' Proportions are either global or relative. Global proportions, express how much of the overall spatial structure (\code{s}) is occupied; for example, what proportion of a total grid is occupied.
+#' This method is only applicable, when \code{s} is defined as a spatial structure that is independent from \code{x}.
+#' In contrast, relative proportional occupancies express protions in the sampled set, i.e. what proportion of the overall sampled grid cells or localities are occupied by a taxon. This is particularly useful when \code{tax!=NULL}.   
 #' @param x Eiher a 2-column numeric matrix with two columns: longitudes and latitudes, or a \code{data.frame} with these columns.
 #' @param s Structure to be occupied, either \code{NULL} (coordinate pairs), \code{character} (column name indicating locality) or a \code{trigrid} (icosahedral grid from the package icosa).
 #' @param tax \code{character}, used only in the \code{data.frame} method. Column name of groups (e.g. taxa) that allows the iteration of the method for multiple groups.
@@ -16,16 +23,14 @@ qTest <- FALSE
 #' @param q Minimum occupancy with \code{q} proportion of occurrences.
 #' @param full Logical switch indicating whether only estimate should be shown (\code{FALSE}), or other info as well.
 #' @param listarray If the full traceable output is required, should this be organized with list-array (native output of tapply).
+#' @param prop Should counts be returned (\code{prop=NULL}), or proportions? If \code{prop="global"}, then global proportions are returned, if \code{prop="relative"}, relative proporitions are calculated.
 #' @param ... Additional arguments passed to class-specific methods.
 #' @return Either a single numeric or a list with an estimate and other information.
 #' @rdname occupancy
 #' @export
 #' @examples
-#' # 1. Canvas
-#' hex <- hexagrid(deg=3, sf=TRUE)
-#' plot(hex, reset=FALSE, xlim=c(-15, 40), ylim=c(25, 63))
-#'
-#' # 2. Records
+#' # I. Single taxon: Pinna nobilsi
+#' # 1. Records
 #' data(pinna)
 #' # Subset to Pinna nobilis
 #' nobilis <- pinna[pinna$species=="Pinna nobilis", ]
@@ -33,12 +38,23 @@ qTest <- FALSE
 #' # Number of unique coordinate pairs
 #' cpairs <- occupancy(nobilis, long="decimalLongitude", lat="decimalLatitude")
 #'
-#' # just the coordinates
+#' # 2. Occupancy in icosahedral grid 
+#' hex <- hexagrid(deg=3, sf=TRUE)
+#' plot(hex, reset=FALSE, xlim=c(-15, 40), ylim=c(25, 63))
+#' points(nobilis[, c("decimalLongitude", "decimalLatitude")], pch=3)
 #'
-#' # 3. calculate and visualize
-#' occ <- occupancy(nobilis, s=hex, plot=TRUE, long="decimalLongitude", lat="decimalLatitude")
+#' # calculate occupancy
+#' occ <- occupancy(nobilis, s=hex, plot=TRUE, long="decimalLongitude", lat="decimalLatitude", full=TRUE)
 #'
-#' # plot(hex, occ$cells, add=TRUE, col="green")
+#' # manual coloring from full output
+#' plot(hex, occ$occupied, add=TRUE, col="#00BB0088")
+#'
+#' # global proportional occupancies - relative to the grid
+#' occprop <- occupancy(nobilis, s=hex, long="decimalLongitude", lat="decimalLatitude", prop="global")
+#' # same as
+#' occ$estimate/length(hex)
+#'
+#' # II. Multiple taxa 
 setGeneric(
 	name="occupancy",
 	package="orange",
@@ -53,7 +69,7 @@ setGeneric(
 setMethod(
 	"occupancy",
 	signature=c(x="matrix", s="missing"),
-	definition=function(x,tax=NULL, long=NULL, lat=NULL, full=FALSE){
+	definition=function(x,long=NULL, lat=NULL, full=FALSE, prop=NULL){
 		# if locality is given
 		y <- x
 		if(!is.null(long) & !is.null(lat)) y <- x[,c(long, lat)]
@@ -68,6 +84,10 @@ setMethod(
 		 y  <- unique(y)
 		# the result
 		res <- nrow(y)
+		if(!is.null(prop)){
+			if(prop=="global") stop("Global proportions are not available for this input.")
+			if(prop=="relative") res <- 1.0 
+		}
 		if(full){
 			fullRes <- list(
 				estimate=res,
@@ -86,13 +106,12 @@ setMethod(
 setMethod(
 	"occupancy",
 	signature=c(x="data.frame", s="missing"),
-	definition=function(x,tax=NULL, long="long", lat="lat", full=FALSE, listarray=TRUE){
+	definition=function(x,tax=NULL, long="long", lat="lat", full=FALSE, listarray=TRUE, prop=NULL){
 
 		if(!all(c(long, lat) %in% colnames(x))) stop("The 'long' and 'lat' parameters must be valid column names.")
 		y <- x[,c(tax, long, lat)]
 		y <- unique(y)
 
-		# the result
 		# taxon - iteration
 		if(!is.null(tax)){
 			if(!full){
@@ -101,6 +120,17 @@ setMethod(
 				res <- table(y[, tax])
 				resNum <- as.numeric(res)
 				names(resNum) <- names(res)
+				# are proportional occupancies required
+				if(!is.null(prop)){
+					if(prop=="global") stop("Global proportions are not available for this input.")
+					if(prop=="relative"){
+						# recursive call to get the total occupancy
+						totalOccup <- occupancy(x, long=long, lat=lat, tax=NULL)
+
+						# calculate the proportional occupancies
+						resNum <-resNum/totalOccup
+					}
+				}
 				return(resNum)
 			}else{
 				# if this is to be a list-style output
@@ -120,10 +150,16 @@ setMethod(
 				}
 
 			}
-		# single taxon 
+		# single taxon/set
 		}else{
 			# use the same as the matrix method
 			res <- occupancy(as.matrix(y[, c(long, lat)]), full=full) 
+
+			# are proportional occupancies required
+			if(!is.null(prop)){
+				if(prop=="global") stop("Global proportions are not available for this input.")
+				if(prop=="relative") res$estimate <- 1.0
+			}
 			return(res)
 		}
 	}
@@ -134,7 +170,7 @@ setMethod(
 setMethod(
 	"occupancy",
 	signature=c(x="data.frame", s="character"),
-	definition=function(x,s, tax=NULL, full=FALSE){
+	definition=function(x,s, tax=NULL, full=FALSE, prop=NULL, listarray=TRUE){
 
 		if(!any(s==colnames(x))) stop("The 'loc' argument must be a column in 'x'.")
 		y <- x[,c(tax, s)]
@@ -143,13 +179,50 @@ setMethod(
 		if(!is.null(tax)){
 			 y <- y[!is.na(y[,tax]) & !is.na(y[,s]) , ]
 			# the result
-			res <- table(y[, tax])
-			resNum <- as.numeric(res)
-			names(resNum) <- names(res)
+			if(!full){
+				res <- table(y[, tax])
+				resNum <- as.numeric(res)
+				names(resNum) <- names(res)
+				# proportional occupancies?
+				if(!is.null(prop)){
+					if(prop=="global") stop("Global proportions are not available for this input.")
+					if(prop=="relative"){
+						# recursive call to the total dataset
+						totalOccup <- occupancy(x=x, s=s, tax=NULL)
+						resNum  <- resNum/totalOccup
+					}
+				}
+				result <- resNum
+			}else{
+				# if this is to be a list-style output
+				if(listarray){
+					# use a simple tapply to iterate functionally
+					res <- tapply(
+						INDEX=y[, tax],
+						X=y[, s, drop=FALSE],
+						FUN=function(a){
+							occupancy(a, s=s, full=full)
+						}
+					)
+					result <- res
+				}else{
+					stop("Donkey, snow, wine: not yet so fine!")
+				}
+
+
+			}
 		# no taxon iteration
 		}else{
 			occupied <- levels(factor(y))
-			res <- length(occupied)
+			# promote for output consistency
+			res <- as.numeric(length(occupied))
+			# if proportional occupancies would be required
+			if(!is.null(prop)){
+				if(prop=="global") stop("Global proportions are not available for this input.")
+				if(prop=="relative"){
+					res <- 1.0
+				}
+			}
 			if(full){
 				result <- list(
 					estimate=res,
@@ -169,8 +242,8 @@ setMethod(
 #' @rdname occupancy
 setMethod(
 	"occupancy",
-	signature=c(x="matrix", s="trigrid"),
-	definition=function(x, s, long=NULL, lat=NULL, q=1, plot=FALSE, plot.args=NULL, full=FALSE){
+	signature=c(x="matrix", s="trigrid", prop=NULL),
+	definition=function(x, s, long=NULL, lat=NULL, q=1, plot=FALSE, plot.args=NULL, full=FALSE, prop=NULL){
 		# if locality is given
 		x <- unique(x)
 
@@ -179,10 +252,16 @@ setMethod(
 
 		if(q!=1 & !qTest) stop("Feature not yet finalized!")
 
-		# invoke the internal
-		result <- occupancy_coords_icosa(x,s, q=q,  plot=plot, plot.args=plot.args, full=full)
+		# invoke the internal, provides full results
+		result <- occupancy_coords_icosa(x,s, q=q,  plot=plot, plot.args=plot.args)
+		if(!is.null(prop)){
+			if(prop=="global") result$estimate <- result$estimate/as.numeric(length(s))
+			if(prop=="relative") result$estimate <- 1.0 
+
+		}
 
 		# return a result
+		if(!full) result <- result$estimate
 		return(result)
 
 	}
@@ -193,12 +272,18 @@ setMethod(
 setMethod(
 	"occupancy",
 	signature=c(x="data.frame", s="trigrid"),
-	definition=function(x, s, long="long", lat="lat", tax=NULL, q=1, plot=FALSE, plot.args=NULL, full=FALSE){
+	definition=function(x, s, long="long", lat="lat", tax=NULL, q=1, plot=FALSE, plot.args=NULL, full=FALSE, prop=NULL){
 		# the same as the matrix method
 		if(is.null(tax)){
 			x <- as.matrix(x[, c(long, lat)])
 			result <- occupancy(x, s=s, long=long, lat=lat,
-				q=q, plot=plot, plot.args=plot.args, full=full)
+				q=q, plot=plot, plot.args=plot.args, full=TRUE)
+			if(!is.null(prop)){
+				if(prop=="global") result$estimate <- result$estimate/as.numeric(length(s))
+				if(prop=="relative") result$estimate <- 1.0 
+			}
+			# always return full output
+			if(!full) result <- result$estimate
 		}else{
 			result <- tapply(
 				INDEX=x[,tax],
@@ -209,19 +294,58 @@ setMethod(
 					a <- as.matrix(a)
 					result <- occupancy(a, s=s, long=long, lat=lat,
 						q=q, plot=plot, plot.args=plot.args, full=full)
+				}
+			)
+
+			# if the result is estimate-only get rid of dimensions
+			if(!full){
+				na <- names(result)
+				result <- as.numeric(result)
+				names(result) <- na
+
+			}
+			if(!is.null(prop)){
+				# this has to be done manually here
+				if(full){
+					if(prop=="global"){
+						# calculate the number of faces in the grid
+						gridSize <- as.numeric(length(s))
+						# calculate the proportions
+						for(i in 1:length(result)) result[[i]]$estimate <- result[[i]]$estimate/gridSize
 					}
-				)
+					if(prop=="relative"){
+						# recursive call to occupancy, to figure out the occupied faces by the total dataset -> what is up with q???
+						totalOccup <- occupancy(x=x, s=s, long=long, lat=lat, tax=NULL, q=1)
+						for(i in 1:length(result)) result[[i]]$estimate <- result[[i]]$estimate/totalOccup
+					}
+				}else{
+					if(prop=="global"){
+						# calculate the number of faces in the grid
+						gridSize <- as.numeric(length(s))
+						# calculate the proportions
+						result <- result/gridSize
+					}
+					if(prop=="relative"){
+						# recursive call to occupancy, to figure out the occupied faces by the total dataset -> what is up with q???
+						totalOccup <- occupancy(x=x, s=s, long=long, lat=lat, tax=NULL, q=1)
+						result <- result/totalOccup
+					}
+
+				}
+			}
 		}
 		return(result)
 	}
 )
 
 
-
-
+################################################################################
+# INTERNAL
+################################################################################
+ 
 # internal method: look up coordinates with icosa grids
 # x: 2 column matrix
-occupancy_coords_icosa <- function(x, icosa, plot=FALSE, plot.args=NULL, q=1, full=FALSE){
+occupancy_coords_icosa <- function(x, icosa, plot=FALSE, plot.args=NULL, q=1){
 	# onit missing values
 	x <- x[!(is.na(x[,1]) |  is.na(x[,2])),, drop=FALSE]
 
@@ -268,7 +392,7 @@ occupancy_coords_icosa <- function(x, icosa, plot=FALSE, plot.args=NULL, q=1, fu
 		# the result object
 		res <- list(
 			estimate=length(unique(occupCells)),
-			cells=occupCells,
+			occupied=occupCells,
 			freq=freq
 		)
 
@@ -277,7 +401,7 @@ occupancy_coords_icosa <- function(x, icosa, plot=FALSE, plot.args=NULL, q=1, fu
 			if(is.null(plot.args)) plot.args <- list(col="#55000033")
 			# if no plots are open yet, make one!
 			if(dev.cur()==1) arguments$add <- NULL
-			arguments <- c(list(x=icosa, y=res$cells, add=TRUE), plot.args)
+			arguments <- c(list(x=icosa, y=res$occupied, add=TRUE), plot.args)
 			do.call(icosa::plot, arguments)
 		}
 
@@ -288,12 +412,12 @@ occupancy_coords_icosa <- function(x, icosa, plot=FALSE, plot.args=NULL, q=1, fu
 		# the result object
 		res <- list(
 			estimate=length(unique(occupCells)),
-			cells=occupCells
+			occupied=occupCells
 		)
 
 		if(plot){
 			if(is.null(plot.args)) plot.args <- list(col="#55000033")
-			arguments <- c(list(x=icosa, y=res$cells, add=TRUE), plot.args)
+			arguments <- c(list(x=icosa, y=res$occupied, add=TRUE), plot.args)
 			# if no plots are open yet, make one!
 			if(dev.cur()==1) arguments$add <- NULL
 			do.call(icosa::plot, arguments)
@@ -303,7 +427,6 @@ occupancy_coords_icosa <- function(x, icosa, plot=FALSE, plot.args=NULL, q=1, fu
 	class(res) <- "orange"
 
 	# provide only estimate by default
-	if(!full) res <- res$estimate
 	return(res)
 
 }
