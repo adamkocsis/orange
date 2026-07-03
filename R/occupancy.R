@@ -25,7 +25,7 @@ qTest <- FALSE
 #' @param listarray If the full traceable output is required, should this be organized with list-array (native output of tapply).
 #' @param prop Should counts be returned (\code{prop=NULL}), or proportions? If \code{prop="global"}, then global proportions are returned, if \code{prop="relative"}, relative proporitions are calculated.
 #' @param ... Additional arguments passed to class-specific methods.
-#' @return Either a single numeric or a list with an estimate and other information.
+#' @return For single subsets (\code{tax=NULL}) either a single numeric or an orange list with an estimate and other information. Iterations for multiple taxa result in a named numeric vector a list.
 #' @rdname occupancy
 #' @export
 #' @examples
@@ -285,19 +285,37 @@ setMethod(
 			# always return full output
 			if(!full) result <- result$estimate
 		}else{
-			result <- tapply(
-				INDEX=x[,tax],
-				X=x[, c(long, lat)],
-				FUN=function(a){
+			# method has to depend on whether there is
+			# plotting or not!
+			if(!plot){ # use tapply
+				result <- tapply(
+					INDEX=x[,tax],
+					X=x[, c(long, lat)],
+					FUN=function(a){
 
-					# get rid of unnecessary recursion
+						# get rid of unnecessary recursion
+						a <- as.matrix(a)
+						result <- occupancy(a, s=s, long=long, lat=lat,
+							q=q, full=full)
+					}
+				)
+			}else{ # use a for loop - must be tested!, slower
+				taxEntries <- levels(factor(x[,tax]))
+				result <- list()
+				for(i in 1:length(taxEntries)){
+					a <- x[which(x[,tax]==taxEntries[i]), c(long, lat)]
 					a <- as.matrix(a)
-					result <- occupancy(a, s=s, long=long, lat=lat,
-						q=q, plot=plot, plot.args=plot.args, full=full)
+					# sequential running ensures plotting
+					result[[i]] <- occupancy(a, s=s, long=long, lat=lat,
+						q=q, full=full, plot=plot, plot.args=plot.args)
 				}
-			)
+				dim(result) <- length(taxEntries)
+				names(result) <- taxEntries
+				if(!full) result <- sapply(result,function(x) x[1])
 
-			# if the result is estimate-only get rid of dimensions
+			}
+
+			# if the result is estimate-only get rid of dimensions, enforce numeric output
 			if(!full){
 				na <- names(result)
 				result <- as.numeric(result)
@@ -418,8 +436,12 @@ occupancy_coords_icosa <- function(x, icosa, plot=FALSE, plot.args=NULL, q=1){
 		if(plot){
 			if(is.null(plot.args)) plot.args <- list(col="#55000033")
 			arguments <- c(list(x=icosa, y=res$occupied, add=TRUE), plot.args)
-			# if no plots are open yet, make one!
-			if(dev.cur()==1) arguments$add <- NULL
+			# this will force par()
+			# Ensure that sometihng is plotted
+			openPlot<- is.null(try(text(0,0, label =""), silent=TRUE))
+			if(!openPlot){
+				arguments$add <- NULL
+			}
 			do.call(icosa::plot, arguments)
 		}
 

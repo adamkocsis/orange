@@ -79,6 +79,9 @@ missTaxOne$species[1] <- NA
 expect_silent(occMissTaxOne <- occupancy(missTaxOne, long="decimalLongitude", lat="decimalLatitude", tax="species"))
 expect_equal(length(occMissTaxOne), length(occ))
 
+## Plotting
+expect_error(occPlot <- occupancy(pinna, long="decimalLongitude", lat="decimalLatitude", tax="species", plot=TRUE))
+
 #-------------------------------------------------------------------------------
 # Full output/tracability, listout=TRUE
 #-------------------------------------------------------------------------------

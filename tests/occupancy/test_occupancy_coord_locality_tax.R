@@ -125,6 +125,9 @@ expect_equal(occSingle[[1]]$estimate, length(occSingle[[1]]$occupied))
 
 expect_error(occupancy(pinna, s="cell", tax="wrong", full=TRUE))
 
+## Plotting
+expect_error(occPlot <- occupancy(pinna, s="cell", tax="species",  plot=TRUE))
+
 ################################################################################
 # 2. sf data with tax 
 ################################################################################

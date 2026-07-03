@@ -67,6 +67,11 @@ matOneMiss[1,1] <- NA
 expect_warning(occOneMiss <- occupancy(matOneMiss))
 expect_equal(occOneMiss, occFirstNA)
 
+
+## Plotting
+expect_error(occPlot <- occupancy(mat, plot=TRUE))
+
+
 #-------------------------------------------------------------------------------
 # Full output/tracability 
 #-------------------------------------------------------------------------------
@@ -187,6 +192,9 @@ expect_equal(nrow(occSingleFullDF$occupied), 1L)
 #-------------------------------------------------------------------------------
 expect_error(occupancy(nobilis))
 expect_error(occupancy(nobilis, long="gibberish", lat="waste"))
+
+## Plotting
+expect_error(occPlot <- occupancy(nobilis, long="decimalLongitude", lat="decimalLatitude", plot=TRUE))
 
 ################################################################################
 # 3. sfc - not yet! 

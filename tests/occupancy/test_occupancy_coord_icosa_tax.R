@@ -95,6 +95,20 @@ missTaxOne$species[1] <- NA
 expect_silent(occMissTaxOne <- occupancy(missTaxOne, s=hex, long="decimalLongitude", lat="decimalLatitude", tax="species"))
 expect_equal(length(occMissTaxOne), length(occ))
  
+## Plotting
+p <- dev.cur()
+while(p!=1){
+	dev.off()
+	p <- dev.cur()
+}
+expect_silent(occPlot <- occupancy(pinna, s=hex, long="decimalLongitude", lat="decimalLatitude", tax="species", plot=TRUE))
+expect_equal(occPlot, occ)
+
+
+# normal plotting
+plot(NULL, xlim=c(-180, 180), ylim=c(-90, 90))
+expect_silent(occPlot <- occupancy(pinna, s=hex, long="decimalLongitude", lat="decimalLatitude", tax="species", plot=TRUE))
+
 
 #-------------------------------------------------------------------------------
 # Full output/tracability 
@@ -130,6 +144,20 @@ expect_silent(occSingle <- occupancy(naSingle, s=hex, long="decimalLongitude", l
 expect_equal(length(occSingle), 1L)
 expect_equal(occSingle[[1]]$estimate, 1L)
 expect_equal(occSingle[[1]]$estimate, length(occSingle[[1]]$occupied))
+
+## Plotting
+p <- dev.cur()
+while(p!=1){
+	dev.off()
+	p <- dev.cur()
+}
+expect_silent(occPlotFull <- occupancy(pinna, s=hex, long="decimalLongitude", lat="decimalLatitude", tax="species", plot=TRUE, full=TRUE))
+expect_equal(occPlotFull, occFull)
+
+
+# normal plotting
+plot(NULL, xlim=c(-180, 180), ylim=c(-90, 90))
+expect_silent(occPlot <- occupancy(pinna, s=hex, long="decimalLongitude", lat="decimalLatitude", tax="species", plot=TRUE))
 
 #-------------------------------------------------------------------------------
 # Wrong argumnets, appropriate defaults, plotting

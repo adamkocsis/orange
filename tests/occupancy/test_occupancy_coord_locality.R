@@ -108,6 +108,9 @@ expect_equal(occupSingleFull$estimate, 1L)
 expect_equal(length(occupSingleFull$occupied), occupSingleFull$estimate)
 
 
+## Plotting
+expect_error(occPlot <- occupancy(pinna, s="cell",  plot=TRUE))
+
 #-------------------------------------------------------------------------------
 # Wrong argumnets, appropriate defaults, plotting
 #-------------------------------------------------------------------------------
