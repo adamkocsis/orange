@@ -27,7 +27,7 @@
 #' @format A \code{data.frame} with 1466 observations and 6 variables:
 #' 	\describe{
 #' 		\item{\code{scientificName}}{Taxon name.}
-#' 		\item{\code{species}}{Species name.}
+
 #' 		\item{\code{basisOfRecord}}{The basis of the record.}
 #' 		\item{\code{elevation}}{Elevation of recors}
 #' 		\item{\code{decimalLongitude}}{Longitude in decimal degrees.}

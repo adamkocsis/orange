@@ -18,8 +18,17 @@
 #' @importFrom grDevices dev.cur
 #' @importFrom graphics abline
 #' @importFrom graphics points
+#' @importFrom graphics plot 
 #' @importFrom stats as.dist
 #' @importFrom stats quantile
 #' @importFrom methods setMethod
-#' @import icosa
+#' @importFrom icosa arcs
+#' @importFrom icosa centers
+#' @importFrom icosa arcdistmat
+#' @importFrom icosa surfacecentroid 
+#' @importFrom icosa holes 
+#' @importFrom icosa locate 
+#' @importFrom icosa PolToCar 
+#' @importFrom icosa CarToPol 
+#' @importFrom icosa rotate 
 NULL

@@ -1,6 +1,6 @@
 # Change log of the R package 'orange'
 
-# orange 0.1.0-14 - 2026-07-29
+# orange 0.1.0-15 - 2026-07-29
 
 ## Added
 
@@ -10,6 +10,8 @@
 - The `sc_shape` function to calculate points on small circles 
 - The `sc_center` function to calculate a small circle based on points on the sphere
 - The `sc_in` function to calculate whether a bunch of points are inside a small circle or not (based on planes, rather than distances, about 10x faster).
+- The `shull` function for the definition of spherical hulls from data, with plotting. 
+- The `shullarea` function to calculate the area of spherical hulls.
 
 ## Changed
 
@@ -21,7 +23,7 @@
 
 ## Known Missing 
 
-- Hull-based functions 
+- Convex hulls
 - `plot=TRUE` for `data.frame` methods when a metric is iterated with `tax` 
 - `mstlength`, `maxdist` with `tax` entry and either `full=TRUE` or `dm!=NULL`, because the tracing of coordates in the original dataset is not yet implemented
 

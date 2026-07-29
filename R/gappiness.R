@@ -47,7 +47,7 @@ setMethod(
 			}else{
 
 				# the holes of this patch
-				theHoles<- holes(s,occup)
+				theHoles<- icosa::holes(s,occup)
 
 				# gappiness is defined as number of hole cells divided by the holes and shape itself
 				gap <- (length(theHoles)-length(exclude))/(length(theHoles) + length(occup)-length(exclude))

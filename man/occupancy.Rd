@@ -61,7 +61,7 @@ occupancy(x, s, ...)
 
 \item{lat}{\code{character}, column name of the latitudes.}
 
-\item{full}{Logical switch indicating whether only estimate should be shown (\code{FALSE}), or other info as well.}
+\item{full}{Logical switch indicating whether only the estimate should be shown (\code{FALSE}), or other info (i.e. the list of occupied components in \code{s}) as well.}
 
 \item{prop}{Should counts be returned (\code{prop=NULL}), or proportions? If \code{prop="global"}, then global proportions are returned, if \code{prop="relative"}, relative proporitions are calculated.}
 
@@ -69,24 +69,24 @@ occupancy(x, s, ...)
 
 \item{listarray}{If the full traceable output is required, should this be organized with list-array (native output of tapply).}
 
-\item{q}{Minimum occupancy with \code{q} proportion of occurrences.}
+\item{q}{Minimum occupancy with \code{q} proportion of occurrences (not yet implemented!).}
 
 \item{plot}{Logical, should the result be plotted? Will plot over active plot (as in \code{add=TRUE}).}
 
 \item{plot.args}{List arguments passed to the plotting function: \code{lines}.}
 }
 \value{
-For single subsets (\code{tax=NULL}) either a single numeric or an orange list with an estimate and other information. Iterations for multiple taxa result in a named numeric vector a list.
+For single subsets (\code{tax=NULL}) either a single numeric or an orange list with an estimate and other information. Iterations for multiple taxa result in a named numeric vector or a list.
 }
 \description{
-High-level abstract function to calculate how many components of a pre-specified spatial structure is occupied by a distribution dataset
+High-level, abstract function to calculate how many or what proporotion of components in a pre-specified spatial structure is occupied by a distribution dataset
 }
 \details{
-The function normally returns counts (i.e. natural numbers) of how many discrete units are occupied.
+The function by default returns counts (i.e. natural numbers) of how many discrete units are occupied.
 However, there are many cases, when proportions are much more useful, which can be set with the \code{prop} argument.
-Proportions are either global or relative. Global proportions, express how much of the overall spatial structure (\code{s}) is occupied; for example, what proportion of a total grid is occupied.
+Proportions are either global (\code{prop="global"}) or relative (\code{prop="relative"}). Global proportions express how much of the overall spatial structure (\code{s}) is occupied; for example, what is the proportion of cells in a grid that are occupied.
 This method is only applicable, when \code{s} is defined as a spatial structure that is independent from \code{x}.
-In contrast, relative proportional occupancies express protions in the sampled set, i.e. what proportion of the overall sampled grid cells or localities are occupied by a taxon. This is particularly useful when \code{tax!=NULL}.
+In contrast, relative proportional occupancies express proportions in the sampled set, i.e. what proportion of the overall sampled grid cells or localities are occupied by a taxon. This is particularly useful when \code{tax!=NULL}.
 }
 \examples{
 # I. Single taxon: Pinna nobilsi

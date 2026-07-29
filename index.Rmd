@@ -15,7 +15,7 @@ library(badger)
 `r badge_cran_download("orange", "grand-total", "yellow")`
 `r badge_cran_checks("orange")`
 
-## Spherical Ranges and Parametrization of Geographic Shapes
+## Spherical Descriptors of Geographic Distributions 
 
 This package is a collation of tools and metrics to characterize distribution data on the surfrace of a sphere or an ellipsoid. The primary group of these metrics is those that describe the extent of a distribution, i.e. geographic ranges/range sizes (depending on who you talk to). The calculation of geographic ranges can be executed using point coordinate data,  as well as and cells on a discretized sphere, vector polygons and raster. Besides ensuring the use a geometrically correct implementations, the package offers the exploration of partial results for visual diagnostics and further post-processing.
 
@@ -65,6 +65,12 @@ png("man/figures/range_example.png", width=1400,height=800)
 	# minimum spanning tree length
 	mst <- mstlength(coords, plot=TRUE, plot.args=list(lwd=2))
 
+	# centroid-circle hull
+	cc <- shull(coords, method="centroidcircle")
+	plot(cc, add=TRUE)
+
+	 
+
 dev.off()
 ```
 
@@ -102,72 +108,30 @@ occ <- occupancy(coords, s=hex, plot=TRUE)
 
 # Minimum spanning tree length
 mst <- mstlength(coords, plot=TRUE, plot.args=list(lwd=3))
+
+
+# centroid-circle hull
+cc <- shull(coords, method="centroidcircle")
+plot(cc, add=TRUE)
+
 ```
 
 <img src="man/figures/range_example.png" alt="Equirectangular projection of the globe, showing some range calculation methods using the Pinna example dataset.">
 
+The Maximum great circle distance:
 
 ```{r mgcd}
 # Maximum great circle distance
 mgcd
 ```
 
+Count of occupied cells:
+
 ```{r occ}
 # Occupancy count 
 occ
 ```
 
-
-## Abstraction 
-
-The following sections provides a summary of the methods implemented in the package at an abstract level. These abstract methods are implemented as generic functions, which have dedicated sections in the [Specification](). 
-
-### Range/extent esimators 
-
-he metrics in this section define ways to derive the extent or **range** of an input strucutre.
-
-| In | Method                       | Abstract Description                                                                                                                                               |
-|----|------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| ✅ | Occupancy                    | The number of occupied elements in a pre-defined spatially discretized structure.                                                                                  |
-| ✅ | Maximum Distance             | The longest distance that can be observed in a data-structure. The default method for this metric is the **Maximum Great Circle Distance**.                        |
-| ✅ | Radius                       | The longest distance that can be constructed between any member of a point-cloud and a fixed point. The default method for this metric is the **Centroid radius**. |
-| ✅ | Latitudinal range            | The zonal distance between the northernmost and southernmost point of a spatial strucutre.                                                                         |
-| ❌ | Zonal area                   | The area of the zone (latitudinal belt) covered by a spatial structure - calculated from the Latitudinal Range.                                                    |
-| ✅ | Minimum Spanning Tree Length | The total length of the spanning tree constructed within a spatial object (default to using the great circle distance matrix).                                     |
-| ❌ | Hull Area                    | The area of a hull (enclosing polygon) constructed around a distribution, the most commonly used is the **Convex hull**.                                           |
-| ❌ | Circle Area                  | The area of a shape that divides the sphere in two based on a single small circle.                                                                                 |
-
-
-### Structure definers 
-
-These methods define and structures constructed from the input data, which are used in subsequent calculations.
-
-| In | Method        | Abstract Description                                                                             |
-|----|---------------|--------------------------------------------------------------------------------------------------|
-| ❌ | small circles | Defines a spherical circle (small or great) around a distribution structure.                     |
-| ❌ | triangulation | Spherical triangulation of a given pointset.                                                     |
-| ❌ | hull          | Defines a hull, i.e. and enclosing spherical polygon.                                            |
-| ✅ | patches       | Identifies occupied, unconnected patches or islands in the distribution                          |
-| ✅ | holes         | Identified unoccupied, unconnected patches or islands (i.e. holes) the distribution distribution |
-| ❌ | ellipse       | Defines a spherical ellipse around a distribution structure.                                     |
-
-### Location and shape esimators 
-
-| In | Method            | Abstract Description                                                                                                        |
-|----|-------------------|-----------------------------------------------------------------------------------------------------------------------------|
-| ✅ | centroid          | The center point of distribution on the surface of Earth.                                                                   |
-| ❌ | gappiness         | The proportion of unoccupied vs. total spatial units in a distribution within a constructed spatial structure, e.g. a hull. |
-| ❌ | filling           | The proportion of unoccupied vs. total spatial units in a distribution within a constructed spatial structure, e.g. a hull. |
-| ✅ | number of patches | The number of occupied patches of area for the distribution sample.                                                         |
-| ✅ | number of holes   | The number of enclosed holes for the distribution sample.                                                                  |
-| ❌ | eccentricity      | The eccentricity of an ellipse calculated from the distribution sample.                                                     |
-	
-
-### Auxilliary/Utility functions 
-
-| Method                      | Abstract Description                                     | TODO           |
-|-----------------------------|----------------------------------------------------------|----------------|
-| Graph distance (`graphdist`) | Calculate the distance matrix for a grid, and a bunch of | Move to icosa? |
 
 * * *
 
