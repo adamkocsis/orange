@@ -26,6 +26,7 @@ centroid_results <- run_test_dir("orange/tests/centroid")
 gappiness_results <- run_test_dir("orange/tests/gappiness")
 
 # Small circle tests
+sc_results <- run_test_dir("orange/tests/smallcircles")
 
 # Finish
 stopCluster(cl)
