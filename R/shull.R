@@ -87,7 +87,7 @@ setMethod(
 setMethod(
 	"shull",
 	signature=c(x="data.frame", s="missing"),
-	definition=function(x,method, long="long",lat="lat",...){
+	definition=function(x,long="long",lat="lat",...){
 		mat <- as.matrix(x[, c(long, lat)])
 		res <- shull(mat, ...)
 		return(res)
