@@ -15,7 +15,10 @@ cl <- parallel::makeCluster(4, outfile="")
 parallel::clusterCall(cl, source, "orange/tests/source.R")
 
 # the range metrics
+# # Refactored
 occupancy_results <- run_test_dir("orange/tests/occupancy")
+
+# # to do
 maxdist_results <- run_test_dir("orange/tests/maxdist")
 latrange_results <- run_test_dir("orange/tests/latrange")
 mstlength_results <- run_test_dir("orange/tests/mstlength")
