@@ -1,11 +1,11 @@
 # Change log of the R package 'orange'
 
-# orange 0.1.0-13 - 2026-07-01
+# orange 0.1.0-14 - 2026-07-29
 
 ## Added
 
 - The `kentsamples` data for testing and demonstration.
-- The `prop` argument to `occupancy` allowing the calculation of proportional occupancies.
+- The `prop` argument to `occupancy` allowing the calculation of proportional occupancies. Both the `"relative"` and `"global"` methods are available.
 - The `bradypus` dataset for testing and demonstration.
 - The `sc_shape` function to calculate points on small circles 
 - The `sc_center` function to calculate a small circle based on points on the sphere
