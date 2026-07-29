@@ -90,21 +90,25 @@ expect_equal(length(occMissTaxOne), length(occ))
 ## Complete dataset
 expect_silent(occFull <- occupancy(pinna, s="cell", tax="species", full=TRUE))
 expect_true(inherits(occFull, "array"))
+expect_true(inherits(occFull[[1]], "orange"))
 expect_equal(names(occFull), names(occ)) # data for same taxa
 expect_equal(occ, sapply(occFull, function(b) length(b$occupied))) # results can be recreated 
 
 ## With missing values - first
 expect_silent(occFullFirst <- occupancy(naFirst, s="cell", tax="species", full=TRUE))
+expect_true(inherits(occFullFirst[[1]], "orange"))
 expect_equal(names(occFullFirst), names(occFirst)) # data for same taxa
 expect_equal(occFirst, sapply(occFullFirst, function(b) length(b$occupied))) # results can be recreated 
 
 ## With missing values - second
 expect_silent(occFullSecond <- occupancy(naSecond, s="cell", tax="species", full=TRUE))
+expect_true(inherits(occFullSecond[[1]], "orange"))
 expect_equal(names(occFullSecond), names(occSecond)) # data for same taxa
 expect_equal(occSecond, sapply(occFullSecond, function(b) length(b$occupied))) # results can be recreated 
 
 ## With missing values - last
 expect_silent(occFullLast <- occupancy(naLast, s="cell", tax="species", full=TRUE))
+expect_true(inherits(occFullLast[[1]], "orange"))
 expect_equal(names(occFullLast), names(occLast)) # data for same taxa
 expect_equal(occLast, sapply(occFullLast, function(b) length(b$occupied))) # results can be recreated 
 
@@ -115,6 +119,7 @@ expect_equal(length(occZero), 0L)
 ## Singular data
 expect_silent(occSingle <- occupancy(naSingle, s="cell", tax="species", full=TRUE))
 expect_equal(length(occSingle), 1L)
+expect_true(inherits(occSingle[[1]], "orange"))
 expect_equal(occSingle[[1]]$estimate, 1L)
 expect_equal(occSingle[[1]]$estimate, length(occSingle[[1]]$occupied))
 

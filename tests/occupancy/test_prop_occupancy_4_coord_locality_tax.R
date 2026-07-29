@@ -106,6 +106,7 @@ expect_error(occupancy(pinna, s="cell", tax="species", full=TRUE, prop="global")
 expect_silent(occFull <- occupancy(pinna, s="cell", tax="species", full=TRUE, prop="relative"))
 expect_silent(occFullNoProp <- occupancy(pinna, s="cell", tax="species", full=TRUE))
 expect_true(inherits(occFull, "array"))
+expect_true(inherits(occFull[[1]], "orange"))
 expect_equal(names(occFull), names(occ)) # data for same taxa
 expect_equal(occ, sapply(occFull, function(b) b$estimate)) # results are the same 
 expect_equal(lapply(occFullNoProp, function(b) b$occupied), lapply(occFull, function(b) b$occupied)) # occupied stuff are the same 
@@ -114,6 +115,7 @@ expect_equal(lapply(occFullNoProp, function(b) b$occupied), lapply(occFull, func
 expect_error(occupancy(naFirst, s="cell", tax="species", full=TRUE, prop="global"))
 expect_silent(occFullFirst <- occupancy(naFirst, s="cell", tax="species", full=TRUE, prop="relative"))
 expect_silent(occFullFirstNoProp <- occupancy(naFirst, s="cell", tax="species", full=TRUE))
+expect_true(inherits(occFullFirst[[1]], "orange"))
 expect_equal(names(occFullFirst), names(occFirst)) # data for same taxa
 expect_equal(occFirst, sapply(occFullFirst, function(b) b$estimate)) # results are the same 
 expect_equal(lapply(occFullFirstNoProp, function(b) b$occupied), lapply(occFullFirst, function(b) b$occupied)) # occupied stuff are the same 
@@ -122,6 +124,7 @@ expect_equal(lapply(occFullFirstNoProp, function(b) b$occupied), lapply(occFullF
 expect_error(occupancy(naSecond, s="cell", tax="species", full=TRUE, prop="global"))
 expect_silent(occFullSecond <- occupancy(naSecond, s="cell", tax="species", full=TRUE, prop="relative"))
 expect_silent(occFullSecondNoProp <- occupancy(naSecond, s="cell", tax="species", full=TRUE))
+expect_true(inherits(occFullSecond[[1]], "orange"))
 expect_equal(names(occFullSecond), names(occSecond)) # data for same taxa
 expect_equal(occSecond, sapply(occFullSecond, function(b) b$estimate)) # results are the same 
 expect_equal(lapply(occFullSecondNoProp, function(b) b$occupied), lapply(occFullSecond, function(b) b$occupied)) # occupied stuff are the same 
@@ -130,6 +133,7 @@ expect_equal(lapply(occFullSecondNoProp, function(b) b$occupied), lapply(occFull
 expect_error(occupancy(naLast, s="cell", tax="species", full=TRUE, prop="global"))
 expect_silent(occFullLast <- occupancy(naLast, s="cell", tax="species", full=TRUE, prop="relative"))
 expect_silent(occFullLastNoProp <- occupancy(naLast, s="cell", tax="species", full=TRUE))
+expect_true(inherits(occFullSecond[[1]], "orange"))
 expect_equal(names(occFullLast), names(occLast)) # data for same taxa
 expect_equal(occLast, sapply(occFullLast, function(b) b$estimate)) # results are the same 
 expect_equal(lapply(occFullLastNoProp, function(b) b$occupied), lapply(occFullLast, function(b) b$occupied)) # occupied stuff are the same 
@@ -142,6 +146,7 @@ expect_equal(length(occZero), 0L)
 ## Singular data
 expect_error(occupancy(naSingle, s="cell", tax="species", full=TRUE, prop="global"))
 expect_silent(occSingle <- occupancy(naSingle, s="cell", tax="species", full=TRUE, prop="relative"))
+expect_true(inherits(occSingle[[1]], "orange"))
 expect_equal(length(occSingle), 1L)
 expect_equal(occSingle[[1]]$estimate, 1L)
 expect_equal(occSingle[[1]]$estimate, length(occSingle[[1]]$occupied))

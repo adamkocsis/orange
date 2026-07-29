@@ -83,37 +83,41 @@ expect_equal(length(occMissTaxOne), length(occ))
 expect_error(occPlot <- occupancy(pinna, long="decimalLongitude", lat="decimalLatitude", tax="species", plot=TRUE))
 
 #-------------------------------------------------------------------------------
-# Full output/tracability, listout=TRUE
+# Full output/tracability, listarray=TRUE
 #-------------------------------------------------------------------------------
 
 ## Complete dataset
 expect_silent(occFull <- occupancy(pinna, long="decimalLongitude", lat="decimalLatitude", tax="species", full=TRUE))
 expect_true(inherits(occFull, "array"))
+expect_true(inherits(occFull[[1]], "orange"))
 expect_equal(names(occFull), names(occ)) # data for same taxa
 expect_equal(occ, sapply(occFull, function(b) nrow(b$occupied))) # results can be recreated 
 
 ## With missing values - first
 expect_silent(occFullFirst <- occupancy(naFirst, long="decimalLongitude", lat="decimalLatitude", tax="species", full=TRUE))
+expect_true(inherits(occFullFirst[[1]], "orange"))
 expect_equal(names(occFullFirst), names(occFirst)) # data for same taxa
 expect_equal(occFirst, sapply(occFullFirst, function(b) nrow(b$occupied))) # results can be recreated 
 
 ## With missing values - second
 expect_silent(occFullSecond <- occupancy(naSecond, long="decimalLongitude", lat="decimalLatitude", tax="species", full=TRUE))
+expect_true(inherits(occFullSecond[[1]], "orange"))
 expect_equal(names(occFullSecond), names(occSecond)) # data for same taxa
 expect_equal(occSecond, sapply(occFullSecond, function(b) nrow(b$occupied))) # results can be recreated 
 
 ## With missing values - last
 expect_silent(occFullLast <- occupancy(naLast, long="decimalLongitude", lat="decimalLatitude", tax="species", full=TRUE))
+expect_true(inherits(occFullLast[[1]], "orange"))
 expect_equal(names(occFullLast), names(occLast)) # data for same taxa
 expect_equal(occLast, sapply(occFullLast, function(b) nrow(b$occupied))) # results can be recreated 
 
 ## 0-length data 
 expect_silent(occZero <- occupancy(naZero, long="decimalLongitude", lat="decimalLatitude", tax="species", full=TRUE))
-expect_equal(length(occZero$estimate), 0L)
-expect_equal(nrow(occZero$occupied), 0L)
+expect_equal(length(occZero), 0L)
 
 ## Singular data
 expect_silent(occSingle <- occupancy(naSingle, long="decimalLongitude", lat="decimalLatitude", tax="species", full=TRUE))
+expect_true(inherits(occSingle[[1]], "orange"))
 expect_equal(length(occSingle), 1L)
 expect_equal(occSingle[[1]]$estimate, 1L)
 expect_equal(occSingle[[1]]$estimate, nrow(occSingle[[1]]$occupied))

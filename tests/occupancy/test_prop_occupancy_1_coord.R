@@ -84,7 +84,7 @@ expect_error(occPlot <- occupancy(mat, plot=TRUE, prop="relative"))
 ## Complete dataset
 expect_error(occupancy(mat, full=TRUE, prop="global"))
 expect_silent(occMatFull <- occupancy(mat, full=TRUE, prop="relative"))
-expect_true(inherits(occMatFull, "list"))
+expect_true(inherits(occMatFull, "orange"))
 expect_equal(names(occMatFull), c("estimate", "occupied"))
 expect_equal(occMatFull$estimate, 1L)
 # same as previous
@@ -95,26 +95,31 @@ expect_equal(occMatFull$estimate, occMat)
 ### First
 expect_error(occupancy(matFirstNA, full=TRUE, prop="global"))
 expect_silent(occFirstNAfull <- occupancy(matFirstNA, full=TRUE, prop="relative"))
+expect_true(inherits(occFirstNAfull, "orange"))
 expect_equal(occFirstNA, occFirstNAfull$estimate)
 
 ### Second
 expect_error(occupancy(matSecondNA, full=TRUE, prop="global"))
 expect_silent(occSecondNAfull <- occupancy(matSecondNA, full=TRUE, prop="relative"))
+expect_true(inherits(occSecondNAfull, "orange"))
 expect_equal(occSecondNA, occSecondNAfull$estimate)
 
 ### Last 
 expect_error(occupancy(matLastNA, full=TRUE, prop="global"))
 expect_silent(occLastNAfull <- occupancy(matLastNA, full=TRUE, prop="relative"))
+expect_true(inherits(occLastNAfull, "orange"))
 expect_equal(occLastNA, occLastNAfull$estimate)
 
 ## 0-length data 
 expect_error(occupancy(matZero, full=TRUE, prop="global"))
 expect_silent(occZeroFull <- occupancy(matZero, full=TRUE, prop="relative"))
+expect_true(inherits(occZeroFull, "orange"))
 expect_equal(occZeroFull$estimate, NA)
 
 ## Singular data
 expect_error(occupancy(matSingle, full=TRUE, prop="global"))
 expect_silent(occSingleFull <- occupancy(matSingle, full=TRUE, prop="relative"))
+expect_true(inherits(occSingleFull, "orange"))
 expect_equal(occSingleFull$estimate, 1L)
 
 
@@ -177,26 +182,31 @@ expect_equal(occSingledf, 1L)
 ### First
 expect_error( occupancy(dfFirstNA, long="decimalLongitude", lat="decimalLatitude", full=TRUE, prop="global"))
 expect_silent(occFirstNAfullDF <- occupancy(dfFirstNA, long="decimalLongitude", lat="decimalLatitude", full=TRUE, prop="relative"))
+expect_true(inherits(occFirstNAfullDF, "orange"))
 expect_equal(occFirstNA, occFirstNAfullDF$estimate)
 
 ### Second
 expect_error( occupancy(dfSecondNA, long="decimalLongitude", lat="decimalLatitude", full=TRUE, prop="global"))
 expect_silent(occSecondNAfullDF <- occupancy(dfSecondNA, long="decimalLongitude", lat="decimalLatitude", full=TRUE, prop="relative"))
+expect_true(inherits(occSecondNAfullDF, "orange"))
 expect_equal(occSecondNA, occSecondNAfullDF$estimate)
 
 ### Last 
 expect_error( occupancy(dfLastNA, long="decimalLongitude", lat="decimalLatitude", full=TRUE, prop="global"))
 expect_silent(occLastNAfullDF <- occupancy(dfLastNA, long="decimalLongitude", lat="decimalLatitude", full=TRUE, prop="relative"))
+expect_true(inherits(occLastNAfullDF, "orange"))
 expect_equal(occLastNA, occLastNAfullDF$estimate)
 
 ## 0-length data 
 expect_error( occupancy(dfZero, long="decimalLongitude", lat="decimalLatitude", full=TRUE, prop="global"))
 expect_silent(occZeroFullDF <- occupancy(dfZero, long="decimalLongitude", lat="decimalLatitude", full=TRUE, prop="relative"))
+expect_true(inherits(occZeroFullDF, "orange"))
 expect_equal(occZeroFullDF$estimate, NA)
 
 ## Singular data
 expect_error( occupancy(dfSingle, long="decimalLongitude", lat="decimalLatitude", full=TRUE, prop="global"))
 expect_silent(occSingleFullDF <- occupancy(dfSingle, long="decimalLongitude", lat="decimalLatitude", full=TRUE, prop="relative"))
+expect_true(inherits(occSingleFullDF, "orange"))
 expect_equal(occSingleFullDF$estimate, 1L)
 
 #-------------------------------------------------------------------------------

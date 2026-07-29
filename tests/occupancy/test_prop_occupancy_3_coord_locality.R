@@ -86,7 +86,7 @@ occManual <- function(x){
 ## Complete dataset
 expect_error(occupFull <- occupancy(nobilis, s="cell", full=TRUE, prop="global"))
 expect_silent(occupFull <- occupancy(nobilis, s="cell", full=TRUE, prop="relative"))
-expect_true(inherits(occupFull, "list"))
+expect_true(inherits(occupFull, "orange"))
 expect_equal(names(occupFull), c("estimate", "occupied"))
 expect_equal(occup, occupFull$estimate)
 expect_equal(occManual(nobilis), occupFull$occupied)
@@ -95,24 +95,28 @@ expect_equal(occManual(nobilis), occupFull$occupied)
 ### First
 expect_error(occupFirstNAfull <- occupancy(dfFirstNA, s="cell", full=TRUE, prop="global"))
 expect_silent(occupFirstNAfull <- occupancy(dfFirstNA, s="cell", full=TRUE, prop="relative"))
+expect_true(inherits(occupFirstNAfull, "orange"))
 expect_equal(occupFirstNAfull$estimate, occupFirstNA)
 expect_equal(occManual(dfFirstNA), occupFirstNAfull$occupied)
 
 ### Second
 expect_error(occupSecondNAfull <- occupancy(dfSecondNA, s="cell", full=TRUE, prop="global"))
 expect_silent(occupSecondNAfull <- occupancy(dfSecondNA, s="cell", full=TRUE, prop="relative"))
+expect_true(inherits(occupSecondNAfull, "orange"))
 expect_equal(occupSecondNAfull$estimate, occupSecondNA)
 expect_equal(occManual(dfSecondNA), occupSecondNAfull$occupied)
 
 ### Last
 expect_error(occupLastNAfull <- occupancy(dfLastNA, s="cell", full=TRUE, prop="global"))
 expect_silent(occupLastNAfull <- occupancy(dfLastNA, s="cell", full=TRUE, prop="relative"))
+expect_true(inherits(occupLastNAfull, "orange"))
 expect_equal(occupLastNAfull$estimate, occupLastNA)
 expect_equal(occManual(dfLastNA), occupLastNAfull$occupied)
 
 ## 0-length data 
 expect_error(occupancy(dfZero, s="cell", full=TRUE, prop="global"))
 expect_silent(occupZeroFull <- occupancy(dfZero, s="cell", full=TRUE, prop="relative"))
+expect_true(inherits(occupZeroFull, "orange"))
 expect_equal(occupZeroFull$estimate, NA)
 expect_equal(length(occupZeroFull$occupied), 0)
 
@@ -120,6 +124,7 @@ expect_equal(length(occupZeroFull$occupied), 0)
 expect_error(occupSingleFull <- occupancy(dfSingle, s="cell", full=TRUE, prop="global"))
 expect_silent(occupSingleFull <- occupancy(dfSingle, s="cell", full=TRUE, prop="relative"))
 expect_equal(occupSingleFull$estimate, 1L)
+expect_true(inherits(occupSingleFull, "orange"))
 expect_equal(occManual(dfSingle), occupSingleFull$occupied)
 
 

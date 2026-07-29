@@ -131,46 +131,56 @@ expect_equal(occFullRelative$estimate, length(occFullRelative$occupied)/as.numer
 
 ### First
 expect_silent(occFirstNAfullGlobal <- occupancy(matFirstNA, s=hex, full=TRUE, prop="global"))
+expect_true(inherits(occFirstNAfullGlobal, "orange"))
 expect_equal(occFirstNAglobal, occFirstNAfullGlobal$estimate)
 expect_equal(length(occFirstNAfullGlobal$occupied)/as.numeric(length(hex)), occFirstNAfullGlobal$estimate)
 
 expect_silent(occFirstNAfullRelative <- occupancy(matFirstNA, s=hex, full=TRUE, prop="relative"))
+expect_true(inherits(occFirstNAfullRelative, "orange"))
 expect_equal(occFirstNArelative, occFirstNAfullRelative$estimate)
 expect_equal(1, occFirstNAfullRelative$estimate)
 
 ### Second
 expect_silent(occSecondNAfullGlobal <- occupancy(matSecondNA, s=hex, full=TRUE, prop="global"))
+expect_true(inherits(occSecondNAfullGlobal, "orange"))
 expect_equal(occSecondNAglobal, occSecondNAfullGlobal$estimate)
 expect_equal(length(occSecondNAfullGlobal$occupied)/as.numeric(length(hex)), occSecondNAfullGlobal$estimate)
 
 expect_silent(occSecondNAfullRelative <- occupancy(matSecondNA, s=hex, full=TRUE, prop="relative"))
+expect_true(inherits(occSecondNAfullRelative, "orange"))
 expect_equal(occSecondNArelative, occSecondNAfullRelative$estimate)
 expect_equal(1, occSecondNAfullRelative$estimate)
 
 ### Last 
 expect_silent(occLastNAfullGlobal <- occupancy(matLastNA, s=hex, full=TRUE, prop="global"))
+expect_true(inherits(occLastNAfullGlobal, "orange"))
 expect_equal(occLastNAglobal, occLastNAfullGlobal$estimate)
 expect_equal(length(occLastNAfullGlobal$occupied)/as.numeric(length(hex)), occLastNAfullGlobal$estimate)
 
 expect_silent(occLastNAfullRelative <- occupancy(matLastNA, s=hex, full=TRUE, prop="relative"))
+expect_true(inherits(occLastNAfullRelative, "orange"))
 expect_equal(occLastNArelative, occLastNAfullRelative$estimate)
 expect_equal(1, occLastNAfullRelative$estimate)
 
 ## 0-length data 
 expect_silent(occZeroFullGlobal <- occupancy(matZero, s=hex, full=TRUE, prop="global"))
+expect_true(inherits(occZeroFullGlobal, "orange"))
 expect_equal(occZeroGlobal, occZeroFullGlobal$estimate)
 expect_equal(0, occZeroFullGlobal$estimate)
 
 expect_silent(occZeroFullRelative <- occupancy(matZero, s=hex, full=TRUE, prop="relative"))
+expect_true(inherits(occZeroFullRelative, "orange"))
 expect_equal(occZeroRelative, occZeroFullRelative$estimate)
 expect_equal(NA, occZeroFullRelative$estimate)
 
 ## Singular data
 expect_silent(occSingleFullGlobal <- occupancy(matSingle, s=hex, full=TRUE, prop="global"))
+expect_true(inherits(occSingleFullGlobal, "orange"))
 expect_equal(occSingleGlobal, occSingleFullGlobal$estimate)
 expect_equal(length(occSingleFullGlobal$occupied)/as.numeric(length(hex)), occSingleFullGlobal$estimate)
 
 expect_silent(occSingleFullRelative <- occupancy(matSingle, s=hex, full=TRUE, prop="relative"))
+expect_true(inherits(occSingleFullRelative, "orange"))
 expect_equal(occSingleRelative, occSingleFullRelative$estimate)
 expect_equal(1, occSingleFullRelative$estimate)
 
@@ -188,6 +198,7 @@ while(p!=1){
 	p <- dev.cur()
 }
 expect_silent(occPlot <- occupancy(mat, hex, plot=TRUE, full=TRUE, prop="global"))
+expect_true(inherits(occPlot, "orange"))
 
 
 # normal plotting
@@ -200,6 +211,7 @@ while(p!=1){
 	p <- dev.cur()
 }
 expect_silent(occPlot <- occupancy(mat, hex, plot=TRUE, full=TRUE, prop="relative"))
+expect_true(inherits(occPlot, "orange"))
 
 
 # normal plotting
@@ -346,46 +358,56 @@ expect_equal(occFullRelative$estimate, length(occFullRelative$occupied)/as.numer
 
 ### First
 expect_silent(occFirstNAfullGlobal <- occupancy(dfFirstNA, s=hex, full=TRUE, long="decimalLongitude",lat="decimalLatitude", prop="global"))
+expect_true(inherits(occFirstNAfullGlobal, "orange"))
 expect_equal(occFirstNAglobal, occFirstNAfullGlobal$estimate)
 expect_equal(length(occFirstNAfullGlobal$occupied)/as.numeric(length(hex)), occFirstNAfullGlobal$estimate)
 
 expect_silent(occFirstNAfullRelative <- occupancy(dfFirstNA, s=hex, full=TRUE, long="decimalLongitude",lat="decimalLatitude", prop="relative"))
+expect_true(inherits(occFirstNAfullRelative, "orange"))
 expect_equal(occFirstNArelative, occFirstNAfullRelative$estimate)
 expect_equal(1, occFirstNAfullRelative$estimate)
 
 ### Second
 expect_silent(occSecondNAfullGlobal <- occupancy(dfSecondNA, s=hex, full=TRUE, long="decimalLongitude",lat="decimalLatitude", prop="global"))
+expect_true(inherits(occSecondNAfullGlobal, "orange"))
 expect_equal(occSecondNAglobal, occSecondNAfullGlobal$estimate)
 expect_equal(length(occSecondNAfullGlobal$occupied)/as.numeric(length(hex)), occSecondNAfullGlobal$estimate)
 
 expect_silent(occSecondNAfullRelative <- occupancy(dfSecondNA, s=hex, full=TRUE, long="decimalLongitude",lat="decimalLatitude", prop="relative"))
+expect_true(inherits(occSecondNAfullRelative, "orange"))
 expect_equal(occSecondNArelative, occSecondNAfullRelative$estimate)
 expect_equal(1, occSecondNAfullRelative$estimate)
 
 ### Last 
 expect_silent(occLastNAfullGlobal <- occupancy(dfLastNA, s=hex, full=TRUE, long="decimalLongitude",lat="decimalLatitude", prop="global"))
+expect_true(inherits(occLastNAfullGlobal, "orange"))
 expect_equal(occLastNAglobal, occLastNAfullGlobal$estimate)
 expect_equal(length(occLastNAfullGlobal$occupied)/as.numeric(length(hex)), occLastNAfullGlobal$estimate)
 
 expect_silent(occLastNAfullRelative <- occupancy(dfLastNA, s=hex, full=TRUE, long="decimalLongitude",lat="decimalLatitude", prop="relative"))
+expect_true(inherits(occLastNAfullRelative, "orange"))
 expect_equal(occLastNArelative, occLastNAfullRelative$estimate)
 expect_equal(1, occLastNAfullRelative$estimate)
 
 ## 0-length data 
 expect_silent(occZeroFullGlobal <- occupancy(dfZero, s=hex, full=TRUE, long="decimalLongitude",lat="decimalLatitude", prop="global"))
+expect_true(inherits(occZeroFullGlobal, "orange"))
 expect_equal(occZeroGlobal, occZeroFullGlobal$estimate)
 expect_equal(0, occZeroFullGlobal$estimate)
 
 expect_silent(occZeroFullRelative <- occupancy(dfZero, s=hex, full=TRUE, long="decimalLongitude",lat="decimalLatitude", prop="relative"))
+expect_true(inherits(occZeroFullRelative, "orange"))
 expect_equal(occZeroRelative, occZeroFullRelative$estimate)
 expect_equal(NA, occZeroFullRelative$estimate)
 
 ## Singular data
 expect_silent(occSingleFullGlobal <- occupancy(dfSingle, s=hex, full=TRUE, long="decimalLongitude",lat="decimalLatitude", prop="global"))
+expect_true(inherits(occSingleFullGlobal, "orange"))
 expect_equal(occSingleGlobal, occSingleFullGlobal$estimate)
 expect_equal(length(occSingleFullGlobal$occupied)/as.numeric(length(hex)), occSingleFullGlobal$estimate)
 
 expect_silent(occSingleFullRelative <- occupancy(dfSingle, s=hex, full=TRUE, long="decimalLongitude",lat="decimalLatitude", prop="relative"))
+expect_true(inherits(occSingleFullRelative, "orange"))
 expect_equal(occSingleRelative, occSingleFullRelative$estimate)
 expect_equal(1, occSingleFullRelative$estimate)
 
@@ -403,6 +425,7 @@ while(p!=1){
 	p <- dev.cur()
 }
 expect_silent(occPlot <- occupancy(nobilis, hex, plot=TRUE, full=TRUE, long="decimalLongitude",lat="decimalLatitude", prop="global"))
+expect_true(inherits(occPlot, "orange"))
 
 
 # normal plotting
@@ -415,6 +438,7 @@ while(p!=1){
 	p <- dev.cur()
 }
 expect_silent(occPlot <- occupancy(nobilis, hex, plot=TRUE, full=TRUE, long="decimalLongitude",lat="decimalLatitude", prop="relative"))
+expect_true(inherits(occPlot, "orange"))
 
 
 # normal plotting

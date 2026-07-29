@@ -23,7 +23,7 @@ occupancy(x, s, ...)
   prop = NULL
 )
 
-\S4method{occupancy}{data.frame,character}(x, s, tax = NULL, full = FALSE, prop = NULL)
+\S4method{occupancy}{data.frame,character}(x, s, tax = NULL, full = FALSE, prop = NULL, listarray = TRUE)
 
 \S4method{occupancy}{matrix,trigrid}(
   x,
@@ -76,7 +76,7 @@ occupancy(x, s, ...)
 \item{plot.args}{List arguments passed to the plotting function: \code{lines}.}
 }
 \value{
-Either a single numeric or a list with an estimate and other information.
+For single subsets (\code{tax=NULL}) either a single numeric or an orange list with an estimate and other information. Iterations for multiple taxa result in a named numeric vector a list.
 }
 \description{
 High-level abstract function to calculate how many components of a pre-specified spatial structure is occupied by a distribution dataset

@@ -121,21 +121,28 @@ auxocc <- function(b) length(b$occupied)/as.numeric(length(hex))
 ## Complete dataset
 expect_silent(occFull <- occupancy(pinna, s=hex, long="decimalLongitude", lat="decimalLatitude", tax="species", full=TRUE, prop="global"))
 expect_true(inherits(occFull, "array"))
+expect_true(inherits(occFull[[1]], "orange"))
 expect_equal(names(occFull), names(occ)) # data for same taxa
 expect_equal(occ, sapply(occFull,auxocc )) # results can be recreated 
 
 ## With missing values - first
 expect_silent(occFullFirst <- occupancy(naFirst, s=hex, long="decimalLongitude", lat="decimalLatitude", tax="species", full=TRUE, prop="global"))
+expect_true(inherits(occFullFirst, "array"))
+expect_true(inherits(occFullFirst[[1]], "orange"))
 expect_equal(names(occFullFirst), names(occFirst)) # data for same taxa
 expect_equal(occFirst, sapply(occFullFirst, auxocc)) # results can be recreated 
 
 ## With missing values - second
 expect_silent(occFullSecond <- occupancy(naSecond, s=hex, long="decimalLongitude", lat="decimalLatitude",tax="species", full=TRUE,prop="global"))
+expect_true(inherits(occFullSecond, "array"))
+expect_true(inherits(occFullSecond[[1]], "orange"))
 expect_equal(names(occFullSecond), names(occSecond)) # data for same taxa
 expect_equal(occSecond, sapply(occFullSecond, auxocc)) # results can be recreated 
 
 ## With missing values - last
 expect_silent(occFullLast <- occupancy(naLast, s=hex, long="decimalLongitude", lat="decimalLatitude", tax="species", full=TRUE, prop="global"))
+expect_true(inherits(occFullLast, "array"))
+expect_true(inherits(occFullLast[[1]], "orange"))
 expect_equal(names(occFullLast), names(occLast)) # data for same taxa
 expect_equal(occLast, sapply(occFullLast, auxocc )) # results can be recreated 
 
@@ -146,6 +153,8 @@ expect_equal(length(occZero), 0L)
 ## Singular data
 expect_silent(occSingle <- occupancy(naSingle, s=hex, long="decimalLongitude", lat="decimalLatitude", tax="species", full=TRUE, prop="global"))
 expect_equal(length(occSingle), 1L)
+expect_true(inherits(occSingle, "array"))
+expect_true(inherits(occSingle[[1]], "orange"))
 expect_equal(occSingle[[1]]$estimate, 1/as.numeric(length(hex)))
 expect_equal(occSingle[[1]]$estimate, length(occSingle[[1]]$occupied)/as.numeric(length(hex)))
 
@@ -282,16 +291,21 @@ auxocc <- function(b) b$estimate
 ## Complete dataset
 expect_silent(occFull <- occupancy(pinna, s=hex, long="decimalLongitude", lat="decimalLatitude", tax="species", full=TRUE, prop="relative"))
 expect_true(inherits(occFull, "array"))
+expect_true(inherits(occFull[[1]], "orange"))
 expect_equal(names(occFull), names(occ)) # data for same taxa
 expect_equal(occ, sapply(occFull,auxocc )) # results can be recreated 
 
 ## With missing values - first
 expect_silent(occFullFirst <- occupancy(naFirst, s=hex, long="decimalLongitude", lat="decimalLatitude", tax="species", full=TRUE, prop="relative"))
+expect_true(inherits(occFullFirst, "array"))
+expect_true(inherits(occFullFirst[[1]], "orange"))
 expect_equal(names(occFullFirst), names(occFirst)) # data for same taxa
 expect_equal(occFirst, sapply(occFullFirst, auxocc)) # results can be recreated 
 
 ## With missing values - second
 expect_silent(occFullSecond <- occupancy(naSecond, s=hex, long="decimalLongitude", lat="decimalLatitude",tax="species", full=TRUE,prop="relative"))
+expect_true(inherits(occFullSecond, "array"))
+expect_true(inherits(occFullSecond[[1]], "orange"))
 expect_equal(names(occFullSecond), names(occSecond)) # data for same taxa
 expect_equal(occSecond, sapply(occFullSecond, auxocc)) # results can be recreated 
 
@@ -306,6 +320,8 @@ expect_equal(length(occZero), 0L)
 
 ## Singular data
 expect_silent(occSingle <- occupancy(naSingle, s=hex, long="decimalLongitude", lat="decimalLatitude", tax="species", full=TRUE, prop="relative"))
+expect_true(inherits(occSingle, "array"))
+expect_true(inherits(occSingle[[1]], "orange"))
 expect_equal(length(occSingle), 1L)
 expect_equal(occSingle[[1]]$estimate, 1L)
 

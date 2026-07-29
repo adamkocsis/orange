@@ -76,7 +76,7 @@ expect_equal(length(levels(factor(dfMissS$cell))), occupMissS)
 
 ## Complete dataset
 expect_silent(occupFull <- occupancy(nobilis, s="cell", full=TRUE))
-expect_true(inherits(occupFull, "list"))
+expect_true(inherits(occupFull, "orange"))
 expect_equal(names(occupFull), c("estimate", "occupied"))
 expect_equal(occup, occupFull$estimate)
 expect_equal(length(occupFull$occupied), occupFull$estimate)
@@ -84,26 +84,31 @@ expect_equal(length(occupFull$occupied), occupFull$estimate)
 ## With missing values
 ### First
 expect_silent(occupFirstNAfull <- occupancy(dfFirstNA, s="cell", full=TRUE))
+expect_true(inherits(occupFirstNAfull, "orange"))
 expect_equal(occupFirstNAfull$estimate, occupFirstNA)
 expect_equal(length(occupFirstNAfull$occupied), occupFirstNAfull$estimate)
 
 ### Second
 expect_silent(occupSecondNAfull <- occupancy(dfSecondNA, s="cell", full=TRUE))
+expect_true(inherits(occupSecondNAfull, "orange"))
 expect_equal(occupSecondNAfull$estimate, occupSecondNA)
 expect_equal(length(occupSecondNAfull$occupied), occupSecondNAfull$estimate)
 
 ### Last
 expect_silent(occupLastNAfull <- occupancy(dfLastNA, s="cell", full=TRUE))
+expect_true(inherits(occupLastNAfull, "orange"))
 expect_equal(occupLastNAfull$estimate, occupLastNA)
 expect_equal(length(occupLastNAfull$occupied), occupLastNAfull$estimate)
 
 ## 0-length data 
 expect_silent(occupZeroFull <- occupancy(dfZero, s="cell", full=TRUE))
+expect_true(inherits(occupZeroFull, "orange"))
 expect_equal(occupZeroFull$estimate, 0L)
 expect_equal(length(occupZeroFull$occupied), occupZeroFull$estimate)
 
 ## Singular data
 expect_silent(occupSingleFull <- occupancy(dfSingle, s="cell", full=TRUE))
+expect_true(inherits(occupSingleFull, "orange"))
 expect_equal(occupSingleFull$estimate, 1L)
 expect_equal(length(occupSingleFull$occupied), occupSingleFull$estimate)
 

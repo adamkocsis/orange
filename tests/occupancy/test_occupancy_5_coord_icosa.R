@@ -90,26 +90,31 @@ expect_equal(occFull$estimate, length(occFull$occupied))
 
 ### First
 expect_silent(occFirstNAfull <- occupancy(matFirstNA, s=hex, full=TRUE))
+expect_true(inherits(occFirstNAfull, "orange"))
 expect_equal(occFirstNA, occFirstNAfull$estimate)
 expect_equal(length(occFirstNAfull$occupied), occFirstNAfull$estimate)
 
 ### Second
 expect_silent(occSecondNAfull <- occupancy(matSecondNA, s=hex, full=TRUE))
+expect_true(inherits(occSecondNAfull, "orange"))
 expect_equal(occSecondNA, occSecondNAfull$estimate)
 expect_equal(length(occSecondNAfull$occupied), occSecondNAfull$estimate)
 
 ### Last 
 expect_silent(occLastNAfull <- occupancy(matLastNA, s=hex, full=TRUE))
+expect_true(inherits(occLastNAfull, "orange"))
 expect_equal(occLastNA, occLastNAfull$estimate)
 expect_equal(length(occLastNAfull$occupied), occLastNAfull$estimate)
 
 ## 0-length data 
 expect_silent(occZeroFull <- occupancy(matZero, s=hex, full=TRUE))
+expect_true(inherits(occZeroFull, "orange"))
 expect_equal(occZeroFull$estimate, 0L)
 expect_equal(length(occZeroFull$occupied), occZeroFull$estimate)
 
 ## Singular data
 expect_silent(occSingleFull <- occupancy(matSingle, s=hex, full=TRUE))
+expect_true(inherits(occSingleFull, "orange"))
 expect_equal(occSingleFull$estimate, 1L)
 expect_equal(length(occSingleFull$occupied), occSingleFull$estimate)
 
@@ -232,26 +237,31 @@ expect_equal(occDFFull$estimate, length(occDFFull$occupied))
 ## With missing values
 ### First
 expect_silent(occFirstNAdfFull <- occupancy(dfFirstNA, long="decimalLongitude",lat="decimalLatitude",s=hex, full=TRUE))
+expect_true(inherits(occFirstNAdfFull, "orange"))
 expect_equal(occFirstNAdf, occFirstNAdfFull$estimate)
 expect_equal(length(occFirstNAdfFull$occupied), occFirstNAdfFull$estimate)
 
 ### Second
 expect_silent(occSecondNAdfFull <- occupancy(dfSecondNA, long="decimalLongitude",lat="decimalLatitude",s=hex, full=TRUE))
+expect_true(inherits(occSecondNAdfFull, "orange"))
 expect_equal(occSecondNAdf, occSecondNAdfFull$estimate)
 expect_equal(length(occSecondNAdfFull$occupied), occSecondNAdfFull$estimate)
 
 ### Last 
 expect_silent(occLastNAdfFull <- occupancy(dfLastNA, long="decimalLongitude",lat="decimalLatitude",s=hex, full=TRUE))
+expect_true(inherits(occLastNAdfFull, "orange"))
 expect_equal(occLastNAdf, occLastNAdfFull$estimate)
 expect_equal(length(occLastNAdfFull$occupied), occLastNAdfFull$estimate)
 
 ## 0-length data 
 expect_silent(occZerodfFull <- occupancy(dfZero, long="decimalLongitude",lat="decimalLatitude",s=hex, full=TRUE))
+expect_true(inherits(occZerodfFull, "orange"))
 expect_equal(occZerodfFull$estimate, 0L)
 expect_equal(length(occZerodfFull$occupied), occZerodfFull$estimate)
 
 ## Singular data
 expect_silent(occSingledfFull <- occupancy(dfSingle, long="decimalLongitude",lat="decimalLatitude",s=hex, full=TRUE))
+expect_true(inherits(occSingledfFull, "orange"))
 expect_equal(occSingleFull$estimate, 1L)
 expect_equal(length(occSingleFull$occupied), occSingleFull$estimate)
 

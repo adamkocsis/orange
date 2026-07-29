@@ -105,6 +105,7 @@ expect_error(occPlot <- occupancy(pinna, long="decimalLongitude", lat="decimalLa
 expect_error(occupancy(pinna, long="decimalLongitude", lat="decimalLatitude", tax="species", full=TRUE, prop="global"))
 expect_silent(occFull <- occupancy(pinna, long="decimalLongitude", lat="decimalLatitude", tax="species", full=TRUE, prop="relative"))
 expect_true(inherits(occFull, "array"))
+expect_true(inherits(occFull[[1]], "orange"))
 expect_equal(names(occFull), names(occ)) # data for same taxa
 expect_equal(occ, sapply(occFull, function(b) b$estimate)) # results can be recreated 
 expect_equal(occ, sapply(occFull, function(b) nrow(b$occupied))/occAll) # results can be recreated 
@@ -113,6 +114,7 @@ expect_equal(occ, sapply(occFull, function(b) nrow(b$occupied))/occAll) # result
 expect_error(occupancy(naFirst, long="decimalLongitude", lat="decimalLatitude", tax="species", full=TRUE, prop="global"))
 expect_silent(occFullFirst <- occupancy(naFirst, long="decimalLongitude", lat="decimalLatitude", tax="species", full=TRUE, prop="relative"))
 expect_equal(names(occFullFirst), names(occFirst)) # data for same taxa
+expect_true(inherits(occFullFirst[[1]], "orange"))
 expect_equal(occFirst, sapply(occFullFirst, function(b) b$estimate)) # results can be recreated 
 expect_silent(occThis <- occupancy(naFirst, long="decimalLongitude", lat="decimalLatitude"))
 expect_equal(occFirst, sapply(occFullFirst, function(b) nrow(b$occupied))/occThis) # results can be recreated 
@@ -121,6 +123,7 @@ expect_equal(occFirst, sapply(occFullFirst, function(b) nrow(b$occupied))/occThi
 expect_error(occupancy(naSecond, long="decimalLongitude", lat="decimalLatitude", tax="species", full=TRUE, prop="global"))
 expect_silent(occFullSecond <- occupancy(naSecond, long="decimalLongitude", lat="decimalLatitude", tax="species", full=TRUE, prop="relative"))
 expect_equal(names(occFullSecond), names(occSecond)) # data for same taxa
+expect_true(inherits(occFullSecond[[1]], "orange"))
 expect_equal(occSecond, sapply(occFullSecond, function(b) b$estimate)) # results can be recreated 
 expect_silent(occThis <- occupancy(naSecond, long="decimalLongitude", lat="decimalLatitude"))
 expect_equal(occSecond, sapply(occFullSecond, function(b) nrow(b$occupied))/occThis) # results can be recreated 
@@ -129,6 +132,7 @@ expect_equal(occSecond, sapply(occFullSecond, function(b) nrow(b$occupied))/occT
 expect_error(occupancy(naLast, long="decimalLongitude", lat="decimalLatitude", tax="species", full=TRUE, prop="global"))
 expect_silent(occFullLast <- occupancy(naLast, long="decimalLongitude", lat="decimalLatitude", tax="species", full=TRUE, prop="relative"))
 expect_equal(names(occFullLast), names(occLast)) # data for same taxa
+expect_true(inherits(occFullLast[[1]], "orange"))
 expect_equal(occLast, sapply(occFullLast, function(b) b$estimate)) # results can be recreated 
 expect_silent(occThis <- occupancy(naLast, long="decimalLongitude", lat="decimalLatitude"))
 expect_equal(occLast, sapply(occFullLast, function(b) nrow(b$occupied))/occThis) # results can be recreated 
@@ -136,13 +140,13 @@ expect_equal(occLast, sapply(occFullLast, function(b) nrow(b$occupied))/occThis)
 ## 0-length data 
 expect_error(occupancy(naZero, long="decimalLongitude", lat="decimalLatitude", tax="species", full=TRUE, prop="global"))
 expect_silent(occZero <- occupancy(naZero, long="decimalLongitude", lat="decimalLatitude", tax="species", full=TRUE, prop="relative"))
-expect_equal(length(occZero$estimate), 0)
-expect_equal(nrow(occZero$occupied), 0)
+expect_equal(length(occZero), 0)
 
 ## Singular data
 expect_error(occupancy(naSingle, long="decimalLongitude", lat="decimalLatitude", tax="species", full=TRUE,prop="global"))
 expect_silent(occSingle <- occupancy(naSingle, long="decimalLongitude", lat="decimalLatitude", tax="species", full=TRUE, prop="relative"))
 expect_equal(length(occSingle), 1L)
+expect_true(inherits(occSingle[[1]], "orange"))
 expect_equal(occSingle[[1]]$estimate, 1L)
 expect_equal(1L, nrow(occSingle[[1]]$occupied))
 
