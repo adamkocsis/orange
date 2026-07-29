@@ -33,6 +33,7 @@ radius of the small circle.
 
 ``` r
 # generate 3 points on a sphere
+set.seed(2)
 ps <- icosa::rpsphere(3, output="polar")
 small <- sc_center(x=ps)
 circle<- sc_shape(x=small$center, r=small$r, output="polar")

@@ -144,11 +144,13 @@
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">pinna</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="co"># Subset to Pinna nobilis</span></span></span>
 <span class="r-in"><span><span class="va">nobilis</span> <span class="op">&lt;-</span> <span class="va">pinna</span><span class="op">[</span><span class="va">pinna</span><span class="op">$</span><span class="va">species</span><span class="op">==</span><span class="st">"Pinna nobilis"</span>, <span class="op">]</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">nobilis</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"decimalLongitude"</span>, <span class="st">"decimalLatitude"</span><span class="op">)</span><span class="op">]</span>, pch<span class="op">=</span><span class="fl">16</span>, col<span class="op">=</span><span class="st">"#00BBAA66"</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># 2. calculate and visualize</span></span></span>
 <span class="r-in"><span><span class="va">mst</span> <span class="op">&lt;-</span> <span class="fu">mstlength</span><span class="op">(</span><span class="va">nobilis</span>, long<span class="op">=</span><span class="st">"decimalLongitude"</span>, lat<span class="op">=</span><span class="st">"decimalLatitude"</span>, plot<span class="op">=</span><span class="cn">TRUE</span>, full<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in plot.xy(xy.coords(x, y), type = type, ...):</span> plot.new has not been called yet</span>
-<span class="r-in"><span></span></span>
+<span class="r-plt img"><img src="mstlength-1.png" alt="" width="700" height="433"></span>
+<span class="r-in"><span><span class="va">mst</span><span class="op">$</span><span class="va">estimate</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 11163.76</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

@@ -5,7 +5,7 @@
 - [`bradypus`](https://adamkocsis.github.io/orange/reference/bradypus.md)
   : Occurrences of Bradypus variegatus from GBIF
 - [`centroid()`](https://adamkocsis.github.io/orange/reference/centroid.md)
-  : Calculate ranges with the occupancy method
+  : Calculate centroid of a point cloud
 - [`gappiness()`](https://adamkocsis.github.io/orange/reference/gappiness.md)
   : The gappiness a of shape
 - [`kentsamples`](https://adamkocsis.github.io/orange/reference/kentsamples.md)

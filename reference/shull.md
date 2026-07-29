@@ -19,6 +19,9 @@ shull(
   sphererad = authRadius
 )
 
+# S4 method for class 'data.frame,missing'
+shull(x, long = "long", lat = "lat", ...)
+
 # S4 method for class 'matrix,trigrid'
 shull(
   x,

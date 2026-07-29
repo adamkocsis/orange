@@ -1,6 +1,6 @@
-# Calculate ranges with the occupancy method
+# Calculate centroid of a point cloud
 
-Calculate ranges with the occupancy method
+Calculate centroid of a point cloud
 
 ## Usage
 
@@ -76,18 +76,13 @@ information.
 ## Examples
 
 ``` r
-# 1. Canvas
-hex <- hexagrid(deg=3, sf=TRUE)
-#> Selecting hexagrid with tessellation vector: c(13).
-#> Mean edge length: 3.074 degrees.
-plot(hex, reset=FALSE, xlim=c(-15, 40), ylim=c(25, 63))
-
-# 2. Records
+# Records
 data(pinna)
 nobilis <- pinna[pinna$species=="Pinna nobilis", ]
+plot(nobilis[c("decimalLongitude", "decimalLatitude")], pch=16, col="#00BBAA66")
 
 # Number of unique coordinate pairs
 cent <- centroid(nobilis, long="decimalLongitude", lat="decimalLatitude")
 
-points(cent, col="darkred", pch=3, lwd=4, cex=4)
+points(cent[1], cent[2], col="darkred", pch=3, lwd=4, cex=4)
 ```
