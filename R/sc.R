@@ -124,6 +124,10 @@ standardSmallCircle <- function(rad, n, radius=6371.007){
 
 #' Generate coordinates of small circles
 #'
+#' Creating points along small circles 
+#'
+#' The function generates a single reference (standard) small circle around the (0,0) long-lat coordinates using a given radius.
+#' This reference circle is then rotated to match a given center. The function is iterated for multiple radiiand centers (separately!).
 #' @param x Numeric matrix or character string. Coordinates of the centers of the small circles
 #' @param n Integer or NULL. only used if "x= random"
 #' @param breaks Integer. The number of points to create from the small circle.
@@ -131,15 +135,39 @@ standardSmallCircle <- function(rad, n, radius=6371.007){
 #' @param r.ex The extrinsic radius of the small circles, i.e. the radius of the circle in the plane of the small circle.
 #' @param r.rad The angle of the small circle in radians.
 #' @param r.deg The angle of the small circle in degrees.
-#' @param radius The radius of the sphere, defaults to the authalic radius of Earth.
-#' @param origin The center of the sphere (don't touch this, unless you know what you are doing!).
+#' @param radius The radius of the sphere, defaults to the authalic radius of Earth - relevant only for Cartesian output.
+#' @param origin The center of the sphere (don't touch this, unless you really think you know what you are doing!).
 #' @param output Output structure for the function. The value output="polar" will return the polar (longitude-latitude) coordinates of the small circles in an array.
-#' @param drop If there is a single small circle to generate, should its array wrapper be dropped?
 #' The setting output="cartesian" will return the 3D cartesian coordinates of the small circles in an array. The option output="sf" will return an sfc geometry collection.
+#' @param drop If there is a single small circle to be generated, should its array wrapper be dropped?
 #' @param sf.type The type of sf object to be returned.
 #' @param sf.wrap.dateline Argument indicating whether returned sf object should be wrapped around the dateline.
 #' @return Either a numeric array or and sfc geometry collection.
 #' @export
+#' @examples
+#' set.seed(1)
+#' # generate a random small circle
+#' central <- sc_shape(r=6000, breaks=40)
+#' plot(NULL, xlim=c(-180, 180), ylim=c(-90,90), xlab="longitude", ylab="latitude")
+#' points(central, pch=17, col="gray")
+#' # repeat, same radius multiple centers
+#' smaller <- sc_shape(x=central, r=1000, breaks=100)
+#' for(i in 1:nrow(central)) points(smaller[,,i], col=i, pch=16)
+#'
+#' # Random circles with different radii
+#' diff200 <- sc_shape(r=runif(200, 100, 10000))
+#' plot(NULL, xlim=c(-180, 180), ylim=c(-90,90), xlab="", ylab="", axes=F)
+#' for(i in 1:(dim(diff200)[3])){
+#'  points(diff200[,,i], col=i,pch=16)
+#' }
+#'
+#' # Same center, different radius
+#' cent <- central[10, ,drop=FALSE]
+#' outward <- sc_shape(cent, r=seq(100, 15000, length.out=20)) 
+#' plot(NULL, xlim=c(-180, 180), ylim=c(-90,90), xlab="", ylab="", axes=F)
+#' for(i in 1:(dim(outward)[3])){
+#'  points(outward[,,i], col=i,pch=16)
+#' }
 sc_shape <- function(x="random", r=NULL, r.ex=NULL, r.rad=NULL, r.deg=NULL, n=NULL, breaks=100,radius=6371.007, origin=c(0,0,0), output="polar", sf.type="polygon", sf.wrap.dateline=TRUE, drop=TRUE){
 
 ## x="random"
@@ -165,8 +193,6 @@ sc_shape <- function(x="random", r=NULL, r.ex=NULL, r.rad=NULL, r.deg=NULL, n=NU
 	# if the degree is given
 	if(!is.null(r.deg))  r.rad <- r.deg / 180 * pi
 
-	# 1. create a standard small circle
-	stand <- standardSmallCircle(r.rad,  n = breaks)
 
 	# rotation result format to generate
 	if(output=="polar" | output=="sf"){
@@ -180,18 +206,43 @@ sc_shape <- function(x="random", r=NULL, r.ex=NULL, r.rad=NULL, r.deg=NULL, n=NU
 	# how is this need to be processed?
 	if(inherits(x, "character")){
 		if(any(x!="random")) stop("Invalid 'x' argument.")
-		if(is.null(n)) stop("You must provide the number of small circles to generate.")
+		if(is.null(n) & length(r.rad)<1) stop("You must provide the number of small circles to generate.")
+		if(is.null(n)) n <- length(r.rad)
 		if(length(n)!=1 | !is.numeric(n)) stop("Provide a single integer 'n'.")
 		if(length(n)<1 | n%%1!=0) stop("Provide a single integer 'n'.")
+			
 
 
 		# to hold the data
 		results <- array(NA, dim=c(breaks, length(coordNames), n))
 		dimnames(results)[[2]] <- coordNames
 
-		# rotate the small circles
-		for(i in 1:n){
-			results[,,i]<- rotate(stand, angles="random", pivot=origin, output=gen)
+		# same circle rotated may times
+		if(length(r.rad)==1){
+
+			# 1. create a standard small circle
+			stand <- standardSmallCircle(r.rad,  n = breaks)
+
+			# rotate the small circles
+			for(i in 1:n){
+				results[,,i]<- rotate(stand, angles="random", pivot=origin, output=gen)
+			}
+		}else{
+
+			# rotate the small circles
+			for(i in 1:n){
+				# 1. create a standard small circle with a given radius
+				stand <- standardSmallCircle(r.rad[i],  n = breaks)
+
+				# and rotate it
+				results[,,i]<- rotate(stand, angles="random", pivot=origin, output=gen)
+			}
+
+		}
+
+		# drop array
+		if(n==1 & drop){
+			results <- results[,,1]
 		}
 
 	}
@@ -201,15 +252,35 @@ sc_shape <- function(x="random", r=NULL, r.ex=NULL, r.rad=NULL, r.deg=NULL, n=NU
 		# make sure it is longitude latitude
 		if(ncol(x)==3) x <- CarToPol(x, norad=TRUE)
 
-		# the number of points to generate
-		n <- nrow(x)
+		if(length(r.rad)==1 & nrow(x)>=1){
+			# 1. create a standard small circle
+			stand <- standardSmallCircle(r.rad,  n = breaks)
 
-		# to hold the data
-		results <- array(NA, dim=c(breaks, length(coordNames), n))
-		dimnames(results)[[2]] <- coordNames
+			# the number of points to generate
+			n <- nrow(x)
 
-		for(i in 1:n){
-			results[,,i]<- rotate(stand, long=x[i,1], lat=x[i,2], reflong=0, pivot=origin, output=gen)
+			# to hold the data
+			results <- array(NA, dim=c(breaks, length(coordNames), n))
+			dimnames(results)[[2]] <- coordNames
+
+			for(i in 1:n){
+				results[,,i]<- rotate(stand, long=x[i,1], lat=x[i,2], reflong=0, pivot=origin, output=gen)
+			}
+		}
+		if(length(r.rad)>1 & nrow(x)==1){
+			# the numer of circles to generate
+			n<- length(r.rad)
+			# to hold the data
+			results <- array(NA, dim=c(breaks, length(coordNames), n))
+			dimnames(results)[[2]] <- coordNames
+
+			for(i in 1:n){
+				# 1. create a standard small circle
+				stand <- standardSmallCircle(r.rad[i],  n = breaks)
+				results[,,i]<- rotate(stand, long=x[1,1], lat=x[1,2], reflong=0, pivot=origin, output=gen)
+			}
+
+		
 		}
 		# drop array
 		if(n==1 & drop){
@@ -220,6 +291,7 @@ sc_shape <- function(x="random", r=NULL, r.ex=NULL, r.rad=NULL, r.deg=NULL, n=NU
 
 	# if the output is an sf object
 	if(output=="sf"){
+		warning("This feature is not yet thoroughly tested!")
 		if(!requireNamespace("sf", quiet=TRUE)) stop("This output option requires the 'sf' package.")
 
 		polyList <- list()

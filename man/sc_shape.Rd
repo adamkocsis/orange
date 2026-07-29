@@ -35,22 +35,51 @@ sc_shape(
 
 \item{breaks}{Integer. The number of points to create from the small circle.}
 
-\item{radius}{The radius of the sphere, defaults to the authalic radius of Earth.}
+\item{radius}{The radius of the sphere, defaults to the authalic radius of Earth - relevant only for Cartesian output.}
 
-\item{origin}{The center of the sphere (don't touch this, unless you know what you are doing!).}
+\item{origin}{The center of the sphere (don't touch this, unless you really think you know what you are doing!).}
 
-\item{output}{Output structure for the function. The value output="polar" will return the polar (longitude-latitude) coordinates of the small circles in an array.}
+\item{output}{Output structure for the function. The value output="polar" will return the polar (longitude-latitude) coordinates of the small circles in an array.
+The setting output="cartesian" will return the 3D cartesian coordinates of the small circles in an array. The option output="sf" will return an sfc geometry collection.}
 
 \item{sf.type}{The type of sf object to be returned.}
 
 \item{sf.wrap.dateline}{Argument indicating whether returned sf object should be wrapped around the dateline.}
 
-\item{drop}{If there is a single small circle to generate, should its array wrapper be dropped?
-The setting output="cartesian" will return the 3D cartesian coordinates of the small circles in an array. The option output="sf" will return an sfc geometry collection.}
+\item{drop}{If there is a single small circle to be generated, should its array wrapper be dropped?}
 }
 \value{
 Either a numeric array or and sfc geometry collection.
 }
 \description{
-Generate coordinates of small circles
+Creating points along small circles
+}
+\details{
+The function generates a single reference (standard) small circle around the (0,0) long-lat coordinates using a given radius.
+This reference circle is then rotated to match a given center. The function is iterated for multiple radiiand centers (separately!).
+}
+\examples{
+set.seed(1)
+# generate a random small circle
+central <- sc_shape(r=6000, breaks=40)
+plot(NULL, xlim=c(-180, 180), ylim=c(-90,90), xlab="longitude", ylab="latitude")
+points(central, pch=17, col="gray")
+# repeat, same radius multiple centers
+smaller <- sc_shape(x=central, r=1000, breaks=100)
+for(i in 1:nrow(central)) points(smaller[,,i], col=i, pch=16)
+
+# Random circles with different radii
+diff200 <- sc_shape(r=runif(200, 100, 10000))
+plot(NULL, xlim=c(-180, 180), ylim=c(-90,90), xlab="", ylab="", axes=F)
+for(i in 1:(dim(diff200)[3])){
+ points(diff200[,,i], col=i,pch=16)
+}
+
+# Same center, different radius
+cent <- central[10, ,drop=FALSE]
+outward <- sc_shape(cent, r=seq(100, 15000, length.out=20)) 
+plot(NULL, xlim=c(-180, 180), ylim=c(-90,90), xlab="", ylab="", axes=F)
+for(i in 1:(dim(outward)[3])){
+ points(outward[,,i], col=i,pch=16)
+}
 }
