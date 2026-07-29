@@ -70,6 +70,8 @@ setMethod(
 	"occupancy",
 	signature=c(x="matrix", s="missing"),
 	definition=function(x,long=NULL, lat=NULL, full=FALSE, prop=NULL){
+		if(!is.null(prop)) prop <- match.arg(prop, c("global", "relative"))
+
 		# if locality is given
 		y <- x
 		if(!is.null(long) & !is.null(lat)) y <- x[,c(long, lat)]
@@ -86,7 +88,14 @@ setMethod(
 		res <- nrow(y)
 		if(!is.null(prop)){
 			if(prop=="global") stop("Global proportions are not available for this input.")
-			if(prop=="relative") res <- 1.0 
+			if(prop=="relative"){
+				if(nrow(x)!=0){
+					res <- 1.0 
+				}else{
+					res <- NA
+
+				}
+			}
 		}
 		if(full){
 			fullRes <- list(
@@ -107,16 +116,26 @@ setMethod(
 	"occupancy",
 	signature=c(x="data.frame", s="missing"),
 	definition=function(x,tax=NULL, long="long", lat="lat", full=FALSE, listarray=TRUE, prop=NULL){
+		# defend prop
+		if(!is.null(prop)) prop <- match.arg(prop, c("global", "relative"))
 
 		if(!all(c(long, lat) %in% colnames(x))) stop("The 'long' and 'lat' parameters must be valid column names.")
 		y <- x[,c(tax, long, lat)]
 		y <- unique(y)
-
+		if(nrow(y)==0){
+			if(!is.null(prop)){
+				if(prop=="global") stop("Global proportions are not available for this input.")
+			}
+		}
+		
 		# taxon - iteration
 		if(!is.null(tax)){
 			if(!full){
 				# omit any missing!
 				y <- y[!is.na(y[,long]) & !is.na(y[,lat]) & !is.na(y[,tax]), ] 
+
+				# in case of 0 rows
+				if(nrow(y)==0) return(numeric())
 				res <- table(y[, tax])
 				resNum <- as.numeric(res)
 				names(resNum) <- names(res)
@@ -135,6 +154,13 @@ setMethod(
 			}else{
 				# if this is to be a list-style output
 				if(listarray){
+					if(nrow(y)==0){
+						res <- list(
+							estimate=numeric(),
+							occupied=y[, c(long, lat)]
+						)
+						return(res)
+					}
 					# use a simple tapply to iterate functionally
 					res <- tapply(
 						INDEX=y[, tax],
@@ -144,6 +170,18 @@ setMethod(
 						}
 
 					)
+					# if proprotions are needed
+					if(!is.null(prop)){
+						if(prop=="global") stop("Global proportions are not available for this input.")
+						if(prop=="relative"){
+							# recursive call to get the total occupancy
+							totalOccup <- occupancy(x, long=long, lat=lat, tax=NULL)
+
+							# calculate the proportional occupancies
+							for(i in 1:length(res)) res[[i]]$estimate <- res[[i]]$estimate/totalOccup
+
+						}
+					}
 					return(res)
 				}else{
 					stop("Donkey, snow, wine: not yet so fine!")
@@ -152,13 +190,36 @@ setMethod(
 			}
 		# single taxon/set
 		}else{
+
 			# use the same as the matrix method
 			res <- occupancy(as.matrix(y[, c(long, lat)]), full=full) 
+
 
 			# are proportional occupancies required
 			if(!is.null(prop)){
 				if(prop=="global") stop("Global proportions are not available for this input.")
-				if(prop=="relative") res$estimate <- 1.0
+				if(prop=="relative"){
+					val <- 1.0
+					if(nrow(x)==0) val <- NA
+					if(full){
+						res$estimate <- val
+					}else{
+						res <- val
+					}
+				}
+			}else{
+				if(nrow(x)==0){
+					if(full){
+						res <- list(
+							estimate=0,
+							occupied=y[, c(long, lat)]
+						)
+						return(res)
+					}else{
+						return(0)
+					}
+				}
+
 			}
 			return(res)
 		}
@@ -171,6 +232,8 @@ setMethod(
 	"occupancy",
 	signature=c(x="data.frame", s="character"),
 	definition=function(x,s, tax=NULL, full=FALSE, prop=NULL, listarray=TRUE){
+		# defend prop
+		if(!is.null(prop)) prop <- match.arg(prop, c("global", "relative"))
 
 		if(!any(s==colnames(x))) stop("The 'loc' argument must be a column in 'x'.")
 		y <- x[,c(tax, s)]
@@ -204,6 +267,19 @@ setMethod(
 							occupancy(a, s=s, full=full)
 						}
 					)
+					if(!is.null(prop)){
+						if(prop=="global") stop("Global proportions are not available for this input.")
+						if(prop=="relative"){
+							# recursive call to the total dataset, total occupancy
+							totalOccup <- occupancy(x=x, s=s, tax=NULL)
+							# this has to be iterated separately..
+							if(length(res)>0){
+								for(i in 1:length(res)){
+									res[[i]]$estimate <- res[[i]]$estimate/totalOccup
+								}
+							}
+						}
+					}
 					result <- res
 				}else{
 					stop("Donkey, snow, wine: not yet so fine!")
@@ -220,7 +296,11 @@ setMethod(
 			if(!is.null(prop)){
 				if(prop=="global") stop("Global proportions are not available for this input.")
 				if(prop=="relative"){
-					res <- 1.0
+					if(length(occupied)==0){
+						res <- NA
+					}else{
+						res <- 1.0
+					}
 				}
 			}
 			if(full){
@@ -242,8 +322,11 @@ setMethod(
 #' @rdname occupancy
 setMethod(
 	"occupancy",
-	signature=c(x="matrix", s="trigrid", prop=NULL),
+	signature=c(x="matrix", s="trigrid"),
 	definition=function(x, s, long=NULL, lat=NULL, q=1, plot=FALSE, plot.args=NULL, full=FALSE, prop=NULL){
+		# defend prop
+		if(!is.null(prop)) prop <- match.arg(prop, c("global", "relative"))
+
 		# if locality is given
 		x <- unique(x)
 
@@ -256,7 +339,13 @@ setMethod(
 		result <- occupancy_coords_icosa(x,s, q=q,  plot=plot, plot.args=plot.args)
 		if(!is.null(prop)){
 			if(prop=="global") result$estimate <- result$estimate/as.numeric(length(s))
-			if(prop=="relative") result$estimate <- 1.0 
+			if(prop=="relative"){
+				if(nrow(x)==0){
+					result$estimate <- NA 
+				}else{
+					result$estimate <- 1.0 
+				}
+			}
 
 		}
 
@@ -273,6 +362,9 @@ setMethod(
 	"occupancy",
 	signature=c(x="data.frame", s="trigrid"),
 	definition=function(x, s, long="long", lat="lat", tax=NULL, q=1, plot=FALSE, plot.args=NULL, full=FALSE, prop=NULL){
+		# defend prop
+		if(!is.null(prop)) prop <- match.arg(prop, c("global", "relative"))
+
 		# the same as the matrix method
 		if(is.null(tax)){
 			x <- as.matrix(x[, c(long, lat)])
@@ -280,7 +372,13 @@ setMethod(
 				q=q, plot=plot, plot.args=plot.args, full=TRUE)
 			if(!is.null(prop)){
 				if(prop=="global") result$estimate <- result$estimate/as.numeric(length(s))
-				if(prop=="relative") result$estimate <- 1.0 
+				if(prop=="relative"){
+					if(nrow(x)==0){
+						result$estimate <- NA 
+					}else{
+						result$estimate <- 1.0
+					}
+				}
 			}
 			# always return full output
 			if(!full) result <- result$estimate
@@ -329,12 +427,16 @@ setMethod(
 						# calculate the number of faces in the grid
 						gridSize <- as.numeric(length(s))
 						# calculate the proportions
-						for(i in 1:length(result)) result[[i]]$estimate <- result[[i]]$estimate/gridSize
+						if(length(result)>0){
+							for(i in 1:length(result)) result[[i]]$estimate <- result[[i]]$estimate/gridSize
+						}
 					}
 					if(prop=="relative"){
 						# recursive call to occupancy, to figure out the occupied faces by the total dataset -> what is up with q???
 						totalOccup <- occupancy(x=x, s=s, long=long, lat=lat, tax=NULL, q=1)
-						for(i in 1:length(result)) result[[i]]$estimate <- result[[i]]$estimate/totalOccup
+						if(length(result)>0){
+							for(i in 1:length(result)) result[[i]]$estimate <- result[[i]]$estimate/totalOccup
+						}
 					}
 				}else{
 					if(prop=="global"){

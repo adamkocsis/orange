@@ -178,6 +178,7 @@ expect_equal(occLastNA, occLastNAfullDF$estimate)
 expect_equal(occLastNAfullDF$estimate, nrow(occLastNAfullDF$occupied))
 
 ## 0-length data 
+ occupancy(as.matrix(dfZero[, c("decimalLongitude","decimalLatitude")]), full=TRUE)
 expect_silent(occZeroFullDF <- occupancy(dfZero, long="decimalLongitude", lat="decimalLatitude", full=TRUE))
 expect_equal(occZeroFullDF$estimate, 0L)
 expect_equal(nrow(occZeroFullDF$occupied), 0L)

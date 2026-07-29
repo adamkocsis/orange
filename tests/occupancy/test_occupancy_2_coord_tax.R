@@ -109,7 +109,8 @@ expect_equal(occLast, sapply(occFullLast, function(b) nrow(b$occupied))) # resul
 
 ## 0-length data 
 expect_silent(occZero <- occupancy(naZero, long="decimalLongitude", lat="decimalLatitude", tax="species", full=TRUE))
-expect_equal(length(occZero), 0L)
+expect_equal(length(occZero$estimate), 0L)
+expect_equal(nrow(occZero$occupied), 0L)
 
 ## Singular data
 expect_silent(occSingle <- occupancy(naSingle, long="decimalLongitude", lat="decimalLatitude", tax="species", full=TRUE))
