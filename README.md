@@ -9,7 +9,7 @@ Spherical Descriptors of Geographic Distributions
 devtools::install_github("adamkocsis/orange")
 ```
 
-## Demo script
+## Website
 
 Package `pkgdown` website is built
 [here](https://adamtkocsis.com/orange).
