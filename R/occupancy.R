@@ -40,8 +40,8 @@ qTest <- FALSE
 #'
 #' # 2. Occupancy in icosahedral grid 
 #' hex <- hexagrid(deg=3, sf=TRUE)
-#' plot(hex, reset=FALSE, xlim=c(-15, 40), ylim=c(25, 63))
-#' points(nobilis[, c("decimalLongitude", "decimalLatitude")], pch=3)
+#' plot(nobilis[c("decimalLongitude", "decimalLatitude")], pch=16, col="#00BBAA66")
+#' plot(hex, border="gray70", add=TRUE)
 #'
 #' # calculate occupancy
 #' occ <- occupancy(nobilis, s=hex, plot=TRUE, long="decimalLongitude", lat="decimalLatitude", full=TRUE)
@@ -54,7 +54,6 @@ qTest <- FALSE
 #' # same as
 #' occ$estimate/length(hex)
 #'
-#' # II. Multiple taxa 
 setGeneric(
 	name="occupancy",
 	package="orange",

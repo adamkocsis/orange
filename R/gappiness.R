@@ -1,6 +1,8 @@
 #' The gappiness a of shape
 #'
-#' Gappiness refers to the internal gaps that defined by a set of discretized cells or a point set that covers some cells in a discretization structre.
+#' Proportion of gap cells
+#' 
+#' Gappiness refers to proporion of area that are covered by the internal gaps that defined by a set of discretized cells or a point set that covers some cells in a discretization structre.
 #'
 #' @param x The list of faces that are part of the shape.
 #' @param s Spatial discretization strucutre (currently only \code{trigrid}-class icosahedral grid).
@@ -14,14 +16,32 @@
 #' @param exclude The list of faces that is to be excluded from the calculation
 #' @return A proportion that gives the ratio of hole-cells compared to all occupied cells.
 #' @examples
+#' # 1. Only cells
 #' # create a grid
 #' hex <- hexagrid(2, sf=TRUE)
 #'
 #' # an example shape
 #' shape <- paste0("F", c(4, 5, 11, 13, 15, 21, 24, 26, 32, 33, 34, 35, 36))
+#' plot(hex, border="gray80")
+#' plot(hex, shape, col="red", add=TRUE)
 #'
 #' # the gappiness
-#' gappiness(shape, hex)
+#' gap <- gappiness(shape, hex, full=TRUE)
+#' gap
+#' # plot the first gap
+#' plot(hex, names(gap$holes[gap$holes==1]), col="#00555577", add=TRUE)
+#' 
+#' # points
+#' set.seed(7)
+#' rand <- icosa::rpsphere(20, output="polar")
+#' occ <- locate(hex, rand)
+#' plot(hex, border="gray80")
+#' plot(hex, occ, col="red", add=TRUE)
+#' points(rand, col="green", pch=3, cex=2)
+#' 
+#' # gappiness
+#' gap <- gappiness(occ, hex, full=TRUE)
+#' plot(hex, names(gap$holes), col="orange", add=TRUE)
 #' @rdname gappiness
 #' @exportMethod gappiness
 setGeneric(

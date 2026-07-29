@@ -72,8 +72,8 @@ This group of methods rely on calculating single distances.
 data(pinna)
 # Subset to Pinna nobilis
 nobilis <- pinna[pinna$species=="Pinna nobilis", ]
+plot(nobilis[c("decimalLongitude", "decimalLatitude")], pch=16, col="#00BBAA66")
 
 # 2. calculate and visualize
 rad <- radius(nobilis, long="decimalLongitude", lat="decimalLatitude", plot=TRUE, full=TRUE)
-
 }

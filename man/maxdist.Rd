@@ -72,17 +72,13 @@ This family of metrics rely on the maximum distance within a point cloud
 This metrics includes maximum great circle distance and similar methods.
 }
 \examples{
-# 1. Canvas to plot on
-hex <- hexagrid(4, sf=TRUE)
-plot(hex, reset=FALSE, xlim=c(-15, 40), ylim=c(25, 63))
-
-# 2. Records
+# 1. Records
 data(pinna)
 # Subset to Pinna nobilis
 nobilis <- pinna[pinna$species=="Pinna nobilis", ]
-points(nobilis[, c("decimalLongitude","decimalLatitude")])
+plot(nobilis[c("decimalLongitude", "decimalLatitude")], pch=16, col="#00BBAA66")
 
-# 3. calculate and visualize
+# 2. calculate and visualize
 mgcd <- maxdist(nobilis, long="decimalLongitude", lat="decimalLatitude", plot=TRUE, full=TRUE)
 
 }

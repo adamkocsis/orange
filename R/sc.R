@@ -46,6 +46,7 @@ planez<- function(x, y, planePoints){
 #' @return A list with two elements, the center o the small circle and the surface radius of the small circle.
 #' @examples
 #' # generate 3 points on a sphere
+#' set.seed(2)
 #' ps <- icosa::rpsphere(3, output="polar")
 #' small <- sc_center(x=ps)
 #' circle<- sc_shape(x=small$center, r=small$r, output="polar")
@@ -313,21 +314,34 @@ sc_shape <- function(x="random", r=NULL, r.ex=NULL, r.rad=NULL, r.deg=NULL, n=NU
 
 #' Identify whether a given set of points is in, on or out of a small circle
 #'
+#' This method calculates the plane of the small circle and uses the normal to evaluate whether points are in or outside the small circle.
+#' 
 #' @param x A set of points to be determined a matrix of longtidues and latitudes.
 #' @param center The center of a small circle
 #' @param r The surface radius of a small circle.
 #' @param origin The origin of the sphere.
 #' @return A numeric vector indicating whether the points are in (1), on (0) or outside of the small circle.
 #' @examples
-#' # generate 3 points on a sphere
-#' ps <- icosa::rpsphere(3, output="polar")
-#' small <- sc_center(x=ps)
-#' circle<- sc_shape(x=small$center, r=small$r, output="polar")
-#'
+#' # set.seed(1)
+#' # generate a random small circle
+#' set.seed(1)
+#' pol <- icosa::rpsphere(1000, output="polar")
+#' # use the first as a small circle's center
+#' center <- pol[1, , drop=FALSE]
+#' radius <- 5000 # define radius in km
+#' 
+#' # draw a small circle
+#' circle <- sc_shape(x=center, r=radius, breaks=200)
+#' 
+#' # visualize
 #' plot(NULL, NULL, xlim=c(-180, 180), ylim=c(-90, 90))
-#' points(ps, col="red", pch=3, cex=4)
-#' points(small$center, col="blue", pch=16)
-#' points(circle, col="green", pch=16)
+#' points(pol, col="red", pch=3, cex=2)
+#' arcs(circle, col="blue", lwd=2)
+#' 
+#' # find points in small circle (about 10x faster than distance evaluation)
+#' inside <- sc_in(x=pol, center=center, r=radius)
+#' points(pol[inside==1, ], col="green", pch=3, cex=2)
+#' 
 #' @export
 sc_in <- function(x, center, r,  origin=c(0,0,0)){
 

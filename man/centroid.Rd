@@ -4,7 +4,7 @@
 \alias{centroid}
 \alias{centroid,matrix-method}
 \alias{centroid,data.frame-method}
-\title{Calculate ranges with the occupancy method}
+\title{Calculate centroid of a point cloud}
 \usage{
 centroid(x, ...)
 
@@ -48,19 +48,16 @@ centroid(x, ...)
 Either a single numeric or a list with an estimate and other information.
 }
 \description{
-Calculate ranges with the occupancy method
+Calculate centroid of a point cloud
 }
 \examples{
-# 1. Canvas
-hex <- hexagrid(deg=3, sf=TRUE)
-plot(hex, reset=FALSE, xlim=c(-15, 40), ylim=c(25, 63))
-
-# 2. Records
+# Records
 data(pinna)
 nobilis <- pinna[pinna$species=="Pinna nobilis", ]
+plot(nobilis[c("decimalLongitude", "decimalLatitude")], pch=16, col="#00BBAA66")
 
 # Number of unique coordinate pairs
 cent <- centroid(nobilis, long="decimalLongitude", lat="decimalLatitude")
 
-points(cent, col="darkred", pch=3, lwd=4, cex=4)
+points(cent[1], cent[2], col="darkred", pch=3, lwd=4, cex=4)
 }

@@ -4,7 +4,7 @@
 
 qTest <- FALSE
 
-#' Calculate ranges with the occupancy method
+#' Calculate centroid of a point cloud 
 #'
 #' @param x Eiher a 2-column numeric matrix with two columns: longitudes and latitudes, or a \code{data.frame} with these columns.
 #' @param plot Logical, should the result be plotted? Will plot over active plot (as in \code{add=TRUE}), if here is any.
@@ -18,18 +18,15 @@ qTest <- FALSE
 #' @rdname centroid
 #' @export
 #' @examples
-#' # 1. Canvas
-#' hex <- hexagrid(deg=3, sf=TRUE)
-#' plot(hex, reset=FALSE, xlim=c(-15, 40), ylim=c(25, 63))
-#'
-#' # 2. Records
+#' # Records
 #' data(pinna)
 #' nobilis <- pinna[pinna$species=="Pinna nobilis", ]
+#' plot(nobilis[c("decimalLongitude", "decimalLatitude")], pch=16, col="#00BBAA66")
 #'
 #' # Number of unique coordinate pairs
 #' cent <- centroid(nobilis, long="decimalLongitude", lat="decimalLatitude")
 #'
-#' points(cent, col="darkred", pch=3, lwd=4, cex=4)
+#' points(cent[1], cent[2], col="darkred", pch=3, lwd=4, cex=4)
 setGeneric(
 	name="centroid",
 	package="orange",

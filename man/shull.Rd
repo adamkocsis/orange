@@ -3,6 +3,7 @@
 \name{shull}
 \alias{shull}
 \alias{shull,matrix,missing-method}
+\alias{shull,data.frame,missing-method}
 \alias{shull,matrix,trigrid-method}
 \alias{shullarea}
 \alias{shullarea.default}
@@ -21,6 +22,8 @@ shull(x, s, ...)
   plot.args = NULL,
   sphererad = authRadius
 )
+
+\S4method{shull}{data.frame,missing}(x, long = "long", lat = "lat", ...)
 
 \S4method{shull}{matrix,trigrid}(
   x,
