@@ -17,7 +17,7 @@ library(badger)
 
 ## Spherical Descriptors of Geographic Distributions 
 
-This package is a collation of tools and metrics to characterize distribution data on the surfrace of a sphere or an ellipsoid. The primary group of these metrics is those that describe the extent of a distribution, i.e. geographic ranges/range sizes (depending on who you talk to). The calculation of geographic ranges can be executed using point coordinate data,  as well as and cells on a discretized sphere, vector polygons and raster. Besides ensuring the use a geometrically correct implementations, the package offers the exploration of partial results for visual diagnostics and further post-processing.
+This package is a collation of tools and metrics to characterize distribution data on the surface of a sphere. The primary group of these metrics is those that describe the extent of a distribution, i.e. geographic ranges/range sizes (depending on who you talk to). The calculation of geographic ranges can be executed using point coordinate data, cells on a discretized sphere, vector polygons and rasters. Besides ensuring the use a geometrically correct implementations, the package offers the exploration of partial results for visual diagnostics and further post-processing.
 
 * * *
 
