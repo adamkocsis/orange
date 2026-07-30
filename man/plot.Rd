@@ -4,14 +4,14 @@
 \alias{plot.shull}
 \title{Plotting of spherical hulls}
 \usage{
-\method{plot}{shull}(x, ...)
+\method{plot}{shull}(x, add = FALSE, ...)
 }
 \arguments{
 \item{x}{Spherical hull object.}
 
-\item{...}{Additional plotting parameters as defined in par.}
-
 \item{add}{Logical parameter specifying whether the previous plot should be overwritten.}
+
+\item{...}{Additional plotting parameters as defined in par.}
 }
 \description{
 Plotting of spherical hulls

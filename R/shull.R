@@ -2,16 +2,23 @@
 authRadius <- 6370.997
 #' Spherical hull geometries and hull area calculations
 #'
+#' Calculation of hull geometries in spherical space
+#'
+#' Constructing and enclosing geometry around a distribution on the surface of a sphere represent unique challenges.
+#' The \code{"centroidcircle"} method is using the centroid of the distribution as the center of small circle that defines a spherical cap. This is likely not the smallest possible cap to cover the distribution and takes the heterogeneous density of the distribution into account.
 #' @param x Either a 2-column numeric matrix with two columns: longitudes and latitudes, or a \code{data.frame} with these columns.
 #' @param s An external spatial structure to resolve the hull (e.g. a \code{hexagrid} object.)
 #' @param plot Logical, should the result be plotted? Will plot over active plot (as in \code{add=TRUE}), if there is any.
 #' @param long \code{character}, column name of the longitudes.
 #' @param lat \code{character}, column name of the latitudes.
 #' @param drop \code{logical} In case \code{s} is provided, should the returned object be a hull-class object, or only the identifiers of \code{s} (\code{drop=FALSE})?
+#' @param method \code{character} Hull construction method. Currently available: \code{"centroidcircle"}
 #' @param metric \code{character} What metric should be used for area of the hull? \code{area} returns the values in square of the unit of \code{sphererad} (defaults to square km),
 #' \code{prop} returns the area as a proportion of the sphere, \code{count} returns the area as the number of components it occupies in \code{s}, when applicable.
 #' @param sphererad \code{numeric} The radius of the sphere used in the calculations, defaults to the authalic radius of Earth in km (6370.997).
 #' @param duplicates \code{logical}, should identical coordinates be included in the calculation (default is \code{FALSE}).
+#' @param plot.args List arguments passed to the plotting function: \code{lines}.
+#' @param full Logical switch indicating whether only the estimate should be shown (\code{FALSE}), or the hull itself should be returned as well?.
 #' @param ... Additional arguments passed to class-specific methods.
 #' @return A \code{hull}-class object, a vector of identifiers (if applicable and \code{drop=FALSE}) or the area of te hull as a numeric. 
 #' @rdname shull
@@ -184,9 +191,15 @@ shullarea.shull <-  function(x, metric="area", s=NULL, full=FALSE,  ...){
 			
 		}
 	}
+	if(full){
+		result <- list(
+			estimate=result,
+			hull=x
+		)
+		class(result) <- "orange"
+	}
 	return(result)
 }
-
 
 
 

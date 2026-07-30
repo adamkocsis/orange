@@ -7,8 +7,8 @@
 #' @param add Logical parameter specifying whether the previous plot should be overwritten.
 #' @param ... Additional plotting parameters as defined in par.
 #' @export
-plot.shull <- function(x, ...){
-	if(x$type=="centroidcircle") plot_centroidcircle(x,...)
+plot.shull <- function(x,add=FALSE, ...){
+	if(x$type=="centroidcircle") plot_centroidcircle(x,add=add, ...)
 
 
 }

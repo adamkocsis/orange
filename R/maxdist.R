@@ -112,7 +112,7 @@ setMethod(
 setMethod(
 	"maxdist",
 	signature=c(x="data.frame", s="missing"),
-	definition=function(x, long="long", lat="lat", tax=NULL, dm=NULL, duplicates=FALSE, q=1, plot=FALSE, plot.args=NULL, full=FALSE, listout=FALSE){
+	definition=function(x, long="long", lat="lat", tax=NULL, dm=NULL, duplicates=FALSE, q=1, plot=FALSE, plot.args=NULL, full=FALSE){
 		# the same as the matrix method
 		if(is.null(tax)){
 			x <- as.matrix(x[, c(long, lat)])
@@ -141,7 +141,7 @@ setMethod(
 					}
 					# in case the the output should not be a list, transform into a data frame for easy manipulation
 				)
-				if(full & !listout){
+				if(full){
 					df <- data.frame(
 						estimate=rep(0, length(result)),
 						index1=rep(0, length(result)),
