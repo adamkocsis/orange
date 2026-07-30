@@ -43,6 +43,7 @@
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-tutorials" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Tutorials</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-tutorials">
 <li><a class="dropdown-item" href="../articles/1_installation.html">1. Installation</a></li>
+    <li><a class="dropdown-item" href="../articles/2_demo.html">2. Demo</a></li>
   </ul>
 </li>
 <li class="nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
@@ -81,80 +82,41 @@
 
     
     
-<div class="section level2">
-<h2 id="stable-version-from-the-cran">Stable version from the CRAN<a class="anchor" aria-label="anchor" href="#stable-version-from-the-cran"></a>
-</h2>
-<p>The stable version of the package is available on <a href="https://cran.r-project.org/package=icosa" class="external-link">CRAN servers</a>, which
-means that you can install it with the regular
-<code><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages()</a></code> function.</p>
-<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"icosa"</span><span class="op">)</span></span></code></pre></div>
-<p>If for some reason, the installlation from CRAN fails, you might need
-to look into alternative methods.</p>
-</div>
-<div class="section level2">
-<h2 id="alternative-methods">Alternative methods<a class="anchor" aria-label="anchor" href="#alternative-methods"></a>
-</h2>
-<div class="section level4">
-<h4 id="stable-version-from-zenodo-source">Stable version from Zenodo (source)<a class="anchor" aria-label="anchor" href="#stable-version-from-zenodo-source"></a>
-</h4>
-<p>For the sake of completeness and simplicity, the sources of the
-stable version are also available on GitHub. The
-<code><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages()</a></code> function can be used to install this
-from source - but you will have to install dependencies of the package,
-and you have to have a compiler installed on your system!</p>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span></span>
-<span>    <span class="st">"https://zenodo.org/records/16992403/files/icosa_0.12.0.tar.gz?download=1"</span>, </span>
-<span>    repos<span class="op">=</span><span class="cn">NULL</span>, type<span class="op">=</span><span class="st">"source"</span><span class="op">)</span></span></code></pre></div>
-</div>
-<div class="section level4">
-<h4 id="development-version">Development version<a class="anchor" aria-label="anchor" href="#development-version"></a>
-</h4>
-<p>If you encounter technical problems with the package that are not
-described anywhere, you might want to take a look at the <a href="https://github.com/icosa-grid/R-icosa/tree/devel" class="external-link">development
-version</a>. Note that you will still need to have a compiler
-installed!</p>
-<div class="section level5">
-<h5 id="development-version-using-devtools">Development version using <code>devtools</code><a class="anchor" aria-label="anchor" href="#development-version-using-devtools"></a>
-</h5>
+<div class="section level3">
+<h3 id="development-version-using-devtools">Development version using <code>devtools</code><a class="anchor" aria-label="anchor" href="#development-version-using-devtools"></a>
+</h3>
 <p>The simplest way to install the in-development version is via the
 <code>devtools</code> package. You just have to indicate that you want
-to install from the in-development <code>devel</code> branch.</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://devtools.r-lib.org/reference/install-deprecated.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"icosa-grid/R-icosa@devel"</span><span class="op">)</span></span></code></pre></div>
+to install from the in-development <code>main</code> branch.</p>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://devtools.r-lib.org/reference/install-deprecated.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"adamkocsis/orange@main"</span><span class="op">)</span></span></code></pre></div>
 </div>
-<div class="section level5">
-<h5 id="manual-install">Manual install<a class="anchor" aria-label="anchor" href="#manual-install"></a>
-</h5>
+<div class="section level3">
+<h3 id="manual-install">Manual install<a class="anchor" aria-label="anchor" href="#manual-install"></a>
+</h3>
 <p>You can also the install the package manually with the following
 steps:</p>
 <ol style="list-style-type: decimal">
 <li>Clone the repository to your local hard drive.<br>
 </li>
-<li>Make sure that you have the package dependencies, and a compiler
-installed: on Windows, <a href="https://cran.r-project.org/bin/windows/Rtools/" class="external-link">RTools</a> should
-include all the tools you need, on Mac, you will need to have <a href="https://developer.apple.com/xcode/" class="external-link">XCode</a> - if you use
-GNU/Linux, you have to go down deeper in the rabbit hole :).<br>
+<li>Make sure that you have the package dependencies.<br>
 </li>
 <li>Open a terminal and navigate to the directory where you cloned. The
-<code>icosa</code> directory should be visible from there.<br>
+<code>orange</code> directory should be visible from there.<br>
 </li>
 <li>Run this line in the terminal</li>
 </ol>
-<pre><code>R CMD INSTALL icosa</code></pre>
+<pre><code>R CMD INSTALL orange</code></pre>
 <ul>
 <li>
 <em>If you see an error suggesting that <code>R</code> is not found,
 you have to add it to your <code>PATH</code> environmental
 variable.</em><br>
 </li>
-<li><em>If the R packages that <code>icosa</code> depend on are not
+<li><em>If the R packages that <code>orange</code> depend on are not
 installed, you have to install them manually, or you will get an
 error.</em></li>
 </ul>
-</div>
-</div>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>

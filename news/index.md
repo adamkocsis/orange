@@ -18,6 +18,7 @@
 - The `shull` function for the definition of spherical hulls from data,
   with plotting.
 - The `shullarea` function to calculate the area of spherical hulls.
+- The `emptymap` function for quick demonsrations.
 
 ### Changed
 

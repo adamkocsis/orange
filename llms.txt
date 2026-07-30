@@ -111,6 +111,8 @@ warranty.
   : Occurrences of Bradypus variegatus from GBIF
 - [`centroid()`](https://adamkocsis.github.io/orange/reference/centroid.md)
   : Calculate centroid of a point cloud
+- [`emptymap()`](https://adamkocsis.github.io/orange/reference/emptymap.md)
+  : Empty world map (Plate Carée)
 - [`gappiness()`](https://adamkocsis.github.io/orange/reference/gappiness.md)
   : The gappiness a of shape
 - [`kentsamples`](https://adamkocsis.github.io/orange/reference/kentsamples.md)
@@ -153,6 +155,10 @@ warranty.
   Installation](https://adamkocsis.github.io/orange/articles/1_installation.md):
 
   Alternatives to install the orange R package.
+
+- [2. Demo](https://adamkocsis.github.io/orange/articles/2_demo.md):
+
+  Some features of orange
 
 - [Specifications](https://adamkocsis.github.io/orange/articles/specifications.md):
 

@@ -6,6 +6,8 @@
   : Occurrences of Bradypus variegatus from GBIF
 - [`centroid()`](https://adamkocsis.github.io/orange/reference/centroid.md)
   : Calculate centroid of a point cloud
+- [`emptymap()`](https://adamkocsis.github.io/orange/reference/emptymap.md)
+  : Empty world map (Plate Carée)
 - [`gappiness()`](https://adamkocsis.github.io/orange/reference/gappiness.md)
   : The gappiness a of shape
 - [`kentsamples`](https://adamkocsis.github.io/orange/reference/kentsamples.md)
