@@ -157,7 +157,8 @@ plot(nobilis[c("decimalLongitude", "decimalLatitude")], pch=16, col="#00BBAA66")
 plot(hex, border="gray70", add=TRUE)
 
 # calculate occupancy
-occ <- occupancy(nobilis, s=hex, plot=TRUE, long="decimalLongitude", lat="decimalLatitude", full=TRUE)
+occ <- occupancy(nobilis, s=hex, plot=TRUE,
+  long="decimalLongitude", lat="decimalLatitude", full=TRUE)
 
 # manual coloring from full output
 plot(hex, occ$occupied, add=TRUE, col="#00BB0088")

@@ -114,7 +114,7 @@ for(i in 1:nrow(central)) points(smaller[,,i], col=i, pch=16)
 
 # Random circles with different radii
 diff200 <- sc_shape(r=runif(200, 100, 10000))
-plot(NULL, xlim=c(-180, 180), ylim=c(-90,90), xlab="", ylab="", axes=F)
+plot(NULL, xlim=c(-180, 180), ylim=c(-90,90), xlab="", ylab="", axes=FALSE)
 for(i in 1:(dim(diff200)[3])){
  points(diff200[,,i], col=i,pch=16)
 }
@@ -123,7 +123,7 @@ for(i in 1:(dim(diff200)[3])){
 # Same center, different radius
 cent <- central[10, ,drop=FALSE]
 outward <- sc_shape(cent, r=seq(100, 15000, length.out=20)) 
-plot(NULL, xlim=c(-180, 180), ylim=c(-90,90), xlab="", ylab="", axes=F)
+plot(NULL, xlim=c(-180, 180), ylim=c(-90,90), xlab="", ylab="", axes=FALSE)
 for(i in 1:(dim(outward)[3])){
  points(outward[,,i], col=i,pch=16)
 }

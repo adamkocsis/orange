@@ -6,7 +6,7 @@ Plotting of spherical hulls
 
 ``` r
 # S3 method for class 'shull'
-plot(x, ...)
+plot(x, add = FALSE, ...)
 ```
 
 ## Arguments
@@ -15,11 +15,11 @@ plot(x, ...)
 
   Spherical hull object.
 
-- ...:
-
-  Additional plotting parameters as defined in par.
-
 - add:
 
   Logical parameter specifying whether the previous plot should be
   overwritten.
+
+- ...:
+
+  Additional plotting parameters as defined in par.

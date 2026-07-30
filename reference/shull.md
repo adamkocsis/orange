@@ -1,6 +1,6 @@
 # Spherical hull geometries and hull area calculations
 
-Spherical hull geometries and hull area calculations
+Calculation of hull geometries in spherical space
 
 ## Usage
 
@@ -68,6 +68,11 @@ shullarea(x, metric = "area", s = NULL, full = FALSE, ...)
 
   Additional arguments passed to class-specific methods.
 
+- method:
+
+  `character` Hull construction method. Currently available:
+  `"centroidcircle"`
+
 - long:
 
   `character`, column name of the longitudes.
@@ -85,6 +90,10 @@ shullarea(x, metric = "area", s = NULL, full = FALSE, ...)
 
   Logical, should the result be plotted? Will plot over active plot (as
   in `add=TRUE`), if there is any.
+
+- plot.args:
+
+  List arguments passed to the plotting function: `lines`.
 
 - sphererad:
 
@@ -104,10 +113,24 @@ shullarea(x, metric = "area", s = NULL, full = FALSE, ...)
   `count` returns the area as the number of components it occupies in
   `s`, when applicable.
 
+- full:
+
+  Logical switch indicating whether only the estimate should be shown
+  (`FALSE`), or the hull itself should be returned as well?.
+
 ## Value
 
 A `hull`-class object, a vector of identifiers (if applicable and
 `drop=FALSE`) or the area of te hull as a numeric.
+
+## Details
+
+Constructing and enclosing geometry around a distribution on the surface
+of a sphere represent unique challenges. The `"centroidcircle"` method
+is using the centroid of the distribution as the center of small circle
+that defines a spherical cap. This is likely not the smallest possible
+cap to cover the distribution and takes the heterogeneous density of the
+distribution into account.
 
 ## Examples
 

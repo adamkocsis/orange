@@ -33,8 +33,7 @@ maxdist(
   q = 1,
   plot = FALSE,
   plot.args = NULL,
-  full = FALSE,
-  listout = FALSE
+  full = FALSE
 )
 ```
 
