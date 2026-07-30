@@ -12,6 +12,7 @@
 - The `sc_in` function to calculate whether a bunch of points are inside a small circle or not (based on planes, rather than distances, about 10x faster).
 - The `shull` function for the definition of spherical hulls from data, with plotting. 
 - The `shullarea` function to calculate the area of spherical hulls.
+- The `emptymap` function for quick demonsrations.
 
 ## Changed
 

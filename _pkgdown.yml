@@ -15,8 +15,8 @@ navbar:
       menu:
         - text: "1. Installation"
           href: articles/1_installation.html
-        # - text: "2. XArrays"
-        #   href: 404.html
+        - text: "2. Demo"
+          href: articles/2_demo.html
         # - text: "3. RasterArrays"
         #   href: 404.html
         # - text: "4. SfArrays"

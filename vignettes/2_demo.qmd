@@ -1,0 +1,342 @@
+---
+title: "2. Demo"
+description: "Some features of orange"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{2. Demo}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.width = 10, 
+  fig.height = 6
+)
+
+```
+
+
+The `orange` extension was written to facilitate the calculation of distribution descriptors, especially in a spherical context, where many planar operations either do not work or work incorrectly. All computations in `orange` are executed in 3D space (never in projections), and are relying heavily on the `icosa` extension and the geometric operation within.
+
+```{r}
+library(orange)
+```
+
+```{r, include = FALSE}
+plotOrig <- emptymap
+emptymap<- function(...){
+	par(mar=c(0.25,0.25,0.25,0.25))
+	plotOrig(...)
+}
+
+
+```
+
+## Illustration data
+
+For the sake of this demonstration, we will use point distribution data which are generated from a *Kent distribution* (the spherical equivalent of a bivariate Gaussian distribution). The `orange` package has a bunch of samples generated from multiple such distributions for testing and similar demonstration purposes, which can be accessed with the `kentssamples` built-in data.
+
+```{r}
+data(kentsamples)
+str(kentsamples)
+```
+
+This built in data object has 16 1000-element samples of different concentrations, focusing on either the (0,0) longitude-latitude point, its antipodal (180,0), the arcic or the antarctic. To make the examples more convincing, we will focus on an antipodal distribution centered around the international dateline (but the examples should work equally fine with other samples as well). The basic methods are written for 2-column longitude-latitude matrices, but they either already work with or will be implemented for more complex wrappers as well. The standard interface is expecting these in the columns named `"long"` and `"lat"`, respectively, so we will name them so.
+
+```{r}
+coords <- kentsamples$dateline_m
+colnames(coords) <- c("long", "lat")
+```
+
+To make the plot less cluttered we can use a lower number of points, i. e. smaller sample in this tutorial, but feel free to change this as you like.
+
+```{r}
+coords <- coords[1:200, ]
+```
+
+To make the visualization faster, there is a helper function for the visualization of standard global scale data, on which we can visualize this sample.
+
+```{r}
+emptymap()
+points(coords, pch=16, col="#005500bb")
+```
+
+# Native Descriptors
+
+## Centroid
+
+Getting the centroid of a distribution like this is relatively straightforward, most approaches (as in `orange`) rely on the barycentric method: the cartesian coordinates of the points are averaged, and the resulting point is projected to the surface. This can be executed with the `centroid` function.
+
+
+```{r}
+cent <- centroid(coords)
+cent
+```
+
+Which can be visualized as a single point:
+
+
+```{r}
+emptymap()
+points(coords, pch=16, col="#005500bb")
+points(cent[1], cent[2], pch=3, col="red", cex=3, lwd=3)
+```
+
+
+Most functions in `orange` have built-in plotting features, which will add the corresponding visualization on an already opened plot. This can be invoked with including `plot=TRUE`:
+
+```{r}
+emptymap()
+points(coords, pch=16, col="#005500bb")
+centroid(coords, plot=TRUE)
+```
+
+
+## Maximum great circle distance
+
+One of the most widely used methods for estimating 'range', i.e. the size of the distribution is the *maximum great circle distance method. This method calculates the pairwise distances between all points and returns the largest great circle distance measured between them. This method is the default in the `maxdist` function, which is generalized to work with a given distance matrix, which might not reflect great circles (e.g. water distances).
+
+```{r}
+md <- maxdist(coords)
+md
+```
+
+The result of this function is a single number (in kilometers), which is a highly condensed result. What is actually getting measured here, is hidden in the computation, so it is practically impossible to assess its correctness without re-implementing the calculation. To make this process easier, `orange` features the `full=TRUE` argumentation, which returns not only the estimate for the metric, but some intermediate results that allows the tracing of the calculation as well:
+
+```{r}
+mdFull <- maxdist(coords, full=TRUE)
+mdFull
+```
+
+The result of the computations with `full=TRUE` is an `orange` class object: in this case it features the indices of the points that define where the greatest distance was found. 
+
+```{r}
+maxPoints <- coords[mdFull$index,]
+```
+
+The great circle arc defined by these points can be visualized, either with the `geosphere::gcIntermediate`, or with the `icosa::arcs` function:
+
+```{r}
+emptymap()
+points(coords, pch=16, col="#005500bb")
+arcs(maxPoints, col="orange", lwd=2)
+```
+
+As before, plotting can be executed automatically with `plot=TRUE`
+
+```{r}
+emptymap()
+points(coords, pch=16, col="#005500bb")
+maxdist(coords, plot=TRUE)
+```
+
+## Minimum spanning tree length
+
+The length of minimum spanning trees is also used to describe the spread of point distribution data, which also takes the clustering of the points into consideration. The implementation in `orange` relies on the `vegan` package, and can be found in the `mstlength` function:
+
+
+```{r}
+mst <- mstlength(coords)
+mst
+```
+
+Again, this value is somewhat cryptic on its own. If you want to see the tree itself, you need either `plot=TRUE` or `full=TRUE`:
+
+```{r}
+mstFull <- mstlength(coords, full=TRUE)
+str(mstFull)
+```
+
+The tree itself is described with connections between points. The `$index` element is used to identify the indices of the point pairs that are connected by the spanning tree. The `$show` element includes the coordinate points that need to be connected, so it can be drawn directly with `icosa::arcs`:
+
+```{r}
+emptymap()
+points(coords, pch=16, col="#005500bb")
+arcs(mstFull$show, col="red")
+```
+
+
+## Latitudinal ranges
+
+Latitudinal ranges are rather trivial, but are included in `orange` for the sake of completeness and a homogenized interface.
+
+```{r}
+lrFull <- latrange(coords, full=TRUE)
+lrFull
+```
+
+Manual visualization is easy using the `$range` element:
+
+```{r}
+emptymap()
+points(coords, pch=16, col="#005500bb")
+segments(x0=-180,y0=lrFull$range,x1=180, y1=lrFull$range, lwd=2, lty=2)
+```
+
+
+
+# Icosahedral grid-based descriptors
+
+Icosahedral grids provide a straightforward way to discretize the surface of a sphere. Even though they are not perfect, they represent relatively even partitionings, which can also be used to characerize distributions. For the sake of this tutorial, we will use a penta-hexagonal grid from `icosa`, with the target spacing (average distance between grid cell centers) of 7 degrees (7×60 nautical miles or about 777.7 kms).
+
+```{r}
+# create a grid with an sf representation to plot
+hex <- hexagrid(spacing=7, sf=TRUE)
+```
+
+This can be visualized on our empty plot:
+
+```{r}
+emptymap()
+plot(hex, border="#0000AA", add=TRUE)
+```
+
+## Grid occupancy
+
+One of the most imporant metrics or range (size) is the calculation of occupany: i.e. how much of a given structure (coded with `s` in `orange`) is actually occupied by the distribution. This entire family of metrics is implemented in the `occupancy` function, which by default returns the number of occupied components: in this case the grid cells.
+
+```{r}
+occFull <- occupancy(x=coords, s=hex, full=TRUE)
+occFull
+```
+
+When the `full=TRUE` (optional) argumentation is used, the number of occupied cells in the `$estimate` element. The `$occuiped` element includes the identifiers of the occupied grid cells. This can be used for visualization, or additional calculations (all based on `icosa::locate`):
+
+
+```{r}
+emptymap()
+# visualize parts of the grid (icosa method)
+plot(hex, occFull$occupied, col="#FF000066", add=TRUE, border="white")
+points(coords, pch=16, col="#005500bb")
+```
+
+
+Since this number is really dependent on the number of cells in the grid, `occupancy` can translate this to a global proportion to make it easier to compare: what proportion of the total grid is occupied? (1 is all cells of the grid, 0 is nothing). This global proportional occupancy can be invoked with `prop="global"`:
+
+```{r}
+occProp <- occupancy(x=coords, s=hex, prop="global")
+occProp
+```
+
+This is literally the same as:
+
+```{r}
+# divide the number of occupied faces
+# with the number of cells in the grid
+occFull$estimate/as.numeric(length(hex))
+```
+
+
+## Shape gappiness
+
+Discrete grids like `hex` can also be used to assess how contiguous the distribution is. One example to do this is illustrated with `gappiness`: if we are to discretize the distribution, as above, what would be the proportion of holes inside it?
+
+
+```{r}
+gapFull <- gappiness(x=coords, s=hex, full=TRUE)
+gapFull
+```
+
+The function returns not only the proportion, but also identifies the holes in the distribution, which can be plotted similarly
+
+```{r}
+emptymap()
+# visualize parts of the grid (icosa method)
+plot(hex, occFull$occupied, col="#FF000066", add=TRUE, border="white")
+plot(hex, names(gapFull$holes), col="#FFFF0066", add=TRUE, border="white")
+points(coords, pch=16, col="#005500bb")
+```
+
+
+# Hulls 
+
+Constructing hulls and measuring their area is a common approach the measure the spread of point distribution data. When it comes to global scale, geographic problems like this, most implementations become unreliable. The common way to opearte with hulls in `orange` is the construction of an `"shull"`-class object (spherical hull) with the function `shull` , which can be then measured for its area, or passed on to further calculations.
+
+This aspect of the package need to be developed further in the future.
+
+## Centroid-centric small circle (cap)
+
+The simplest hull implemented in `orange` is a simple bounding spherical cap that is centered around the centroid, implemented with `shull(method="centroicircle")`. This yields the smallest cap that covers the point distribution with its center in the centroid of the distribution, but not the smallest cap altogether (under implementation).
+
+```{r}
+cc <- shull(coords, method="centroidcircle")
+cc
+```
+
+This method returns the centroid (`$center`) and the radius of the small circle (`$radius`). The visualization can be invoked with the `shull`-specific methods for plot:
+
+```{r}
+emptymap()
+points(coords, pch=16, col="#005500bb")
+plot(cc, add=TRUE, lwd=3, lty=2)
+```
+
+The area of this small circle is given either in square kilometers (default): 
+
+```{r}
+shullarea(cc)
+```
+
+or as proportions to the globe's surface area:
+
+```{r}
+shullarea(cc, metric="prop")
+```
+
+
+Methods that are planned to be added are:
+
+| Method              | Description                                                                                              |
+|---------------------|----------------------------------------------------------------------------------------------------------|
+| `"smallcircle"`     | Smallest bounding spherical small circle (based on Welzl's algorithm)                                    |
+| `"centroidellipse"` | Centroid-centered spherical ellipse.                                                                     |
+| `"smallellipse"`    | Smallest bounding spherical ellipse (no idea how... yet!).                                               |
+| `"convex"`          | Convex hull. Correct implementation is very tricky. Probably approachable with 3d Delauney tessellation. |
+| `"alpha"`           | Alpha-hull based on convex hulls.                                                                        |
+
+
+## Discretized hulls
+
+A hull can be used as is, or it can be discretized to do further calculations with it. This can be executed automatically by providing an `s` argument for the `shull` function:
+
+```{r}
+ccIcosa <- shull(x=coords, s=hex, method="centroidcircle")
+ccIcosa
+```
+
+This method will execute the `"centroidcircle"` method as above, and after that it will look up the faces in `hex` that are occupied by the hull. The current implementation relies on the face centers for calculating this (hence the message). It will be corrected in the future. The default approach is the drop the `shull`-class container and use only a vector of names, but this can be skipped with `drop=FALSE`. Then the previously used tools can be used for visualization:
+
+
+```{r}
+emptymap()
+# the hull
+plot(hex, ccIcosa, col="#00666666", add=TRUE, border="white")
+# faces occupied
+points(coords, pch=16, col="#005500bb")
+# the bounding circle of the hull
+plot(cc, add=TRUE, lwd=3, lty=2)
+```
+
+Further calculations can be implemented with relating this to the occupied cells (plan is: `occupancy(x=coords, s=hex, prop=shull())`). 
+
+```{r}
+emptymap()
+# the hull
+plot(hex, ccIcosa, col="#00666666", add=TRUE, border="white")
+# faces occupied
+plot(hex, occFull$occupied, col="#FF000066", add=TRUE, border="white")
+# the bounding circle of the hull
+plot(cc, add=TRUE, lwd=3, lty=2)
+points(coords, pch=16, col="#005500bb")
+```
+
+
+... and many more to come - hopefully! :)
+
+
+
+
+
