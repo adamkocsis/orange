@@ -19,7 +19,7 @@ which are generated from a *Kent distribution* (the spherical equivalent
 of a bivariate Gaussian distribution). The `orange` package has a bunch
 of samples generated from multiple such distributions for testing and
 similar demonstration purposes, which can be accessed with the
-`kentssamples` built-in data.
+`kentsamples` built-in data.
 
 ``` r
 data(kentsamples)
@@ -45,14 +45,14 @@ str(kentsamples)
 
 This built in data object has 16 1000-element samples of different
 concentrations, focusing on either the (0,0) longitude-latitude point,
-its antipodal (180,0), the arcic or the antarctic. To make the examples
-more convincing, we will focus on an antipodal distribution centered
-around the international dateline (but the examples should work equally
-fine with other samples as well). The basic methods are written for
-2-column longitude-latitude matrices, but they either already work with
-or will be implemented for more complex wrappers as well. The standard
-interface is expecting these in the columns named `"long"` and `"lat"`,
-respectively, so we will name them so.
+its almost antipodal (170,0), the arcic or the antarctic. To make the
+examples more convincing, we will focus on an antipodal distribution
+centered around the international dateline (but the examples should work
+equally fine with other samples as well). The basic methods are written
+for 2-column longitude-latitude matrices, but they either already work
+with or will be implemented for more complex wrappers as well. The
+standard interface is expecting these in the columns named `"long"` and
+`"lat"`, respectively, so we will name them so.
 
 ``` r
 coords <- kentsamples$dateline_m

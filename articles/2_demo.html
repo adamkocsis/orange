@@ -89,7 +89,7 @@
 </div>
 <section class="section level3"><h3 id="illustration-data">Illustration data<a class="anchor" aria-label="anchor" href="#illustration-data"></a>
 </h3>
-<p>For the sake of this demonstration, we will use point distribution data which are generated from a <em>Kent distribution</em> (the spherical equivalent of a bivariate Gaussian distribution). The <code>orange</code> package has a bunch of samples generated from multiple such distributions for testing and similar demonstration purposes, which can be accessed with the <code>kentssamples</code> built-in data.</p>
+<p>For the sake of this demonstration, we will use point distribution data which are generated from a <em>Kent distribution</em> (the spherical equivalent of a bivariate Gaussian distribution). The <code>orange</code> package has a bunch of samples generated from multiple such distributions for testing and similar demonstration purposes, which can be accessed with the <code>kentsamples</code> built-in data.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">kentsamples</span><span class="op">)</span></span>
@@ -112,7 +112,7 @@
 <span><span class="co">#&gt;  $ dateline_l  : num [1:1000, 1:2] 177 -179 157 -180 -164 ...</span></span>
 <span><span class="co">#&gt;  $ dateline_xl : num [1:1000, 1:2] -1.29 -107.59 141.58 -150.18 -168.18 ...</span></span></code></pre></div>
 </div>
-<p>This built in data object has 16 1000-element samples of different concentrations, focusing on either the (0,0) longitude-latitude point, its antipodal (180,0), the arcic or the antarctic. To make the examples more convincing, we will focus on an antipodal distribution centered around the international dateline (but the examples should work equally fine with other samples as well). The basic methods are written for 2-column longitude-latitude matrices, but they either already work with or will be implemented for more complex wrappers as well. The standard interface is expecting these in the columns named <code>"long"</code> and <code>"lat"</code>, respectively, so we will name them so.</p>
+<p>This built in data object has 16 1000-element samples of different concentrations, focusing on either the (0,0) longitude-latitude point, its almost antipodal (170,0), the arcic or the antarctic. To make the examples more convincing, we will focus on an antipodal distribution centered around the international dateline (but the examples should work equally fine with other samples as well). The basic methods are written for 2-column longitude-latitude matrices, but they either already work with or will be implemented for more complex wrappers as well. The standard interface is expecting these in the columns named <code>"long"</code> and <code>"lat"</code>, respectively, so we will name them so.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">coords</span> <span class="op">&lt;-</span> <span class="va">kentsamples</span><span class="op">$</span><span class="va">dateline_m</span></span>
