@@ -4,13 +4,14 @@ suppressPackageStartupMessages(library(divDyn))
 
 # the data
 data(pinna)
+pinna <- pinna[which(pinna$species=="Pinna nobilis"), ]
 data(corals)
 
 ################################################################################
 # Base:
 
 # Matrix method
-mat <- as.matrix(pinna[, c("decimallongitude", "decimallatitude")])
+mat <- as.matrix(pinna[, c("decimalLongitude", "decimalLatitude")])
 manual <- max(icosa::arcdistmat(mat))
 
 
@@ -54,10 +55,10 @@ expect_equal(mdFull$estimate, remanual2)
 
 
 # should give error if columns are partially given
-expect_error(maxdist(mat, lat="decimallatitude"))
-expect_error(maxdist(mat, long="decimallongitude"))
-expect_error(maxdist(mat, long="decimallongitude", lat="wrong"))
-expect_silent(mdNamed <- maxdist(mat, long="decimallongitude", lat="decimallatitude"))
+expect_error(maxdist(mat, lat="decimalLatitude"))
+expect_error(maxdist(mat, long="decimalLongitude"))
+expect_error(maxdist(mat, long="decimalLongitude", lat="wrong"))
+expect_silent(mdNamed <- maxdist(mat, long="decimalLongitude", lat="decimalLatitude"))
 expect_equal(mdNamed, md)
 
 # for now q is not yet implemented
@@ -83,10 +84,10 @@ first <- mat[1,, drop=FALSE]
 expect_silent(sing <- maxdist(first, full=TRUE))
 expect_equal(sing$estimate, 0)
 # with explicitly given names (dropping problem)
-expect_silent(sing <- maxdist(first, long="decimallongitude", lat="decimallatitude"))
+expect_silent(sing <- maxdist(first, long="decimalLongitude", lat="decimalLatitude"))
 # false names
 empty <- matrix(c(NA,NA), nrow=1)
-expect_error(none <- maxdist( empty, long="decimallongitude", lat="decimallatitude"))
+expect_error(none <- maxdist( empty, long="decimalLongitude", lat="decimalLatitude"))
 # no coordinates
 expect_silent(none <- maxdist(empty))
 # proper omission
@@ -106,9 +107,9 @@ expect_equal(mdDM, md)
 
 ################################################################################
 # Data.frame -  appropriate fallback to matrix method
-expect_silent(mdDF <- maxdist(pinna, long="decimallongitude", lat="decimallatitude"))
+expect_silent(mdDF <- maxdist(pinna, long="decimalLongitude", lat="decimalLatitude"))
 expect_equal(mdDF, md)
-expect_silent(mdDFfull <- maxdist(pinna, long="decimallongitude", lat="decimallatitude", full=TRUE))
+expect_silent(mdDFfull <- maxdist(pinna, long="decimalLongitude", lat="decimalLatitude", full=TRUE))
 expect_equal(mdDFfull, mdFull)
 
 # appropriate defaults for coordinates - 2column df
@@ -180,7 +181,9 @@ for(i in 1:nrow(mdTaxFull)){
 	cur1 <- mdTaxFull[i,2]
 	cur2 <- mdTaxFull[i,3]
 	here <- maxdist(corals[c(cur1, cur2), c("lng", "lat")], long="lng", lat="lat",  )
-	expect_equal(here, mdTaxFull[i,1])
+	two <- mdTaxFull[i,1]
+	if(is.na(here)) here <- as.numeric(here)
+	expect_equal(here, two)
 }
 
 

@@ -16,20 +16,20 @@ parallel::clusterCall(cl, source, "orange/tests/source.R")
 
 # the range metrics
 # # Refactored
-occupancy_results <- run_test_dir("orange/tests/occupancy")
+occupancy_results <- run_test_dir("orange/tests/occupancy", cluster=cl)
 
 # # to do
-maxdist_results <- run_test_dir("orange/tests/maxdist")
-latrange_results <- run_test_dir("orange/tests/latrange")
-mstlength_results <- run_test_dir("orange/tests/mstlength")
-radius_results <- run_test_dir("orange/tests/radius")
+maxdist_results <- run_test_dir("orange/tests/maxdist", cluster=cl)
+latrange_results <- run_test_dir("orange/tests/latrange", cluster=cl)
+mstlength_results <- run_test_dir("orange/tests/mstlength", cluster=cl)
+radius_results <- run_test_dir("orange/tests/radius", cluster=cl)
 
 # the shape metrics
-centroid_results <- run_test_dir("orange/tests/centroid")
-gappiness_results <- run_test_dir("orange/tests/gappiness")
+centroid_results <- run_test_dir("orange/tests/centroid", cluster=cl)
+gappiness_results <- run_test_dir("orange/tests/gappiness", cluster=cl)
 
 # Small circle tests
-sc_results <- run_test_dir("orange/tests/smallcircles")
+sc_results <- run_test_dir("orange/tests/smallcircles", cluster=cl)
 
 # Finish
 stopCluster(cl)

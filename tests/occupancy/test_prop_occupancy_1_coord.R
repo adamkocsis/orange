@@ -1,7 +1,7 @@
 # Proportional occupancy testing
 # For coordinate inputs (x=coordMat coordDF) -
 library(tinytest)
-library(orange)
+suppressPackageStartupMessages(library(orange))
 
 # setup
 data(pinna)

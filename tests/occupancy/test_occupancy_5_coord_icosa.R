@@ -2,7 +2,7 @@
 
 # Setup
 library(tinytest)
-library(orange)
+suppressPackageStartupMessages(library(orange))
 
 # setup
 data(pinna)

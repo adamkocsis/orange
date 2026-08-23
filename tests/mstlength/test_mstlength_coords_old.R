@@ -9,9 +9,10 @@ suppressPackageStartupMessages(library(vegan))
 # 1. Single-taxon dataset
 ################################################################################
 data(pinna)
+pinna <- pinna[which(pinna$species=="Pinna nobilis"), ]
 
 # the matrix
-mat <- as.matrix(pinna[,c("decimallongitude", "decimallatitude")])
+mat <- as.matrix(pinna[,c("decimalLongitude", "decimalLatitude")])
 
 # calculate metric manually (no duplicates)
 unmat <- unique(mat)
@@ -28,12 +29,12 @@ expect_silent(mstMatDM <- mstlength(mat, dm=dm))
 expect_equal(mstMatDM, mstMat)
 
 # with full outpu
-expect_silent(mstMatFull <- mstlength(as.matrix(pinna[,c("decimallongitude", "decimallatitude")]), full=TRUE))
+expect_silent(mstMatFull <- mstlength(as.matrix(pinna[,c("decimalLongitude", "decimalLatitude")]), full=TRUE))
 expect_equal(names(mstMatFull), c("estimate", "index", "show"))
 expect_equal(mstMat, mstMatFull$estimate)
 
 # duplicates make no difference
-expect_silent(mstMatDupl <- mstlength(as.matrix(pinna[,c("decimallongitude", "decimallatitude")]), duplicates=TRUE))
+expect_silent(mstMatDupl <- mstlength(as.matrix(pinna[,c("decimalLongitude", "decimalLatitude")]), duplicates=TRUE))
 expect_equal(mstMatDupl, mstMat)
 
 
@@ -44,12 +45,12 @@ first <- mat[1,, drop=FALSE]
 expect_silent(sing <- mstlength(first, full=TRUE))
 expect_equal(sing$estimate, 0)
 # with explicitly given names (dropping problem)
-expect_silent(sing <- mstlength(first, long="decimallongitude", lat="decimallatitude"))
+expect_silent(sing <- mstlength(first, long="decimalLongitude", lat="decimalLatitude"))
 expect_equal(sing, 0)
 
 # false names
 empty <- matrix(c(NA,NA), nrow=1)
-expect_error(none <- mstlength( empty, long="decimallongitude", lat="decimallatitude"))
+expect_error(none <- mstlength( empty, long="decimalLongitude", lat="decimalLatitude"))
 # no coordinates
 expect_silent(none <- mstlength(empty))
 # proper omission
@@ -60,15 +61,15 @@ expect_equal(singNone, sing)
 # missing values
 # same as with missing values
 matMissFront <- rbind(c(NA,NA), mat)
-expect_silent(mstFront <- mstlength(matMissFront, long="decimallongitude", lat="decimallatitude"))
+expect_silent(mstFront <- mstlength(matMissFront, long="decimalLongitude", lat="decimalLatitude"))
 expect_equal(mstMat,mstFront)
 
 matMissBack <- rbind(mat, c(NA,NA))
-expect_silent(mstBack <- mstlength(matMissBack, long="decimallongitude", lat="decimallatitude"))
+expect_silent(mstBack <- mstlength(matMissBack, long="decimalLongitude", lat="decimalLatitude"))
 expect_equal(mstMat,mstBack)
 
 matMissMid <- rbind(mat[1:3,], c(NA,NA), mat[4:nrow(mat),])
-expect_silent(mstMid <- mstlength(matMissMid, long="decimallongitude", lat="decimallatitude"))
+expect_silent(mstMid <- mstlength(matMissMid, long="decimalLongitude", lat="decimalLatitude"))
 expect_equal(mstMat,mstMid)
 
 # only missing, default names
@@ -77,17 +78,17 @@ expect_equal(mstMiss,NA )
 
 
 # Plotting
-# expect_silent(namedlat <- mstlength(mat, long="decimallongitude", lat="decimallatitude", plot=TRUE))
+# expect_silent(namedlat <- mstlength(mat, long="decimalLongitude", lat="decimalLatitude", plot=TRUE))
 
 ################################################################################
 # Data.frame method
 
 # coordinate pairs
-expect_silent(mstDF <- mstlength(pinna, long="decimallongitude", lat="decimallatitude"))
+expect_silent(mstDF <- mstlength(pinna, long="decimalLongitude", lat="decimalLatitude"))
 expect_equal(mstMat, mstDF)
 
 # with full output
-expect_silent(mstDFFull <- mstlength(pinna, long="decimallongitude", lat="decimallatitude", full=TRUE))
+expect_silent(mstDFFull <- mstlength(pinna, long="decimalLongitude", lat="decimalLatitude", full=TRUE))
 expect_equal(mstMat, mstDFFull$estimate)
 
 

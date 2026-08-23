@@ -1,7 +1,7 @@
 # Occupancy Tests for for coordinate inputs (x=coordMat coordDF)
 # and pre-specified localities in the dataset(s=character)
 library(tinytest)
-library(orange)
+suppressPackageStartupMessages(library(orange))
 
 # setup
 data(pinna)

@@ -4,13 +4,14 @@ suppressPackageStartupMessages(library(divDyn))
 
 # the data
 data(pinna)
+pinna <- pinna[which(pinna$species=="Pinna nobilis"), ]
 data(corals)
 
 ################################################################################
 # Base:
 # Matrix method
 ################################################################################
-mat <- as.matrix(pinna[, c("decimallongitude", "decimallatitude")])
+mat <- as.matrix(pinna[, c("decimalLongitude", "decimalLatitude")])
 
 # the focus
 foc <-centroid(mat)
@@ -60,10 +61,10 @@ expect_equal(radFull$estimate, remanual2)
 
 
 # should give error if columns are partially given
-expect_error(radius(mat, lat="decimallatitude"))
-expect_error(radius(mat, long="decimallongitude"))
-expect_error(radius(mat, long="decimallongitude", lat="wrong"))
-expect_silent(radNamed <- radius(mat, long="decimallongitude", lat="decimallatitude"))
+expect_error(radius(mat, lat="decimalLatitude"))
+expect_error(radius(mat, long="decimalLongitude"))
+expect_error(radius(mat, long="decimalLongitude", lat="wrong"))
+expect_silent(radNamed <- radius(mat, long="decimalLongitude", lat="decimalLatitude"))
 expect_equal(radNamed, rad)
 
 
@@ -96,10 +97,10 @@ first <- mat[1,, drop=FALSE]
 expect_silent(sing <- radius(first, full=TRUE))
 expect_equal(sing$estimate, 0)
 # with explicitly given names (dropping problem)
-expect_silent(sing <- radius(first, long="decimallongitude", lat="decimallatitude"))
+expect_silent(sing <- radius(first, long="decimalLongitude", lat="decimalLatitude"))
 # false names
 empty <- matrix(c(NA,NA), nrow=1)
-expect_error(none <- radius( empty, long="decimallongitude", lat="decimallatitude"))
+expect_error(none <- radius( empty, long="decimalLongitude", lat="decimalLatitude"))
 # no coordinates
 expect_silent(none <- radius(empty))
 # proper omission
@@ -110,9 +111,9 @@ expect_equal(singNone, sing)
 
 ################################################################################
 # Data.frame -  appropriate fallback to matrix method
-expect_silent(radDF <- radius(pinna, long="decimallongitude", lat="decimallatitude"))
+expect_silent(radDF <- radius(pinna, long="decimalLongitude", lat="decimalLatitude"))
 expect_equal(radDF, rad)
-expect_silent(radDFfull <- radius(pinna, long="decimallongitude", lat="decimallatitude", full=TRUE))
+expect_silent(radDFfull <- radius(pinna, long="decimalLongitude", lat="decimalLatitude", full=TRUE))
 expect_equal(radDFfull, radFull)
 
 # appropriate defaults for coordinates - 2column df
