@@ -18,9 +18,7 @@ A \code{data.frame} with 1466 observations and 6 variables:
 data(bradypus)
 }
 \description{
-Occurrence records downloaded from OBIS on 2026-07-01
-}
-\details{
 This is an example occurrence record \code{data.frame} of a single terrestrial species.
+GBIF.org (30 June 2026) GBIF Occurrence Download https://doi.org/10.15468/dl.s7zhvp
 }
 \keyword{datasets}

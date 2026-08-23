@@ -47,7 +47,7 @@ gappiness(x, s, ...)
 A proportion that gives the ratio of hole-cells compared to all occupied cells.
 }
 \description{
-Proportion of gap cells
+Proportion of gap cells in an icosahedral grid.
 }
 \details{
 Gappiness refers to proporion of area that are covered by the internal gaps that defined by a set of discretized cells or a point set that covers some cells in a discretization structre.

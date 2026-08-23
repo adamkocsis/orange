@@ -20,9 +20,6 @@ A \code{data.frame} with 1466 observations and 6 variables:
 data(pinna)
 }
 \description{
-Occurrence records downloaded from OBIS on 2026-07-01
-}
-\details{
-This is an example occurrence record \code{data.frame}.
+This is an example occurrence record \code{data.frame} with multiple taxa. Occurrence records downloaded from OBIS on 2026-07-01.
 }
 \keyword{datasets}

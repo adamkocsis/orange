@@ -1,8 +1,6 @@
 #' Occurrences of the genus Pinna from OBIS
 #'
-#' Occurrence records downloaded from OBIS on 2026-07-01
-#'
-#' This is an example occurrence record \code{data.frame}.
+#' This is an example occurrence record \code{data.frame} with multiple taxa. Occurrence records downloaded from OBIS on 2026-07-01. 
 #'
 #' @format A \code{data.frame} with 1466 observations and 6 variables:
 #' 	\describe{
@@ -20,9 +18,8 @@
 
 #' Occurrences of Bradypus variegatus from GBIF
 #'
-#' Occurrence records downloaded from OBIS on 2026-07-01
-#'
 #' This is an example occurrence record \code{data.frame} of a single terrestrial species.
+#' GBIF.org (30 June 2026) GBIF Occurrence Download https://doi.org/10.15468/dl.s7zhvp
 #'
 #' @format A \code{data.frame} with 1466 observations and 6 variables:
 #' 	\describe{
