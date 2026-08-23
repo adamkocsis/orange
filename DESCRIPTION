@@ -10,7 +10,7 @@ Authors@R: c(
 	person(given="FAU GeoZentrum Nordbayern", role="fnd"))
 Maintainer: Adam T. Kocsis <adam.t.kocsis@gmail.com>
 Description: Characterization of distribution data on the surface of a sphere. The primary group of these metrics describe the extent of a distribution,  geographic ranges. The calculation of geographic descriptors can be executed using point coordinate data, vector polygons, as well as cells on a discretized sphere. Besides using spherical implementations, the package offers the exploration of partial results for visual diagnostics.
-License: CC BY 4.0
+License: GPL-3
 Date: 2026-08-23
 BugReports: https://github.com/adamkocsis/orange/issues
 Encoding: UTF-8
