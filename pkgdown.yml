@@ -1,11 +1,11 @@
-pandoc: 3.7.0.2
-pkgdown: 2.2.0
+pandoc: 3.1.3
+pkgdown: 2.1.1
 pkgdown_sha: ~
 articles:
   1_installation: 1_installation.html
   2_demo: 2_demo.html
   specifications: specifications.html
-last_built: 2026-07-30T13:34Z
+last_built: 2026-08-23T17:59Z
 urls:
   reference: https://adamkocsis.github.io/orange/reference
   article: https://adamkocsis.github.io/orange/articles
