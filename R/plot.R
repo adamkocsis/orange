@@ -6,12 +6,13 @@
 #' @param col Plot background, RGBA possible.
 #' @param grat.col Graticule color RGBA possible. 
 #' @param border Border color of rectange on the outside of the plot.
-#' @param thick The 0 coordinate circles are highlighted with thicker lines, given here
+#' @param thick The 0-coordinate circles are highlighted with thicker lines, given here.
+#' @param lwd The baseline thickness of the lines.
 #' @return The function has no return value.
 #' @export
 #' @examples
 #' data(kentsamples)
-#' emptymap(l)
+#' emptymap()
 #' points(kentsamples$central_s, pch=16, col=1)
 #' points(kentsamples$arctic_m, pch=16, col=2)
 #' points(kentsamples$antarctic_l, pch=16, col=3)

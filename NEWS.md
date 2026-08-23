@@ -1,6 +1,6 @@
 # Change log of the R package 'orange'
 
-# orange 0.1.0-15 - 2026-07-29
+# orange 0.1.0 - 2026-08-23
 
 ## Added
 

@@ -26,7 +26,9 @@ emptymap(
 
 \item{grat.col}{Graticule color RGBA possible.}
 
-\item{thick}{The 0 coordinate circles are highlighted with thicker lines, given here}
+\item{lwd}{The baseline thickness of the lines.}
+
+\item{thick}{The 0-coordinate circles are highlighted with thicker lines, given here.}
 
 \item{border}{Border color of rectange on the outside of the plot.}
 }
@@ -38,7 +40,7 @@ Empty world map (Plate Carée)
 }
 \examples{
 data(kentsamples)
-emptymap(l)
+emptymap()
 points(kentsamples$central_s, pch=16, col=1)
 points(kentsamples$arctic_m, pch=16, col=2)
 points(kentsamples$antarctic_l, pch=16, col=3)
