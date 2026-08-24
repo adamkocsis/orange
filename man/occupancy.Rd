@@ -89,7 +89,7 @@ This method is only applicable, when \code{s} is defined as a spatial structure 
 In contrast, relative proportional occupancies express proportions in the sampled set, i.e. what proportion of the overall sampled grid cells or localities are occupied by a taxon. This is particularly useful when \code{tax!=NULL}.
 }
 \examples{
-# I. Single taxon: Pinna nobilsi
+# I. Single taxon: Pinna nobils
 # 1. Records
 data(pinna)
 # Subset to Pinna nobilis
@@ -110,9 +110,5 @@ occ <- occupancy(nobilis, s=hex, plot=TRUE,
 # manual coloring from full output
 plot(hex, occ$occupied, add=TRUE, col="#00BB0088")
 
-# global proportional occupancies - relative to the grid
-occprop <- occupancy(nobilis, s=hex, long="decimalLongitude", lat="decimalLatitude", prop="global")
-# same as
-occ$estimate/length(hex)
 
 }

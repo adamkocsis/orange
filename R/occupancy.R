@@ -29,7 +29,7 @@ qTest <- FALSE
 #' @rdname occupancy
 #' @export
 #' @examples
-#' # I. Single taxon: Pinna nobilsi
+#' # I. Single taxon: Pinna nobils
 #' # 1. Records
 #' data(pinna)
 #' # Subset to Pinna nobilis
@@ -50,10 +50,6 @@ qTest <- FALSE
 #' # manual coloring from full output
 #' plot(hex, occ$occupied, add=TRUE, col="#00BB0088")
 #'
-#' # global proportional occupancies - relative to the grid
-#' occprop <- occupancy(nobilis, s=hex, long="decimalLongitude", lat="decimalLatitude", prop="global")
-#' # same as
-#' occ$estimate/length(hex)
 #'
 setGeneric(
 	name="occupancy",

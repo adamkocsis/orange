@@ -24,7 +24,6 @@ Imports:
 	methods
 NeedsCompilation: no
 Suggests:
-    tinytest,
     sf,
     knitr,
     rmarkdown,
