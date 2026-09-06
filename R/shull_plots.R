@@ -3,6 +3,7 @@
 #' Plotting of spherical hulls
 #'
 #' @rdname plot
+#' @return The function has no return value.
 #' @param x Spherical hull object.
 #' @param add Logical parameter specifying whether the previous plot should be overwritten.
 #' @param ... Additional plotting parameters as defined in par.

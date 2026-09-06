@@ -99,8 +99,9 @@ nobilis <- pinna[pinna$species=="Pinna nobilis", ]
 cpairs <- occupancy(nobilis, long="decimalLongitude", lat="decimalLatitude")
 
 # 2. Occupancy in icosahedral grid 
-hex <- hexagrid(deg=3, sf=TRUE)
-plot(nobilis[c("decimalLongitude", "decimalLatitude")], pch=16, col="#00BBAA66")
+hex <- hexagrid(deg=5, sf=TRUE)
+plot(nobilis[c("decimalLongitude", "decimalLatitude")], pch=16, col="#00BBAA66",
+	xlim=c(-20,45), ylim=c(20,60))
 plot(hex, border="gray70", add=TRUE)
 
 # calculate occupancy

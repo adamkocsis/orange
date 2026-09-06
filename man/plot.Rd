@@ -13,6 +13,9 @@
 
 \item{...}{Additional plotting parameters as defined in par.}
 }
+\value{
+The function has no return value.
+}
 \description{
 Plotting of spherical hulls
 }
