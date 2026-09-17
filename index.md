@@ -1,7 +1,7 @@
 
 # orange <img src="man/figures/logo.png" align="right" />
 
-[![](https://img.shields.io/badge/devel%20version-0.1.0--15-green.svg)](https://github.com/adamkocsis/orange)
+[![](https://img.shields.io/badge/devel%20version-0.1.0-green.svg)](https://github.com/adamkocsis/orange)
 [![](https://www.r-pkg.org/badges/version/orange?color=blue)](https://cran.r-project.org/package=orange)
 [![](http://cranlogs.r-pkg.org/badges/grand-total/orange?color=yellow)](https://cran.r-project.org/package=orange)
 [![CRAN

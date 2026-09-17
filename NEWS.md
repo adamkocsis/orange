@@ -2,6 +2,8 @@
 
 # orange 0.1.0 - 2026-08-23
 
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.22814665.svg)](https://doi.org/10.5281/zenodo.22814665)
+
 ## Added
 
 - The `kentsamples` data for testing and demonstration.
