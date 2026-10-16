@@ -1,7 +1,7 @@
 Package: orange
 Type: Package
 Title: Spherical Descriptors of Geographic Distributions 
-Version: 0.1.0
+Version: 0.2.0-1
 Authors@R: c(
 	person(given="Adam T.", family="Kocsis", role=c("cre", "aut"),
 		   email="adam.t.kocsis@gmail.com", comment=c(ORCID="0000-0002-9028-665X")),
@@ -11,7 +11,7 @@ Authors@R: c(
 Maintainer: Adam T. Kocsis <adam.t.kocsis@gmail.com>
 Description: Characterization of distribution data on the surface of a sphere. The primary group of these metrics describe the extent of a distribution,  geographic ranges. The calculation of geographic descriptors can be executed using point coordinate data, vector polygons, as well as cells on a discretized sphere. Besides using spherical implementations, the package offers the exploration of partial results for visual diagnostics.
 License: GPL-3
-Date: 2026-08-23
+Date: 2026-10-15
 BugReports: https://github.com/adamkocsis/orange/issues
 Encoding: UTF-8
 LazyData: false
@@ -27,6 +27,8 @@ Suggests:
     sf,
     knitr,
     rmarkdown,
-	vegan
+	vegan,
+	terra,
+	Directional
 Config/roxygen2/version: 8.0.0
 RoxygenNote: 7.3.2
