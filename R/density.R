@@ -1,3 +1,6 @@
+# Lower-level functions related to density estimation based on Kent distributions.
+# See densityarea.R for the user interface function.
+
 ################################################################################
 # dkentgeo: Calculate densities of Kent distributions
 ################################################################################
@@ -77,7 +80,8 @@ setMethod(
 		if(!requireNamespace("Directional", quietly=TRUE)){
 			stop("This function relies on the 'Directional' package. Please install it first. ")
 		}
-		if(beta>=(kappa/2)) stop("The 'beta' parameter must be lower than kappa/2.")
+		if(beta!=0) if(beta>=(kappa/2)) stop("The 'beta' parameter must be lower than kappa/2.")
+		if(beta<0) stop("The 'beta' parameter must be positive")
 		# transform the domain's geographic coordinates to unit sphere
 		coords <- icosa::PolToCar(x, radius=1, origin=c(0,0,0))
 		# the mean direction
@@ -240,7 +244,7 @@ setMethod(
 		xy <- terra::xyFromCell(s, 1:terra::ncell(s))
 		res <- rep(0, nrow(xy))
 
-	# loop through all points
+ 		# loop through all points
 		for(i in 1:nrow(x)){
 			# this particular point
 			one <- dkentgeo(x=xy, mu=x[i,, drop=FALSE], majorheading=majorheading, kappa=kappa, beta=beta)
@@ -281,7 +285,7 @@ setMethod(
 #' Confidence region of a geographic kernel density estimator
 #'
 #' @param x The result of the a geographic kernel density estimation (kde)
-#' @param alpha A single numeric, confidence level (0-1).
+#' @param level A single numeric, confidence level (0-1).
 #' @param area A single logical, should areas be returned?
 #' @param prop A single logical, should areas returned be the proportion of sphere (\code{TRUE}), or square meters (\code{FALSE})?
 #' @return If \code{area} is \code{FALSE}, then the same type as \code{x}, with binary values indicating whether a spatial unit is inside the region or not.
@@ -326,7 +330,7 @@ setGeneric(
 setMethod(
 	"confregion",
 	signature=c(x="SpatRaster"),
-	function(x, alpha, area=TRUE, prop=TRUE){
+	function(x, level, area=TRUE, prop=TRUE){
 		# calculate the area
 		allArea <- terra::cellSize(x)
 		unitArea <- allArea/sum(terra::values(allArea))
@@ -353,7 +357,7 @@ setMethod(
 		terra::values(conf)[decOrd] <- cumulated
 
 		# the confidence region
-		res <- conf<alpha
+		res <- conf<level
 		terra::values(res)[!terra::values(res)] <- NA
 
 		# plot(res)

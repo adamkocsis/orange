@@ -7,12 +7,12 @@
 \usage{
 confregion(x, ...)
 
-\S4method{confregion}{SpatRaster}(x, alpha, area = TRUE, prop = TRUE)
+\S4method{confregion}{SpatRaster}(x, level, area = TRUE, prop = TRUE)
 }
 \arguments{
 \item{x}{The result of the a geographic kernel density estimation (kde)}
 
-\item{alpha}{A single numeric, confidence level (0-1).}
+\item{level}{A single numeric, confidence level (0-1).}
 
 \item{area}{A single logical, should areas be returned?}
 
